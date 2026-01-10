@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - Fusion</title>
+    <link href="../dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="../assets/images/main/logo-white.png" type="image/png" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="../assets/images/main/logo.png" type="image/png" media="(prefers-color-scheme: dark)">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="bg-ivory text-royal-black font-sans">
+
+
+
+
+    <main class="min-h-screen flex items-center justify-center py-12 px-6">
+        <div class="w-full max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Column: Shipping Form -->
+                <div class="lg:col-span-7">
+                    <!-- Step 1: Shipping -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200" style="padding: 64px !important;">
+                        <div class="mb-12">
+                            <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
+                                <span
+                                    class="flex items-center justify-center w-12 h-12 rounded-full bg-royal-black text-ivory text-lg font-bold">1</span>
+                                Shipping Information
+                            </h2>
+                            <p class="text-[11px] text-gray-400 mt-3 font-black uppercase tracking-[0.2em]"
+                                style="padding-left: 72px;">Delivery Destination</p>
+                        </div>
+
+                        <form id="checkout-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">First
+                                    Name</label>
+                                <input type="text" name="firstName" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="John">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Last
+                                    Name</label>
+                                <input type="text" name="lastName" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="Doe">
+                            </div>
+                            <div class="md:col-span-2 space-y-3">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Email
+                                    Address</label>
+                                <input type="email" name="email" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="john@example.com">
+                            </div>
+                            <div class="md:col-span-2 space-y-3">
+                                <label
+                                    class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Street
+                                    Address</label>
+                                <input type="text" name="address" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="123 Fusion Avenue, Fashion District">
+                            </div>
+                            <div class="space-y-3">
+                                <label
+                                    class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">City</label>
+                                <input type="text" name="city" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="New York">
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-3">
+                                    <label
+                                        class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">State</label>
+                                    <input type="text" name="state" required
+                                        class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                        placeholder="NY">
+                                </div>
+                                <div class="space-y-3">
+                                    <label
+                                        class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">PIN
+                                        Code</label>
+                                    <input type="text" name="pinCode" required
+                                        class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                        placeholder="10001">
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 space-y-3">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Phone
+                                    Number</label>
+                                <input type="tel" name="phone" required
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-royal-black focus:ring-8 focus:ring-royal-black/5 outline-none transition-all placeholder:text-gray-300 text-sm"
+                                    placeholder="+1 234 567 8900">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Explicit Spacer -->
+                    <div style="height: 150px; width: 100%;"></div>
+
+                    <!-- Step 2: Payment -->
+                    <div id="payment-section"
+                        class="bg-white rounded-xl shadow-sm border border-gray-200 opacity-60 pointer-events-none grayscale transition-all duration-700"
+                        style="padding: 64px !important;">
+                        <div class="flex justify-between items-center mb-12">
+                            <div>
+                                <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
+                                    <span
+                                        class="flex items-center justify-center w-12 h-12 rounded-full bg-royal-black text-ivory text-lg font-bold">2</span>
+                                    Payment Method
+                                </h2>
+                                <p class="text-[11px] text-gray-400 mt-3 font-black uppercase tracking-[0.2em]"
+                                    style="padding-left: 72px;">Secure Transactions Only</p>
+                            </div>
+                            <div
+                                class="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-full border border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M2.166 4.9L9.03 9.03a2 2 0 001.94 0l6.864-4.13A2 2 0 0016.893 1.5H3.107a2 2 0 00-.941 3.4zM3.107 14h13.786a2 2 0 001.68-3.088l-6.864-4.13a2 2 0 00-1.94 0l-6.864 4.13A2 2 0 003.107 14z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                Verified SSL
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <label
+                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                <input type="radio" name="payment-method" value="card"
+                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300" checked>
+                                <div class="ml-6 flex-1">
+                                    <p class="text-base font-bold text-royal-black">Credit / Debit Card</p>
+                                    <p class="text-xs text-gray-400 mt-1.5">Visa, Mastercard, AMEX, RuPay</p>
+                                </div>
+                                <div class="flex gap-2.5">
+                                    <span
+                                        class="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-bold text-gray-400">VISA</span>
+                                    <span
+                                        class="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-bold text-gray-400">MC</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                <input type="radio" name="payment-method" value="upi"
+                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300">
+                                <div class="ml-6 flex-1">
+                                    <p class="text-base font-bold text-royal-black">UPI Digital Payment</p>
+                                    <p class="text-xs text-gray-400 mt-1.5">PhonePe, Google Pay, Paytm</p>
+                                </div>
+                                <div
+                                    class="bg-royal-black/5 text-royal-black text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+                                    Instant</div>
+                            </label>
+
+                            <label
+                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                <input type="radio" name="payment-method" value="cod"
+                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300">
+                                <div class="ml-6 flex-1">
+                                    <p class="text-base font-bold text-royal-black">Cash on Delivery</p>
+                                    <p class="text-xs text-gray-400 mt-1.5">Pay at doorstep (+₹49 fee)</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div id="card-details-form"
+                            class="mt-12 p-12 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-8">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Card
+                                    Number</label>
+                                <input type="text"
+                                    class="w-full px-6 py-4 rounded-xl border border-gray-100 focus:border-royal-black bg-white outline-none transition-all placeholder:text-gray-300 text-base font-mono tracking-[0.3em]"
+                                    placeholder="XXXX XXXX XXXX XXXX">
+                            </div>
+                            <div class="grid grid-cols-2 gap-8">
+                                <div class="space-y-3">
+                                    <label
+                                        class="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Expiry
+                                        Date</label>
+                                    <input type="text"
+                                        class="w-full px-6 py-4 rounded-xl border border-gray-100 focus:border-royal-black bg-white outline-none transition-all placeholder:text-gray-300 text-sm"
+                                        placeholder="MM / YY">
+                                </div>
+                                <div class="space-y-3">
+                                    <label
+                                        class="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">CVV
+                                        / CVC</label>
+                                    <input type="password"
+                                        class="w-full px-6 py-4 rounded-xl border border-gray-100 focus:border-royal-black bg-white outline-none transition-all placeholder:text-gray-300 text-sm"
+                                        placeholder="***">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI QR Section -->
+                        <div id="upi-qr-section"
+                            class="mt-12 p-12 bg-gray-50/50 rounded-2xl border border-gray-100 hidden">
+                            <div class="flex flex-col items-center text-center">
+                                <div class="mb-6">
+                                    <p class="text-sm font-bold text-royal-black mb-2">Scan QR to Pay</p>
+                                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-black">
+                                        Transaction ID: <span id="upi-trans-id"
+                                            class="text-royal-black">FSN-772931</span></p>
+                                </div>
+                                <div
+                                    class="w-48 h-48 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6 flex items-center justify-center">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FUSION_CHECKOUT_DEMO"
+                                        alt="UPI QR Code" class="w-full h-full object-contain">
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Expires in
+                                        <span id="upi-timer" class="text-red-500">05:00</span>
+                                    </p>
+                                    <p class="text-xs text-royal-black">Open your UPI app (GPay, PhonePe, Paytm) to scan
+                                        and pay</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Order Summary -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 lg:sticky lg:top-24"
+                        style="padding: 64px !important;">
+                        <div class="flex items-center gap-5 mb-10">
+                            <span
+                                class="flex items-center justify-center w-10 h-10 rounded-full bg-royal-black text-ivory text-base font-bold">3</span>
+                            <h2 class="text-2xl font-serif font-bold">Order Summary</h2>
+                        </div>
+
+                        <ul id="checkout-items" class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2">
+                            <!-- Items will be injected here via JS -->
+                            <div class="flex justify-center py-8">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-royal-black"></div>
+                            </div>
+                        </ul>
+
+                        <div class="space-y-3 pt-6 border-t border-gray-200">
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>Subtotal</span>
+                                <span id="checkout-subtotal">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>Shipping</span>
+                                <span id="checkout-shipping">Calculating...</span>
+                            </div>
+                            <div
+                                class="flex justify-between text-base font-bold text-royal-black pt-2 border-t border-gray-200 mt-2">
+                                <span>Total</span>
+                                <span id="checkout-total">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <div id="coupon-section" class="mt-6">
+                            <div class="flex gap-2">
+                                <input type="text" id="coupon-input"
+                                    class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:border-royal-black focus:ring-2 focus:ring-royal-black/20 outline-none uppercase placeholder:text-gray-400"
+                                    placeholder="Discount Code">
+                                <button id="apply-coupon"
+                                    class="px-5 py-2.5 bg-royal-black text-ivory text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">Apply</button>
+                            </div>
+                            <p id="coupon-message" class="text-xs mt-2 hidden"></p>
+                        </div>
+
+                        <button id="confirm-order-btn"
+                            class="w-full mt-8 bg-royal-black text-ivory py-3.5 rounded-full font-bold uppercase tracking-wider hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                            Place Order
+
+                        </button>
+
+                        <p class="text-xs text-center text-gray-500 mt-4 leading-relaxed">
+                            By placing this order, you agree to our <a href="../assets/shipping.html"
+                                class="underline hover:text-royal-black">Terms of Service</a> and <a
+                                href="../assets/shipping.html" class="underline hover:text-royal-black">Privacy
+                                Policy</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/Javascript/checkout.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,272 @@
+[
+  {
+    "id": "p1",
+    "collection": "daily",
+    "name": "Cotton Kurta",
+    "price": "₹1,199",
+    "originalPrice": "₹2,000",
+    "imageUrl": "./assets/images/product/cottonkurta.webp",
+    "category": "Both Men & Women",
+    "description": "Soft cotton kurta designed for daily comfort and breathable wear.",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "mid",
+      "features": "minimalist"
+    }
+  },
+  {
+    "id": "p2",
+    "collection": "daily",
+    "name": "Straight Pants",
+    "price": "₹899",
+    "originalPrice": "₹1,299",
+    "imageUrl": "./assets/images/product/straight pants.webp",
+    "category": "Women",
+    "description": "Lightweight straight-fit pants that pair easily with any top",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "budget",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p3",
+    "collection": "daily",
+    "name": "Light Dupatta",
+    "price": "₹599",
+    "originalPrice": "₹999",
+    "imageUrl": "./assets/images/product/duppatta.webp",
+    "category": "Women",
+    "description": "Simple cotton dupatta for everyday styling without heaviness.",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "budget",
+      "features": "minimalist"
+    }
+  },
+  {
+    "id": "p4",
+    "collection": "every",
+    "name": "Solid Shirt",
+    "price": "₹1,399",
+    "originalPrice": "₹1,999",
+    "imageUrl": "./assets/images/product/solid.webp",
+    "category": "Men",
+    "description": "Minimal solid shirt suitable for work, travel, or casual outings.",
+    "categoryId": {
+      "material": "formal",
+      "priceRange": "mid",
+      "features": "minimalist"
+    }
+  },
+  {
+    "id": "p5",
+    "collection": "every",
+    "name": "Everyday Kurta",
+    "price": "₹1,399",
+    "originalPrice": "₹1,899",
+    "imageUrl": "./assets/images/product/kurta.webp",
+    "category": "Men",
+    "description": "One reliable kurta for regular use, not festive.",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "mid",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p6",
+    "collection": "every",
+    "name": "Churidar Pants",
+    "price": "₹899",
+    "originalPrice": "₹1,199",
+    "imageUrl": "./assets/images/product/churidar.webp",
+    "category": "Women",
+    "description": "Comfortable churidar pants for everyday wear.",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "budget",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p7",
+    "collection": "modern",
+    "name": "Tunic Top",
+    "price": "₹1,299",
+    "originalPrice": "₹1,799",
+    "imageUrl": "./assets/images/product/top.webp",
+    "category": "Women",
+    "description": "Easy-fit tunic that blends fashion roots with modern style.",
+    "categoryId": {
+      "material": "streetwear",
+      "priceRange": "mid ",
+      "features": "graphic"
+    }
+  },
+  {
+    "id": "p8",
+    "collection": "modern",
+    "name": "Slim Pants",
+    "price": "₹1,199",
+    "originalPrice": "₹1,599",
+    "imageUrl": "./assets/images/product/bandhgala.webp",
+    "category": "Men",
+    "description": "Sharp slim-fit trousers for city wear.",
+    "categoryId": {
+      "material": "formal",
+      "priceRange": "mid",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p9",
+    "collection": "modern",
+    "name": "Modern Hoodie",
+    "price": "₹799",
+    "originalPrice": "₹1,299",
+    "imageUrl": "./assets/images/product/ghagra.webp",
+    "category": "Both Men & Women",
+    "description": "A stylish hoodie that combines modern printing with contemporary design.",
+    "categoryId": {
+      "material": "athleisure",
+      "priceRange": "budget",
+      "features": "graphic"
+    }
+  },
+  {
+    "id": "p10",
+    "collection": "urban",
+    "name": "Asym Top",
+    "price": "₹1,699",
+    "originalPrice": "₹2,499",
+    "imageUrl": "./assets/images/product/salwar kameez.webp",
+    "category": "Women",
+    "description": "Bold asymmetrical top for statement styling.",
+    "categoryId": {
+      "material": "streetwear",
+      "priceRange": "mid",
+      "features": "oversized"
+    }
+  },
+  {
+    "id": "p11",
+    "collection": "urban",
+    "name": "Denim Jeans",
+    "price": "₹1,599",
+    "originalPrice": "₹2,199",
+    "imageUrl": "./assets/images/product/angarkha.webp",
+    "category": "Men",
+    "description": "Classic straight-fit denim jeans designed for durability and effortless urban style.",
+    "categoryId": {
+      "material": "streetwear",
+      "priceRange": "mid",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p12",
+    "collection": "urban",
+    "name": "Layered Jacket",
+    "price": "₹2,199",
+    "originalPrice": "₹2,999",
+    "imageUrl": "./assets/images/product/odhini.webp",
+    "category": "Men",
+    "description": "Lightweight ethnic jacket for layered looks.",
+    "categoryId": {
+      "material": "streetwear",
+      "priceRange": "premium",
+      "features": "layered"
+    }
+  },
+  {
+    "id": "p13",
+    "collection": "sun",
+    "name": "Linen Shirts",
+    "price": "₹759",
+    "originalPrice": "₹1,099",
+    "imageUrl": "./assets/images/product/dhoti.webp",
+    "category": "Men",
+    "description": "Breathable linen shirts ideal for hot and humid days.",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "budget",
+      "features": "minimalist"
+    }
+  },
+  {
+    "id": "p14",
+    "collection": "sun",
+    "name": "Light Tunic",
+    "price": "₹1,599",
+    "originalPrice": "₹2,099",
+    "imageUrl": "./assets/images/product/benarasi.webp",
+    "category": "Women",
+    "description": "Airy tunic designed for all-day summer comfort",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "mid",
+      "features": "oversized"
+    }
+  },
+  {
+    "id": "p15",
+    "collection": "sun",
+    "name": "Cotton Scarf",
+    "price": "₹499",
+    "originalPrice": "₹799",
+    "imageUrl": "./assets/images/product/salwar kameez.webp",
+    "category": "Both Men & Women",
+    "description": "Soft cotton scarf for light protection",
+    "categoryId": {
+      "material": "casual",
+      "priceRange": "budget",
+      "features": "minimalist"
+    }
+  },
+  {
+    "id": "p16",
+    "collection": "vibe",
+    "name": "Formal Joggers",
+    "price": "₹899",
+    "originalPrice": "₹1,299",
+    "imageUrl": "./assets/images/product/joggers.webp",
+    "category": "Both Men & Women",
+    "description": "Tapered joggers that offer a formal look with athletic comfort.",
+    "categoryId": {
+      "material": "formal",
+      "priceRange": "budget",
+      "features": "fitted"
+    }
+  },
+  {
+    "id": "p17",
+    "collection": "vibe",
+    "name": "Relaxed Pants",
+    "price": "₹999",
+    "originalPrice": "₹1,499",
+    "imageUrl": "./assets/images/product/pants.webp",
+    "category": "Both Men & Women",
+    "description": "Loose-fit pants focused on comfort and easy movement.",
+    "categoryId": {
+      "material": "formal",
+      "priceRange": "budget",
+      "features": "graphic"
+    }
+  },
+  {
+    "id": "p18",
+    "collection": "vibe",
+    "name": "Casual Overshirt",
+    "price": "₹1,599",
+    "originalPrice": "₹2,299",
+    "imageUrl": "./assets/images/product/overshirt.webp",
+    "category": "Men",
+    "description": "Versatile overshirt that works as both topwear and layering.",
+    "categoryId": {
+      "material": "formal",
+      "priceRange": "mid ",
+      "features": "minimalist"
+    }
+  }
+]

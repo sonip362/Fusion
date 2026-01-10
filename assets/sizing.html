@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sizing Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../assets/images/main/logo-white.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="../assets/images/main/logo.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <style>
+    /* ===== RESET ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #ffffff;
+      color: #000000;
+      padding: 40px;
+    }
+
+    /* ===== SIZE GUIDE CONTAINER ===== */
+    .size-guide {
+      max-width: 800px;
+      margin: 0 auto;
+      border: 2px solid #000;
+      border-radius: 16px;
+      /* Rounded corners */
+      padding: 24px;
+    }
+
+    .size-guide h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ===== TABLE WRAPPER ===== */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 14px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background: #000;
+      color: #fff;
+      font-weight: normal;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #f2f2f2;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+
+      .size-guide {
+        padding: 16px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="size-guide">
+    <h2>SIZING GUIDE</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Chest (cm)</th>
+            <th>Waist (cm)</th>
+            <th>Hip (cm)</th>
+            <th>Length (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>S</td>
+            <td>90–95</td>
+            <td>75–80</td>
+            <td>90–95</td>
+            <td>68</td>
+          </tr>
+          <tr>
+            <td>M</td>
+            <td>96–101</td>
+            <td>81–86</td>
+            <td>96–101</td>
+            <td>70</td>
+          </tr>
+          <tr>
+            <td>L</td>
+            <td>102–107</td>
+            <td>87–92</td>
+            <td>102–107</td>
+            <td>72</td>
+          </tr>
+          <tr>
+            <td>XL</td>
+            <td>108–113</td>
+            <td>93–98</td>
+            <td>108–113</td>
+            <td>74</td>
+          </tr>
+        </tbody>
+      </table>
+  </section>
+  </div>
+
+  <div style="margin-top:20px;">
+    <p style="text-align:center;"><strong>How to Measure:</strong> Measure your body using a soft measuring tape and
+      compare with the size chart.<br>OR<br>Visit Your Nearest Store for A Tailored Fit.</p>
+  </div>
+</body>
+
+</html>
