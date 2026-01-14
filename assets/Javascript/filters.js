@@ -4,7 +4,8 @@ const initializeCollectionNavigation = () => {
     const productGrid = document.getElementById('collection-product-grid');
     const productCards = productGrid ? productGrid.querySelectorAll('.product-card') : [];
     const productCardsArray = Array.from(productCards); // For stable default sort
-    const collectionCardGrid = document.getElementById('collection-card-grid');
+    const collectionCardGrid = document.getElementById('collections-carousel');
+    const collectionIndicators = document.getElementById('collection-indicators');
     const backButton = document.getElementById('back-to-collections-btn');
     const collectionTitle = document.getElementById('collection-title');
     const productViewControls = document.getElementById('product-view-controls');
@@ -270,8 +271,9 @@ const initializeCollectionNavigation = () => {
             // Update the view
             updateProductView();
 
-            // Hide collection cards & title
+            // Hide collection cards, indicators & title
             collectionCardGrid.classList.add('hidden');
+            if (collectionIndicators) collectionIndicators.classList.add('hidden');
             collectionTitle.classList.add('hidden');
 
             // Show product grid and controls
@@ -287,8 +289,9 @@ const initializeCollectionNavigation = () => {
         productViewControls.classList.add('hidden');
         if (activeFiltersContainer) activeFiltersContainer.classList.add('hidden');
 
-        // Show collection cards & title
+        // Show collection cards, indicators & title
         collectionCardGrid.classList.remove('hidden');
+        if (collectionIndicators) collectionIndicators.classList.remove('hidden');
         collectionTitle.classList.remove('hidden');
 
         // We DO NOT reset the filter/sort values here so they persist across collections

@@ -371,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Carousel ---
+    if (typeof initializeCollectionsCarousel === 'function') initializeCollectionsCarousel();
     if (typeof initializeLimitedCarousel === 'function') initializeLimitedCarousel();
     if (typeof initializeTestimonialsCarousel === 'function') initializeTestimonialsCarousel();
 
@@ -631,4 +632,101 @@ const initializeTestimonialsCarousel = () => {
         clearInterval(autoPlayInterval);
         autoPlayInterval = setInterval(() => showSlide(currentIndex + 1), 6000);
     });
+};
+
+// Collections carousel logic
+// Collections carousel logic
+const initializeCollectionsCarousel = () => {
+    const track = document.getElementById('collections-track');
+    if (!track) return;
+
+    const slides = track.querySelectorAll('.collection-slide');
+    const prevBtn = document.getElementById('collections-prev-btn');
+    const nextBtn = document.getElementById('collections-next-btn');
+    const indicators = document.querySelectorAll('.collection-indicator');
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    // On desktop, we show 2 slides, so max index is totalSlides - 2 if we don't loop endlessly or want "empty" space.
+    // However, typical carousel behavior often allows going to the end.
+    // Let's stick to simple: index 0 to totalSlides - 2
+
+    if (totalSlides === 0) return;
+
+    // Helper to check viewport
+    const isDesktop = () => window.innerWidth >= 768; // Matching Tailwind 'md'
+
+    const updateCarousel = (index) => {
+        if (!isDesktop()) {
+            // Mobile: Reset transform, let CSS scroll handle it.
+            track.style.transform = 'translateX(0%)';
+            return;
+        }
+
+        // Desktop Logic: Slide by 50% per index
+        if (index < 0) index = 0; // Boundary check start
+
+        // We show 2 items. So if we have 6 items: [0,1], [1,2], [2,3], [3,4], [4,5].
+        // Max index should be 4 (totalSlides - 2).
+        if (index > totalSlides - 2) index = totalSlides - 2;
+
+        currentIndex = index;
+
+        // Move track
+        const translateX = -(currentIndex * 50); // 50% per slide
+        track.style.transform = `translateX(${translateX}%)`;
+
+        updateIndicators();
+    };
+
+    const updateIndicators = () => {
+        indicators.forEach((indicator, i) => {
+            // Simplify active state: if current index matches indicator
+            if (i === currentIndex) {
+                indicator.classList.remove('bg-gray-300', 'hover:bg-gray-400');
+                indicator.classList.add('bg-royal-black');
+            } else {
+                indicator.classList.add('bg-gray-300', 'hover:bg-gray-400');
+                indicator.classList.remove('bg-royal-black');
+            }
+        });
+    };
+
+    // Event Listeners
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            updateCarousel(currentIndex - 1);
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            updateCarousel(currentIndex + 1);
+        });
+    }
+
+    // Indicator clicks
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            // Boundary check for indicators too
+            if (isDesktop() && index > totalSlides - 2) {
+                index = totalSlides - 2;
+            }
+            updateCarousel(index);
+        });
+    });
+
+    // Auto-play logic (Optional, mostly for desktop usually)
+    // User didn't strictly ask to remove it, but scrollable usually implies manual control.
+    // Let's keep it simple: no auto-play for now as user asked for "scrollable" and specific click interactions.
+    // The previous implementation had it, but sliding tracks with auto-play can be tricky with interactions.
+    // I will exclude explicit auto-play to respect the "scrollable" request on mobile and manual click on desktop.
+
+    // Handle resize to reset/adjust state
+    window.addEventListener('resize', () => {
+        updateCarousel(currentIndex);
+    });
+
+    // Initial state
+    updateCarousel(0);
 };

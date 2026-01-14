@@ -20,24 +20,26 @@
 
 
 
-    <main class="min-h-screen flex items-center justify-center py-12 px-6">
+    <main class="min-h-screen flex items-center justify-center py-10 md:py-20 px-8 md:px-16">
         <div class="w-full max-w-6xl">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <!-- Left Column: Shipping Form -->
                 <div class="lg:col-span-7">
                     <!-- Step 1: Shipping -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200" style="padding: 64px !important;">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200"
+                        style="padding: clamp(40px, 8vw, 80px) !important;">
                         <div class="mb-12">
                             <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
                                 <span
                                     class="flex items-center justify-center w-12 h-12 rounded-full bg-royal-black text-ivory text-lg font-bold">1</span>
                                 Shipping Information
                             </h2>
-                            <p class="text-[11px] text-gray-400 mt-3 font-black uppercase tracking-[0.2em]"
-                                style="padding-left: 72px;">Delivery Destination</p>
+                            <p
+                                class="text-[10px] md:text-[11px] text-gray-400 mt-2 md:mt-3 font-black uppercase tracking-[0.2em] pl-12 md:pl-[72px]">
+                                Delivery Destination</p>
                         </div>
 
-                        <form id="checkout-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
+                        <form id="checkout-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                             <div class="space-y-3">
                                 <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">First
                                     Name</label>
@@ -102,12 +104,12 @@
                     </div>
 
                     <!-- Explicit Spacer -->
-                    <div style="height: 150px; width: 100%;"></div>
+                    <div class="h-12 md:h-[150px] w-full"></div>
 
                     <!-- Step 2: Payment -->
                     <div id="payment-section"
                         class="bg-white rounded-xl shadow-sm border border-gray-200 opacity-60 pointer-events-none grayscale transition-all duration-700"
-                        style="padding: 64px !important;">
+                        style="padding: clamp(40px, 8vw, 80px) !important;">
                         <div class="flex justify-between items-center mb-12">
                             <div>
                                 <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
@@ -115,8 +117,9 @@
                                         class="flex items-center justify-center w-12 h-12 rounded-full bg-royal-black text-ivory text-lg font-bold">2</span>
                                     Payment Method
                                 </h2>
-                                <p class="text-[11px] text-gray-400 mt-3 font-black uppercase tracking-[0.2em]"
-                                    style="padding-left: 72px;">Secure Transactions Only</p>
+                                <p
+                                    class="text-[10px] md:text-[11px] text-gray-400 mt-2 md:mt-3 font-black uppercase tracking-[0.2em] pl-12 md:pl-[72px]">
+                                    Secure Transactions Only</p>
                             </div>
                             <div
                                 class="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-full border border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
@@ -129,49 +132,50 @@
                             </div>
                         </div>
 
-                        <div class="space-y-6">
+                        <div class="space-y-8">
                             <label
-                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                class="flex items-center p-8 md:p-10 border border-gray-100 rounded-3xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group shadow-sm hover:shadow-md">
                                 <input type="radio" name="payment-method" value="card"
-                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300" checked>
-                                <div class="ml-6 flex-1">
-                                    <p class="text-base font-bold text-royal-black">Credit / Debit Card</p>
-                                    <p class="text-xs text-gray-400 mt-1.5">Visa, Mastercard, AMEX, RuPay</p>
+                                    class="w-7 h-7 text-royal-black focus:ring-royal-black border-gray-300" checked>
+                                <div class="ml-8 flex-1">
+                                    <p class="text-lg font-bold text-royal-black">Credit / Debit Card</p>
+                                    <p class="text-[13px] text-gray-400 mt-2 font-medium">Visa, Mastercard, AMEX, RuPay
+                                    </p>
                                 </div>
-                                <div class="flex gap-2.5">
+                                <div class="hidden sm:flex gap-3">
                                     <span
-                                        class="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-bold text-gray-400">VISA</span>
+                                        class="px-4 py-1.5 bg-white border border-gray-100 rounded-lg text-[10px] font-black text-gray-400 tracking-widest">VISA</span>
                                     <span
-                                        class="px-3 py-1 bg-white border border-gray-100 rounded text-[10px] font-bold text-gray-400">MC</span>
+                                        class="px-4 py-1.5 bg-white border border-gray-100 rounded-lg text-[10px] font-black text-gray-400 tracking-widest">MC</span>
                                 </div>
                             </label>
 
                             <label
-                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                class="flex items-center p-8 md:p-10 border border-gray-100 rounded-3xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group shadow-sm hover:shadow-md">
                                 <input type="radio" name="payment-method" value="upi"
-                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300">
-                                <div class="ml-6 flex-1">
-                                    <p class="text-base font-bold text-royal-black">UPI Digital Payment</p>
-                                    <p class="text-xs text-gray-400 mt-1.5">PhonePe, Google Pay, Paytm</p>
+                                    class="w-7 h-7 text-royal-black focus:ring-royal-black border-gray-300">
+                                <div class="ml-8 flex-1">
+                                    <p class="text-lg font-bold text-royal-black">UPI Digital Payment</p>
+                                    <p class="text-[13px] text-gray-400 mt-2 font-medium">PhonePe, Google Pay, Paytm</p>
                                 </div>
                                 <div
-                                    class="bg-royal-black/5 text-royal-black text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+                                    class="bg-royal-black/5 text-royal-black text-[11px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em]">
                                     Instant</div>
                             </label>
 
                             <label
-                                class="flex items-center p-8 border border-gray-100 rounded-2xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group">
+                                class="flex items-center p-8 md:p-10 border border-gray-100 rounded-3xl cursor-pointer hover:border-royal-black hover:bg-gray-50/50 transition-all group shadow-sm hover:shadow-md">
                                 <input type="radio" name="payment-method" value="cod"
-                                    class="w-6 h-6 text-royal-black focus:ring-royal-black border-gray-300">
-                                <div class="ml-6 flex-1">
-                                    <p class="text-base font-bold text-royal-black">Cash on Delivery</p>
-                                    <p class="text-xs text-gray-400 mt-1.5">Pay at doorstep (+₹49 fee)</p>
+                                    class="w-7 h-7 text-royal-black focus:ring-royal-black border-gray-300">
+                                <div class="ml-8 flex-1">
+                                    <p class="text-lg font-bold text-royal-black">Cash on Delivery</p>
+                                    <p class="text-[13px] text-gray-400 mt-2 font-medium">Pay at doorstep (+₹49 fee)</p>
                                 </div>
                             </label>
                         </div>
 
                         <div id="card-details-form"
-                            class="mt-12 p-12 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-8">
+                            class="mt-8 md:mt-12 p-6 md:p-12 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-6 md:space-y-8">
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Card
                                     Number</label>
@@ -201,7 +205,7 @@
 
                         <!-- UPI QR Section -->
                         <div id="upi-qr-section"
-                            class="mt-12 p-12 bg-gray-50/50 rounded-2xl border border-gray-100 hidden">
+                            class="mt-8 md:mt-12 p-6 md:p-12 bg-gray-50/50 rounded-2xl border border-gray-100 hidden">
                             <div class="flex flex-col items-center text-center">
                                 <div class="mb-6">
                                     <p class="text-sm font-bold text-royal-black mb-2">Scan QR to Pay</p>
@@ -229,7 +233,7 @@
                 <!-- Right Column: Order Summary -->
                 <div class="lg:col-span-5">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 lg:sticky lg:top-24"
-                        style="padding: 64px !important;">
+                        style="padding: clamp(40px, 8vw, 80px) !important;">
                         <div class="flex items-center gap-5 mb-10">
                             <span
                                 class="flex items-center justify-center w-10 h-10 rounded-full bg-royal-black text-ivory text-base font-bold">3</span>

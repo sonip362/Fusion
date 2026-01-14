@@ -25,11 +25,7 @@
 
     <header id="main-header"
         class="fixed top-0 z-40 w-full bg-black/80 backdrop-blur-md shadow-sm transition-all duration-500 ease-in-out">
-        <div id="scroll-progress-container" class="absolute top-0 left-0 w-full h-[2px] bg-white/10 z-50">
-            <div id="scroll-progress-bar"
-                class="h-full bg-ivory w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(247,245,242,0.8)]">
-            </div>
-        </div>
+
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
 
@@ -291,137 +287,216 @@
 
 
 
-                <div id="collection-card-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Collections Carousel -->
+                <!-- Collections Carousel -->
+                <div id="collections-carousel" class="relative overflow-hidden rounded-lg bg-gray-50 mx-auto group"
+                    style="min-height: 900px; height: 80vh; max-height: 950px; max-width: 800px; width: 100%;">
 
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="daily"
-                        data-collection-name="Daily Wear">
+                    <!-- Carousel Track -->
+                    <div id="collections-track"
+                        class="flex justify-start w-full h-full overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth scrollbar-hide items-center">
 
+                        <!-- Slide 1: Daily Wear -->
                         <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/daily.webp" alt="Modern Fusion Wear Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                width="400" height="500" loading="lazy"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="daily" data-collection-name="Daily Wear">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/daily.webp" alt="Modern Fusion Wear Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        width="400" height="711" loading="lazy"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Daily Wear</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Daily Wear
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
                             </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover:scale-105">
-                                Daily Wear</h3>
                         </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Daily Wear
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
+
+                        <!-- Slide 2: Everywhere Choice -->
+                        <div
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="every" data-collection-name="Everywhere Choice">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/every.webp" alt="Modern Fusion Wear Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        width="400" height="711" loading="lazy"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Everywhere Choice</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Everywhere Choice
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Modern Metro -->
+                        <div
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="modern" data-collection-name="Modern Metro">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/metro.webp" alt="Lyrux Athleisure Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        loading="lazy" width="400" height="711"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Modern Metro</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Modern Metro
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 4: Urban Edge -->
+                        <div
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="urban" data-collection-name="Urban-Edge">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/urban.webp" alt="Casual Luxe Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        loading="lazy" width="400" height="711"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Urban Edge</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Urban Edge
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 5: Sun & Shade -->
+                        <div
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="sun" data-collection-name="Sun & Shade">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/sun.webp" alt="Casual Luxe Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        loading="lazy" width="400" height="711"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Sun & Shade</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Sun & Shade
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 6: Weekend Vibe -->
+                        <div
+                            class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
+                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                                data-collection-filter="vibe" data-collection-name="Weekend Vibe">
+                                <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
+                                    style="aspect-ratio: 9/16; width: 100%;">
+                                    <img src="./assets/images/collection/vibe.webp" alt="Casual Luxe Collection"
+                                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110 product-image"
+                                        loading="lazy" width="400" height="711"
+                                        onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover/card:bg-black/20 transition-colors duration-300">
+                                    </div>
+                                    <h3
+                                        class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
+                                        Weekend Vibe</h3>
+                                </div>
+                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                    Weekend Vibe
+                                </h4>
+                                <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
+                                    Collection
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
 
+                    <!-- Navigation Controls (Hidden on mobile) -->
+                    <button id="collections-prev-btn"
+                        class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-royal-black p-3 rounded-r-lg shadow-lg transition-all z-20 cursor-pointer"
+                        aria-label="Previous collection">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <button id="collections-next-btn"
+                        class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-royal-black p-3 rounded-l-lg shadow-lg transition-all z-20 cursor-pointer"
+                        aria-label="Next collection">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
 
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="every"
-                        data-collection-name="Everywhere Choice">
+                </div>
 
-                        <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/every.webp" alt="Modern Fusion Wear Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                width="400" height="500" loading="lazy"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover:scale-105">
-                                Everywhere Choice</h3>
-                        </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Everywhere Choice
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
-                    </div>
+                <!-- Indicators (Optional, mainly for desktop reference or mobile if needed) -->
+                <div id="collection-indicators" class="mt-8 flex justify-center space-x-3">
+                    <button class="collection-indicator w-3 h-3 rounded-full bg-royal-black transition-colors"
+                        aria-label="Go to collection 1"></button>
+                    <button
+                        class="collection-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors"
+                        aria-label="Go to collection 2"></button>
+                    <button
+                        class="collection-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors"
+                        aria-label="Go to collection 3"></button>
+                    <button
+                        class="collection-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors"
+                        aria-label="Go to collection 4"></button>
+                    <button
+                        class="collection-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors"
+                        aria-label="Go to collection 5"></button>
 
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="modern"
-                        data-collection-name="Modern Metro">
-
-                        <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/metro.webp" alt="Lyrux Athleisure Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                loading="lazy" width="400" height="500"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover:scale-105">
-                                Modern Metro</h3>
-                        </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Modern Metro
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
-                    </div>
-
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="urban"
-                        data-collection-name="Urban-Edge">
-                        <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/urban.webp" alt="Casual Luxe Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                loading="lazy" width="400" height="500"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover:scale-105">
-                                Urban Edge</h3>
-                        </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Urban Edge
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
-                    </div>
-
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="sun"
-                        data-collection-name="Sun & Shade">
-                        <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/sun.webp" alt="Casual Luxe Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                loading="lazy" width="400" height="500"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover:scale-105">
-                                Sun & Shade</h3>
-                        </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Sun & Shade
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
-                    </div>
-
-                    <div class="collection-card group block relative cursor-pointer" data-collection-filter="vibe"
-                        data-collection-name="Weekend Vibe">
-                        <div
-                            class="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] bg-gray-100 flex items-center justify-center text-center p-4 skeleton">
-                            <img src="./assets/images/collection/vibe.webp" alt="Casual Luxe Collection"
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 product-image"
-                                loading="lazy" width="400" height="500"
-                                onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <h3
-                                class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover:scale-105">
-                                Weekend Vibe</h3>
-                        </div>
-                        <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                            Weekend Vibe
-                        </h4>
-                        <p class="text-center text-gray-600 font-sans group-hover:underline">Shop The Collection</p>
-                    </div>
                 </div>
 
                 <div id="collection-product-grid"
