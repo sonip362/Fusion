@@ -17,17 +17,28 @@
 
 <body class="bg-ivory text-royal-black font-sans">
 
+    <!-- Floating Mobile Total Bar -->
+    <div
+        class="md:hidden fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex flex-col">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Total
+                Amount</span>
+            <span id="mobile-floating-total" class="text-lg font-bold text-royal-black leading-none">₹0.00</span>
+        </div>
+        <button onclick="document.getElementById('confirm-order-btn').scrollIntoView({behavior: 'smooth'})"
+            class="bg-royal-black text-ivory text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg">
+            Pay Now
+        </button>
+    </div>
 
-
-
-    <main class="min-h-screen flex items-center justify-center py-10 md:py-20 px-8 md:px-16">
+    <main class="min-h-screen flex items-center justify-center py-16 md:py-20 px-4 md:px-16">
         <div class="w-full max-w-6xl">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 <!-- Left Column: Shipping Form -->
                 <div class="lg:col-span-7">
                     <!-- Step 1: Shipping -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200"
-                        style="padding: clamp(40px, 8vw, 80px) !important;">
+                        style="padding: clamp(24px, 8vw, 80px) !important;">
                         <div class="mb-12">
                             <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
                                 <span
@@ -109,7 +120,7 @@
                     <!-- Step 2: Payment -->
                     <div id="payment-section"
                         class="bg-white rounded-xl shadow-sm border border-gray-200 opacity-60 pointer-events-none grayscale transition-all duration-700"
-                        style="padding: clamp(40px, 8vw, 80px) !important;">
+                        style="padding: clamp(24px, 6vw, 80px) !important;">
                         <div class="flex justify-between items-center mb-12">
                             <div>
                                 <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
@@ -233,7 +244,7 @@
                 <!-- Right Column: Order Summary -->
                 <div class="lg:col-span-5">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 lg:sticky lg:top-24"
-                        style="padding: clamp(40px, 8vw, 80px) !important;">
+                        style="padding: clamp(24px, 6vw, 80px) !important;">
                         <div class="flex items-center gap-5 mb-10">
                             <span
                                 class="flex items-center justify-center w-10 h-10 rounded-full bg-royal-black text-ivory text-base font-bold">3</span>
@@ -264,14 +275,14 @@
                         </div>
 
                         <div id="coupon-section" class="mt-6">
-                            <div class="flex gap-2">
+                            <div class="flex flex-col sm:flex-row gap-2">
                                 <input type="text" id="coupon-input"
-                                    class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:border-royal-black focus:ring-2 focus:ring-royal-black/20 outline-none uppercase placeholder:text-gray-400"
+                                    class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none uppercase placeholder:text-gray-300 transition-all font-medium"
                                     placeholder="Discount Code">
                                 <button id="apply-coupon"
-                                    class="px-5 py-2.5 bg-royal-black text-ivory text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">Apply</button>
+                                    class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">Apply</button>
                             </div>
-                            <p id="coupon-message" class="text-xs mt-2 hidden"></p>
+                            <p id="coupon-message" class="text-[11px] mt-2 font-medium hidden"></p>
                         </div>
 
                         <button id="confirm-order-btn"

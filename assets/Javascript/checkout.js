@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateTotals(sub, ship, disc) {
         const total = sub + ship - disc;
+        const formattedTotal = formatPrice(total > 0 ? total : 0);
 
         subtotalEl.textContent = formatPrice(sub);
         shippingEl.textContent = ship === 0 ? 'FREE' : formatPrice(ship);
@@ -90,7 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
             shippingEl.parentElement.after(discountRow);
         }
 
-        totalEl.textContent = formatPrice(total > 0 ? total : 0);
+        totalEl.textContent = formattedTotal;
+
+        // Update mobile floating total
+        const mobileTotalEl = document.getElementById('mobile-floating-total');
+        if (mobileTotalEl) {
+            mobileTotalEl.textContent = formattedTotal;
+        }
     }
 
     // Coupon Logic with Tier Validation
