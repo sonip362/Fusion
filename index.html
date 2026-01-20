@@ -23,24 +23,29 @@
 
 <body class="bg-ivory text-royal-black">
 
-    <header id="main-header"
-        class="fixed top-0 z-40 w-full bg-black/80 backdrop-blur-md shadow-sm transition-all duration-500 ease-in-out">
+    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-6xl ">
 
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+        <nav class="px-6 sm:px-8 lg:px-10">
+            <div class="flex justify-between items-center h-16">
 
                 <a href="#home" class="flex items-center gap-3 text-2xl font-serif font-bold text-ivory">
                     Fusion
                 </a>
 
-                <div class=" hidden md:flex md:items-center md:space-x-8">
-                    <a href="#home" class="text-ivory hover:text-gray-300 transition-colors">Home</a>
+                <div class="main-nav-links hidden md:flex md:items-center md:space-x-4">
+                    <a href="#home"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Home</a>
                     <a href="#shop-by-collection"
-                        class="text-ivory hover:text-gray-300 transition-colors">Collections</a>
-                    <a href="#about" class="text-ivory hover:text-gray-300 transition-colors">About</a>
-                    <a href="#faq" class="text-ivory hover:text-gray-300 transition-colors">FAQs</a>
-                    <a href="#testimonials" class="text-ivory hover:text-gray-300 transition-colors">Reviews</a>
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Collections</a>
+                    <a href="#testimonials"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Reviews</a>
+                    <a href="#faq"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">FAQs</a>
+                    <a href="#about"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">About</a>
                 </div>
+
+
 
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:flex items-center space-x-4">
@@ -91,54 +96,13 @@
             </div>
         </nav>
 
-        <div id="mobile-menu" class="hidden fixed inset-0 bg-ivory/10 backdrop-blur-md transition-opacity">
-            <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-ivory divide-y-2 divide-gray-200">
-                <div class="pt-5 pb-6 px-5">
-                    <div class="flex items-center justify-between">
-                        <a href="#home" class="text-3xl font-serif font-bold text-royal-black">
-                            Fusion
-                        </a>
-                        <button id="mobile-menu-close-btn" type="button"
-                            class="-mr-2 p-2 rounded-md text-royal-black hover:text-gray-300 transition-colors "
-                            aria-label="Close menu">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
 
-                    <div class="mt-6">
-
-                        <nav class="grid gap-y-8">
-                            <a href="#home"
-                                class="mobile-menu-link -m-3 p-3 flex items-center rounded-md hover:bg-gray-50 text-base font-medium text-gray-700 hover:text-royal-black">Home</a>
-                            <a href="#shop-by-collection"
-                                class="mobile-menu-link -m-3 p-3 flex items-center rounded-md hover:bg-gray-50 text-base font-medium text-gray-700 hover:text-royal-black">Collections</a>
-                            <a href="#about"
-                                class="mobile-menu-link -m-3 p-3 flex items-center rounded-md hover:bg-gray-50 text-base font-medium text-gray-700 hover:text-royal-black">About</a>
-                            <a href="#faq" class="text-gray-700 hover:text-royal-black transition-colors">FAQs</a>
-                            <a href="#testimonials"
-                                class="text-gray-700 hover:text-royal-black transition-colors">Reviews</a>
-
-                            <a href="#" id="wishlist-btn-mobile"
-                                class="mobile-menu-link -m-3 p-3 flex items-center rounded-md hover:bg-gray-50 text-base font-medium text-gray-700 hover:text-royal-black has-badge">Wishlist
-                                <span id="wishlist-badge-mobile" class="badge hidden" aria-hidden="true">0</span>
-                            </a>
-                            <a href="#" id="cart-btn-mobile"
-                                class="mobile-menu-link -m-3 p-3 flex items-center rounded-md hover:bg-gray-50 text-base font-medium text-gray-700 hover:text-royal-black has-badge">Cart
-                                <span id="cart-badge-mobile" class="badge hidden" aria-hidden="true">0</span>
-                            </a>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
     </header>
 
     <main>
 
-        <section id="home" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+        <section id="home" data-section-name="Home"
+            class="relative h-screen flex items-center justify-center text-center overflow-hidden">
             <picture class="skeleton">
                 <source media="(max-width: 768px)" srcset="./assets/images/main/h-mob.webp">
                 <img src="./assets/images/main/hero.webp"
@@ -166,7 +130,7 @@
         </section>
 
         <!-- Recently Viewed Section -->
-        <section id="recently-viewed" class="py-20 sm:py-28 fade hidden">
+        <section id="recently-viewed" data-section-name="Recently Viewed" class="py-20 sm:py-28 fade hidden">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl sm:text-5xl font-serif text-center mb-16 relative">
                     Recently Viewed
@@ -182,7 +146,7 @@
             </div>
         </section>
 
-        <section id="shop-by-collection" class="py-20 sm:py-28 fade">
+        <section id="shop-by-collection" data-section-name="Collections" class="py-20 sm:py-28 fade">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
                 <div class="mb-16 text-center">
@@ -289,8 +253,9 @@
 
                 <!-- Collections Carousel -->
                 <!-- Collections Carousel -->
-                <div id="collections-carousel" class="relative overflow-hidden rounded-lg bg-gray-50 mx-auto group"
-                    style="min-height: 900px; height: 80vh; max-height: 950px; max-width: 800px; width: 100%;">
+                <div id="collections-carousel"
+                    class="relative overflow-hidden rounded-lg bg-gray-50 mx-auto group md:h-[900px]"
+                    style="height: 800px; max-height: 1000px; max-width: 800px; width: 100%;">
 
                     <!-- Carousel Track -->
                     <div id="collections-track"
@@ -299,7 +264,7 @@
                         <!-- Slide 1: Daily Wear -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="daily" data-collection-name="Daily Wear">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -314,7 +279,8 @@
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
                                         Daily Wear</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
                                     Daily Wear
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
@@ -326,7 +292,7 @@
                         <!-- Slide 2: Everywhere Choice -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="every" data-collection-name="Everywhere Choice">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -339,10 +305,11 @@
                                     </div>
                                     <h3
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
-                                        Everywhere Choice</h3>
+                                        Our Choice</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
-                                    Everywhere Choice
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
+                                    Our Choice
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
                                     Collection
@@ -353,7 +320,7 @@
                         <!-- Slide 3: Modern Metro -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="modern" data-collection-name="Modern Metro">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -368,7 +335,8 @@
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
                                         Modern Metro</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
                                     Modern Metro
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
@@ -380,7 +348,7 @@
                         <!-- Slide 4: Urban Edge -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="urban" data-collection-name="Urban-Edge">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -395,7 +363,8 @@
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
                                         Urban Edge</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
                                     Urban Edge
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
@@ -407,7 +376,7 @@
                         <!-- Slide 5: Sun & Shade -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="sun" data-collection-name="Sun & Shade">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -422,7 +391,8 @@
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-royal-black transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
                                         Sun & Shade</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
                                     Sun & Shade
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
@@ -434,7 +404,7 @@
                         <!-- Slide 6: Weekend Vibe -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
-                            <div class="collection-card group/card block relative cursor-pointer w-full max-w-[320px] mx-auto px-2"
+                            <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
                                 data-collection-filter="vibe" data-collection-name="Weekend Vibe">
                                 <div class="relative overflow-hidden rounded-3xl shadow-xl bg-gray-100 flex items-center justify-center text-center p-4 skeleton"
                                     style="aspect-ratio: 9/16; width: 100%;">
@@ -449,7 +419,8 @@
                                         class="relative text-4xl sm:text-5xl font-serif font-bold text-white transition-transform duration-500 group-hover/card:scale-105 drop-shadow-lg">
                                         Weekend Vibe</h3>
                                 </div>
-                                <h4 class="text-2xl font-serif mt-6 mb-2 text-center">
+                                <h4
+                                    class="text-2xl font-serif mt-6 mb-2 text-center min-h-[4rem] flex items-center justify-center">
                                     Weekend Vibe
                                 </h4>
                                 <p class="text-center text-gray-600 font-sans group-hover/card:underline">Shop The
@@ -481,7 +452,7 @@
                 </div>
 
                 <!-- Indicators (Optional, mainly for desktop reference or mobile if needed) -->
-                <div id="collection-indicators" class="mt-8 flex justify-center space-x-3">
+                <div id="collection-indicators" class="mt-8 hidden md:flex justify-center space-x-3">
                     <button class="collection-indicator w-3 h-3 rounded-full bg-royal-black transition-colors"
                         aria-label="Go to collection 1"></button>
                     <button
@@ -508,7 +479,7 @@
 
 
 
-        <section id="limited" class="py-20 sm:py-28 fade">
+        <section id="limited" data-section-name="Limited Edition" class="py-20 sm:py-28 fade">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative group">
                 <!-- Carousel Container -->
                 <div id="limited-carousel"
@@ -624,7 +595,7 @@
         </section>
 
 
-        <section id="testimonials" class="py-20 sm:py-28 bg-gray-200 fade">
+        <section id="testimonials" data-section-name="Reviews" class="py-20 sm:py-28 bg-gray-200 fade">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative group">
                 <h2 class="text-4xl sm:text-5xl font-serif text-center mb-16">
                     From Our Patrons
@@ -733,7 +704,7 @@
 
 
 
-        <section id="faq" class="py-20 sm:py-28 fade">
+        <section id="faq" data-section-name="FAQs" class="py-20 sm:py-28 fade">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
                 <h2 class="text-4xl sm:text-5xl font-serif mb-4">
                     FAQ's
@@ -1466,6 +1437,52 @@
         </div>
     </div>
 
+    <div id="mobile-menu"
+        class="hidden fixed inset-0 z-[9999] bg-royal-black/20 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-[400px] bg-[#F7F5F2] rounded-[3rem] shadow-2xl overflow-hidden animate-fade-in">
+            <div class="p-8 sm:p-10">
+                <div class="flex items-center justify-between mb-8">
+                    <a href="#home" class="text-3xl font-serif font-bold text-royal-black">
+                        Fusion
+                    </a>
+                    <button id="mobile-menu-close-btn" type="button"
+                        class="p-2 text-royal-black hover:bg-black/5 rounded-full transition-colors"
+                        aria-label="Close menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2"
+                            stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="flex flex-col gap-5">
+                    <a href="#home"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Home</a>
+                    <a href="#shop-by-collection"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Collections</a>
+                    <a href="#about"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">About</a>
+                    <a href="#faq"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">FAQs</a>
+                    <a href="#testimonials"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Reviews</a>
+
+                    <div class="pt-5 mt-2 border-t border-black/5 flex flex-col gap-5">
+                        <a href="#" id="wishlist-btn-mobile"
+                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                            <span>Wishlist</span>
+                            <span id="wishlist-badge-mobile" class="mobile-badge hidden">0</span>
+                        </a>
+                        <a href="#" id="cart-btn-mobile"
+                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                            <span>Cart</span>
+                            <span id="cart-badge-mobile" class="mobile-badge hidden">0</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
     <script src="assets/Javascript/main.js" defer></script>
     <script src="assets/Javascript/toast-message.js" defer></script>
     <script src="assets/Javascript/modal-logic.js" defer></script>

@@ -273,7 +273,7 @@ const initializeCollectionNavigation = () => {
 
             // Hide collection cards, indicators & title
             collectionCardGrid.classList.add('hidden');
-            if (collectionIndicators) collectionIndicators.classList.add('hidden');
+            if (collectionIndicators) collectionIndicators.classList.remove('md:flex');
             collectionTitle.classList.add('hidden');
 
             // Show product grid and controls
@@ -291,7 +291,7 @@ const initializeCollectionNavigation = () => {
 
         // Show collection cards, indicators & title
         collectionCardGrid.classList.remove('hidden');
-        if (collectionIndicators) collectionIndicators.classList.remove('hidden');
+        if (collectionIndicators) collectionIndicators.classList.add('md:flex');
         collectionTitle.classList.remove('hidden');
 
         // We DO NOT reset the filter/sort values here so they persist across collections

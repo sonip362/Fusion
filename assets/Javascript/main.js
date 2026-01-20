@@ -164,6 +164,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // --- Header Tap/Click Effect ---
+    if (mainHeader) {
+        let headerActiveTimeout;
+
+    }
+
+
+
+    // --- Nav Link Active Logic (White Pill Cover) ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    if (navLinks.length > 0 && sections.length > 0) {
+        let isTicking = false;
+
+        const handleNavHighlight = () => {
+            let currentId = '';
+            const scrollPos = window.scrollY + 200; // Offset for detection
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    currentId = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentId}`) {
+                    link.classList.add('active');
+                } else if (currentId === 'shop-by-collection' && link.getAttribute('href') === '#shop-by-collection') {
+                    // Specific match for shop-by-collection if needed
+                    link.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    handleNavHighlight();
+                    isTicking = false;
+                });
+                isTicking = true;
+            }
+        });
+
+        // Initial check
+        handleNavHighlight();
+    }
+
+
     // --- Confirm Dialogs ---
     const cartConfirmOk = document.getElementById('cart-confirm-ok');
     const cartConfirmCancel = document.getElementById('cart-confirm-cancel');
@@ -729,4 +782,19 @@ const initializeCollectionsCarousel = () => {
 
     // Initial state
     updateCarousel(0);
+
+    // Mobile "Nudge" Animation to cue horizontal scrolling
+    if (!isDesktop()) {
+        setTimeout(() => {
+            // Only nudge if the user hasn't scrolled yet (scrollLeft is still 0)
+            if (track.scrollLeft < 10) {
+                // gentle nudge
+                track.scrollBy({ left: 50, behavior: 'smooth' });
+                // return after short delay
+                setTimeout(() => {
+                    track.scrollBy({ left: -50, behavior: 'smooth' });
+                }, 600);
+            }
+        }, 2000); // 2 seconds delay
+    }
 };
