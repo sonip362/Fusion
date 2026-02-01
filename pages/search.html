@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Products - Fusion</title>
+    <meta name="description" content="Search through Fusion's premium collection of modern wear">
+    <link rel="icon" href="../assets/images/main/logo-white.png" type="image/png" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="../assets/images/main/logo.png" type="image/png" media="(prefers-color-scheme: dark)">
+    <link href="../dist/output.css" rel="stylesheet" media='all'>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Search Page Specific Styles */
+        .search-hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            min-height: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input-main {
+            width: 100%;
+            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            font-size: 1.125rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input-main::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-input-main:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .search-icon-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .search-icon-btn:hover {
+            color: #fff;
+        }
+
+        .clear-search-btn {
+            position: absolute;
+            right: 3.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 0.35rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .clear-search-btn.visible {
+            display: block;
+        }
+
+        .clear-search-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .featured-section {
+            padding: 4rem 0;
+        }
+
+        .product-card-search {
+            background: #fff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .product-card-search:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card-search .product-image-wrapper {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+        }
+
+        .product-card-search .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card-search:hover .product-image {
+            transform: scale(1.08);
+        }
+
+        .product-card-search .product-info {
+            padding: 1.25rem;
+        }
+
+        .product-card-search .product-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card-search .product-category {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-card-search .product-price-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .product-card-search .product-price {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #1a1a1a;
+        }
+
+        .product-card-search .product-original-price {
+            font-size: 0.9rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            color: #fff;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 9999px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .no-results-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            color: #ccc;
+        }
+
+        .search-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .suggestion-tag {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .results-count {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .results-count strong {
+            color: #1a1a1a;
+        }
+
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-home-btn:hover {
+            color: #fff;
+        }
+
+        /* Loading Skeleton Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -200px 0;
+            }
+
+            100% {
+                background-position: calc(200px + 100%) 0;
+            }
+        }
+
+        .skeleton-card {
+            background: #f0f0f0;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .skeleton-card .skeleton-image {
+            aspect-ratio: 3/4;
+            background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        .skeleton-card .skeleton-info {
+            padding: 1.25rem;
+        }
+
+        .skeleton-card .skeleton-text {
+            height: 1rem;
+            background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s infinite linear;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-card .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-card .skeleton-text.med {
+            width: 40%;
+        }
+
+        /* Quick action buttons on hover */
+        .product-card-search .quick-actions {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            display: flex;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .product-card-search:hover .quick-actions {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .quick-action-btn {
+            background: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: #1a1a1a;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="bg-ivory text-royal-black">
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[100%] max-w-7xl ">
+
+        <nav class="px-6 sm:px-8 lg:px-10">
+            <div class="flex justify-between items-center h-16">
+
+                <a href="../index.html" class="flex items-center gap-3 text-2xl font-serif font-bold text-ivory">
+                    Fusion
+                </a>
+
+                <div class="main-nav-links hidden md:flex md:items-center md:space-x-4">
+                    <a href="../index.html#home"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Home</a>
+                    <a href="../index.html#shop-by-collection"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Collections</a>
+                    <a href="../index.html#limited"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">New
+                        Arrivals</a>
+                    <a href="../index.html#testimonials"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Reviews</a>
+                    <a href="../index.html#about"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">About</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-4">
+                        <a href="#" id="wishlist-btn-desktop" aria-label="Wishlist"
+                            class="text-white hover:text-gray-300 transition-colors has-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                            <span id="wishlist-badge-desktop" class="badge hidden" aria-hidden="true">0</span>
+                        </a>
+                        <a href="#" id="cart-btn-desktop" aria-label="Cart"
+                            class="text-white hover:text-gray-300 transition-colors has-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z" />
+                            </svg>
+                            <span id="cart-badge-desktop" class="badge hidden" aria-hidden="true">0</span>
+                        </a>
+                    </div>
+                    <button id="mobile-menu-btn" type="button"
+                        class="md:hidden p-2 text-white hover:text-gray-300 transition-colors" aria-label="Open menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- Search Hero Section -->
+    <section class="search-hero flex flex-col justify-center px-4">
+        <div class="container mx-auto max-w-5xl pt-24 pb-16">
+            <a href="../index.html" class="back-home-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+                Back to Home
+            </a>
+
+            <h1 class="text-4xl sm:text-5xl font-serif text-white mb-4">Find Your Style</h1>
+            <p class="text-gray-300 mb-8 font-sans">Search through our curated collection of premium modern wear</p>
+
+            <div class="search-input-wrapper">
+                <input type="search" id="main-search-input" class="search-input-main"
+                    placeholder="Search products, collections..." autocomplete="off" autofocus>
+                <button type="button" id="clear-search" class="clear-search-btn" aria-label="Clear search">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <button type="button" class="search-icon-btn" aria-label="Search">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Popular Search Suggestions -->
+            <div class="search-suggestions mt-6">
+                <span class="text-gray-400 text-sm mr-2">Popular:</span>
+                <button class="suggestion-tag" data-query="kurta">Kurta</button>
+                <button class="suggestion-tag" data-query="shirt">Shirts</button>
+                <button class="suggestion-tag" data-query="pants">Pants</button>
+                <button class="suggestion-tag" data-query="jacket">Jackets</button>
+                <button class="suggestion-tag" data-query="hoodie">Hoodies</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="featured-section">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl ">
+
+            <!-- Results Count -->
+            <p id="results-count" class="results-count hidden"></p>
+
+            <!-- Featured Products Title (shown when no search) -->
+            <div id="featured-header" class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-serif mb-3">Featured Products</h2>
+                <p class="text-gray-600 font-sans">Explore our handpicked selection of trending styles</p>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="search-results-grid"
+                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Products will be injected here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="no-results hidden">
+                <svg class="no-results-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <h3 class="text-2xl font-serif mb-2">No products found</h3>
+                <p class="text-gray-600">Try adjusting your search terms or browse our featured collection</p>
+                <button id="clear-search-results"
+                    class="mt-6 px-6 py-3 bg-royal-black text-ivory rounded-full font-semibold hover:bg-gray-800 transition-colors">
+                    Show All Products
+                </button>
+            </div>
+
+            <!-- Loading Skeleton -->
+            <div id="loading-skeleton"
+                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 hidden">
+                <!-- Skeleton cards -->
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-text med"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-text med"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-text med"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-text med"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="wishlist-modal-title" role="dialog"
+        aria-modal="true">
+        <div id="wishlist-backdrop" class="fixed inset-0 bg-ivory/10 backdrop-blur-md transition-opacity"
+            aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div id="wishlist-panel"
+                class="relative w-full max-w-2xl max-h-[85vh] bg-ivory rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 scale-95">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-4">
+                        <h2 class="text-2xl font-serif text-royal-black" id="wishlist-modal-title">
+                            My Wishlist
+                        </h2>
+                        <button id="clear-wishlist-btn" type="button"
+                            class="text-sm font-sans text-royal-black hover:text-red-600 transition-colors hidden">
+                            Clear All
+                        </button>
+                    </div>
+                    <button id="close-wishlist-modal" type="button"
+                        class="p-2 text-royal-black hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+                        aria-label="Close panel">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="wishlist-confirm-overlay"
+                    class="absolute inset-0 z-30 bg-ivory/95 backdrop-blur-sm hidden flex items-center justify-center p-8 text-center transition-all duration-300 opacity-0 scale-95">
+                    <div class="max-w-xs">
+                        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
+                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-serif text-royal-black mb-2">Clear Wishlist?</h3>
+                        <p class="text-sm text-gray-500 font-sans mb-6">Are you sure you want to remove all items from
+                            your wishlist?</p>
+                        <div class="flex gap-3">
+                            <button id="wishlist-confirm-cancel" type="button"
+                                class="flex-1 px-4 py-2 rounded-full border border-gray-300 text-royal-black font-semibold hover:bg-gray-50 transition-colors text-xs uppercase tracking-wider">
+                                Oops, No
+                            </button>
+                            <button id="wishlist-confirm-ok" type="button"
+                                class="flex-1 px-4 py-2 rounded-full bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors text-xs uppercase tracking-wider shadow-md">
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto px-6 py-6">
+                    <div class="flow-root">
+                        <ul id="wishlist-items-list" role="list" class="-my-6 divide-y divide-gray-300">
+                        </ul>
+
+                        <div id="wishlist-empty-state" class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-12 h-12 mx-auto text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                            <h3 class="mt-4 text-xl font-serif text-gray-900">Your wishlist is empty</h3>
+                            <p class="mt-1 text-sm text-gray-500">Add items you love to save them for later.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="cart-modal-title" role="dialog"
+        aria-modal="true">
+        <div id="cart-backdrop" class="fixed inset-0 bg-ivory/10 backdrop-blur-md transition-opacity"
+            aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div id="cart-panel"
+                class="relative w-full max-w-2xl max-h-[85vh] bg-ivory rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 scale-95">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center gap-4">
+                        <h2 class="text-2xl font-serif text-royal-black" id="cart-modal-title">
+                            Shopping Cart
+                        </h2>
+                        <button id="clear-cart-btn" type="button"
+                            class="text-sm font-sans text-royal-black hover:text-red-600 transition-colors hidden">
+                            Clear All
+                        </button>
+                    </div>
+                    <button id="close-cart-modal" type="button"
+                        class="p-2 text-royal-black rounded-full hover:bg-ivory transition-colors"
+                        aria-label="Close panel">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="cart-confirm-overlay"
+                    class="absolute inset-0 z-30 bg-ivory/95 backdrop-blur-sm hidden flex items-center justify-center p-8 text-center transition-all duration-300 opacity-0 scale-95">
+                    <div class="max-w-xs">
+                        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
+                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-serif text-royal-black mb-2">Clear Shopping Cart?</h3>
+                        <p class="text-sm text-gray-500 font-sans mb-6">Are you sure you want to remove all items from
+                            your bag?</p>
+                        <div class="flex gap-3">
+                            <button id="cart-confirm-cancel" type="button"
+                                class="flex-1 px-4 py-2 rounded-full border border-gray-300 text-royal-black font-semibold hover:bg-gray-50 transition-colors text-xs uppercase tracking-wider">
+                                Oops, No
+                            </button>
+                            <button id="cart-confirm-ok" type="button"
+                                class="flex-1 px-4 py-2 rounded-full bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors text-xs uppercase tracking-wider shadow-md">
+                                Clear Bag
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto px-6 py-6">
+                    <div class="flow-root">
+
+                        <ul id="cart-items-list" role="list" class="-my-6 divide-y divide-gray-300">
+                        </ul>
+
+                        <div id="cart-empty-state" class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-12 h-12 mx-auto text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z" />
+                            </svg>
+                            <h3 class="mt-4 text-xl font-serif text-gray-900">Your cart is empty</h3>
+                            <p class="mt-1 text-sm text-gray-500">Start shopping to add items to your cart.</p>
+                            <div class="mt-6">
+                                <a href="../index.html#shop-by-collection" id="cart-continue-shopping"
+                                    class="inline-block bg-royal-black text-ivory font-sans font-semibold py-3 px-10 rounded-full text-base uppercase tracking-wider hover:bg-gray-800 transition-colors">
+                                    Continue Shopping
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cart-footer" class="border-t border-gray-300 px-6 py-6 hidden">
+                    <div class="flex justify-between text-lg font-serif text-royal-black">
+                        <p>Subtotal</p>
+                        <p id="cart-subtotal" class="font-sans">₹0.00</p>
+                    </div>
+                    <p class="mt-0.5 text-sm text-gray-600">Shipping and taxes calculated at checkout.</p>
+                    <div class="mt-6">
+                        <a href="checkout.html"
+                            class="flex items-center justify-center rounded-full border border-transparent bg-royal-black px-6 py-3 text-base font-semibold text-ivory shadow-sm hover:bg-gray-800 uppercase tracking-wider">
+                            Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quick-view-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="quick-view-modal-title" role="dialog"
+        aria-modal="true">
+        <div id="quick-view-backdrop" class="fixed inset-0 bg-ivory/10 backdrop-blur-md transition-opacity"
+            aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div id="quick-view-panel"
+                class="relative w-full max-w-4xl max-h-[90vh] bg-ivory rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row transform transition-all opacity-0 scale-95">
+                <button id="close-quick-view-modal" type="button"
+                    class="absolute top-4 right-4 z-20 p-2 text-royal-black" aria-label="Close panel">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div class="w-full md:w-1/2 bg-gray-200">
+                    <img id="quick-view-image" src="https://placehold.co/800x1000/F7F5F2/1A1A1A?text=Product"
+                        alt="Product Image" class="w-full h-[50vh] md:h-full object-cover" width="800" height="1000"
+                        loading="lazy">
+                </div>
+
+                <div class="w-full md:w-1/2 p-8 overflow-y-auto">
+                    <h2 id="quick-view-name" class="text-3xl font-serif text-royal-black mb-2">Product Name</h2>
+                    <p id="quick-view-price" class="text-2xl font-sans font-medium text-royal-black mb-4">Price</p>
+                    <p id="quick-view-description" class="font-sans text-base text-gray-700 leading-relaxed mb-6">
+                        Product description...</p>
+
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-2">Size </h3>
+                        <div class="flex space-x-2">
+                            <button type="button"
+                                class="w-10 h-10 border rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-royal-black focus:ring-offset-2">S</button>
+                            <button type="button"
+                                class="w-10 h-10 border rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-royal-black focus:ring-offset-2">M</button>
+                            <button type="button"
+                                class="w-10 h-10 border rounded-md flex items-center justify-center text-sm font-medium hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-royal-black focus:ring-offset-2">L</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button id="quick-view-add-to-cart" type="button"
+                            class="w-full bg-royal-black text-ivory font-sans font-semibold py-3 px-8 rounded-full text-base uppercase tracking-wider hover:bg-gray-800 transition-colors">
+                            Add to Cart
+                        </button>
+                        <button id="quick-view-add-to-wishlist" type="button"
+                            class="w-full bg-transparent border border-gray-400 text-royal-black font-sans font-semibold py-3 px-8 rounded-full text-base hover:bg-gray-100 transition-colors">
+                            Add to Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification"
+        class="toast fixed top-24 right-6 z-[100] w-full max-w-xs p-4 bg-royal-black text-ivory rounded-lg shadow-lg"
+        role="alert">
+        <div class="flex items-center">
+            <svg id="toast-icon-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            <svg id="toast-icon-wishlist" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 hidden">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            </svg>
+            <p id="toast-message" class="font-sans text-sm font-medium">Item added successfully.</p>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="hidden fixed inset-0 z-[9999] bg-royal-black/20 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-[400px] bg-[#F7F5F2] rounded-[3rem] shadow-2xl overflow-hidden animate-fade-in">
+            <div class="p-8 sm:p-10">
+                <div class="flex items-center justify-between mb-8">
+                    <a href="../index.html" class="text-3xl font-serif font-bold text-royal-black">
+                        Fusion
+                    </a>
+                    <button id="mobile-menu-close-btn" type="button"
+                        class="p-2 text-royal-black hover:bg-black/5 rounded-full transition-colors"
+                        aria-label="Close menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2"
+                            stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="flex flex-col gap-5">
+                    <a href="../index.html#home"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Home</a>
+                    <a href="../index.html#shop-by-collection"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Collections</a>
+                    <a href="../index.html#about"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">About</a>
+                    <a href="../index.html#faq"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">FAQs</a>
+                    <a href="../index.html#testimonials"
+                        class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Reviews</a>
+
+                    <div class="pt-5 mt-2 border-t border-black/5 flex flex-col gap-5">
+                        <a href="#" id="wishlist-btn-mobile"
+                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                            <span>Wishlist</span>
+                            <span id="wishlist-badge-mobile" class="mobile-badge hidden">0</span>
+                        </a>
+                        <a href="#" id="cart-btn-mobile"
+                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                            <span>Cart</span>
+                            <span id="cart-badge-mobile" class="mobile-badge hidden">0</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <a href="../index.html" class="text-2xl font-serif font-bold text-royal-black">Fusion</a>
+            <p class="text-gray-600 mt-2 text-sm">&copy; 2026 Fusion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="info-modal-title" role="dialog"
+        aria-modal="true">
+        <div id="info-modal-backdrop" class="fixed inset-0 bg-ivory/10 backdrop-blur-md transition-opacity"
+            aria-hidden="true"></div>
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div id="info-modal-panel"
+                class="relative w-full max-w-3xl max-h-[85vh] bg-ivory rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 scale-95">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <h2 id="info-modal-title" class="text-2xl font-serif text-royal-black">Title</h2>
+                    <button id="close-info-modal" type="button"
+                        class="p-2 bg-ivory hover:text-royal-black rounded-full hover:bg-gray-100 transition-colors"
+                        aria-label="Close panel">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="info-modal-content" class="flex-1 overflow-y-auto px-6 py-6">
+                    <!-- Content will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/Javascript/main.js"></script>
+    <script src="../assets/Javascript/toast-message.js"></script>
+    <script src="../assets/Javascript/modal-logic.js"></script>
+    <script src="../assets/Javascript/cart.js"></script>
+    <script src="../assets/Javascript/wishlist.js"></script>
+    <script src="../assets/Javascript/search-page.js"></script>
+</body>
+
+</html>

@@ -12,13 +12,13 @@ const loadState = () => {
     }
 
     try {
-        cart = JSON.parse(localStorage.getItem('ris_cart') || '[]');
+        cart = JSON.parse(localStorage.getItem('fus_cart') || '[]');
     } catch {
         cart = [];
         console.warn("Corrupted cart data in localStorage, resetting.");
     }
     try {
-        wishlist = JSON.parse(localStorage.getItem('ris_wishlist') || '[]');
+        wishlist = JSON.parse(localStorage.getItem('fus_wishlist') || '[]');
     } catch {
         wishlist = [];
         console.warn("Corrupted wishlist data in localStorage, resetting.");
@@ -31,8 +31,8 @@ const saveState = () => {
         // Only save in memory if rejected or not yet decided
         return;
     }
-    localStorage.setItem('ris_cart', JSON.stringify(cart));
-    localStorage.setItem('ris_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('fus_cart', JSON.stringify(cart));
+    localStorage.setItem('fus_wishlist', JSON.stringify(wishlist));
 };
 
 // --- Helper Functions ---
@@ -121,13 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const handleScroll = () => {
         const scrollY = window.scrollY;
 
-        // --- Scroll Progress Bar ---
-        const scrollProgressBar = document.getElementById('scroll-progress-bar');
-        if (scrollProgressBar) {
-            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrollPercentage = (scrollY / windowHeight) * 100;
-            scrollProgressBar.style.width = scrollPercentage + '%';
-        }
 
         if (mainHeader) {
             if (scrollY > 50) {
@@ -147,10 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (heroImage) {
-            const parallaxSpeed = 0.5;
-            heroImage.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
-        }
+
     };
 
     let ticking = false;
@@ -164,57 +154,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // --- Header Tap/Click Effect ---
-    if (mainHeader) {
-        let headerActiveTimeout;
-
-    }
 
 
 
-    // --- Nav Link Active Logic (White Pill Cover) ---
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section[id]');
 
-    if (navLinks.length > 0 && sections.length > 0) {
-        let isTicking = false;
-
-        const handleNavHighlight = () => {
-            let currentId = '';
-            const scrollPos = window.scrollY + 200; // Offset for detection
-
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    currentId = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentId}`) {
-                    link.classList.add('active');
-                } else if (currentId === 'shop-by-collection' && link.getAttribute('href') === '#shop-by-collection') {
-                    // Specific match for shop-by-collection if needed
-                    link.classList.add('active');
-                }
-            });
-        };
-
-        window.addEventListener('scroll', () => {
-            if (!isTicking) {
-                window.requestAnimationFrame(() => {
-                    handleNavHighlight();
-                    isTicking = false;
-                });
-                isTicking = true;
-            }
-        });
-
-        // Initial check
-        handleNavHighlight();
-    }
 
 
     // --- Confirm Dialogs ---
@@ -515,6 +458,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (typeof initializeNewsletter === 'function') initializeNewsletter();
+
 });
 
 // carousel logic
@@ -796,5 +741,38 @@ const initializeCollectionsCarousel = () => {
                 }, 600);
             }
         }, 2000); // 2 seconds delay
+    }
+};
+
+// Newsletter logic
+const initializeNewsletter = () => {
+    const form = document.getElementById('newsletter-form');
+    const statusMsg = document.getElementById('newsletter-status');
+
+    if (form && statusMsg) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const inputContainer = form.querySelector('div'); // The div wrapping input and button
+
+            if (emailInput && emailInput.value.trim() !== '') {
+                // Dim the input to indicate processing
+                if (inputContainer) {
+                    inputContainer.classList.add('opacity-50', 'pointer-events-none');
+                }
+
+                // Simulate network request
+                setTimeout(() => {
+                    // Hide input container and show success message
+                    if (inputContainer) {
+                        inputContainer.classList.add('hidden');
+                    }
+                    statusMsg.classList.remove('hidden');
+                    statusMsg.classList.add('fade-in');
+
+                    emailInput.value = '';
+                }, 800);
+            }
+        });
     }
 };

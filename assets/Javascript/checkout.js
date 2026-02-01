@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Cart
     let cart = [];
     try {
-        cart = JSON.parse(localStorage.getItem('ris_cart') || '[]');
+        cart = JSON.parse(localStorage.getItem('fus_cart') || '[]');
     } catch {
         cart = [];
     }
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentSection = document.getElementById('payment-section');
 
     // Load saved checkout info
-    const savedInfo = JSON.parse(localStorage.getItem('ris_checkout_info') || '{}');
+    const savedInfo = JSON.parse(localStorage.getItem('fus_checkout_info') || '{}');
     const shippingInputs = checkoutForm.querySelectorAll('input');
 
     shippingInputs.forEach(input => {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shippingInputs.forEach(input => {
             currentInfo[input.name] = input.value;
         });
-        localStorage.setItem('ris_checkout_info', JSON.stringify(currentInfo));
+        localStorage.setItem('fus_checkout_info', JSON.stringify(currentInfo));
 
         if (checkoutForm.checkValidity()) {
             paymentSection.classList.remove('opacity-60', 'pointer-events-none', 'grayscale');
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         setTimeout(() => {
-            localStorage.removeItem('ris_cart');
+            localStorage.removeItem('fus_cart');
             window.location.href = '../index.html';
         }, 2000);
     });

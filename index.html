@@ -23,7 +23,7 @@
 
 <body class="bg-ivory text-royal-black">
 
-    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-6xl ">
+    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[100%] max-w-7xl ">
 
         <nav class="px-6 sm:px-8 lg:px-10">
             <div class="flex justify-between items-center h-16">
@@ -37,12 +37,17 @@
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Home</a>
                     <a href="#shop-by-collection"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Collections</a>
+                    <a href="#limited"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">New
+                        Arrivals</a>
                     <a href="#testimonials"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Reviews</a>
                     <a href="#faq"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">FAQs</a>
                     <a href="#about"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">About</a>
+                    <a href="#newsletter"
+                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Subscription</a>
                 </div>
 
 
@@ -146,8 +151,17 @@
             </div>
         </section>
 
-        <section id="shop-by-collection" data-section-name="Collections" class="py-20 sm:py-28 fade">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="shop-by-collection" data-section-name="Collections"
+            class="relative py-20 sm:py-28 md:min-h-screen flex flex-col justify-center fade overflow-hidden">
+            <!-- Desktop-only Fullscreen Wallpaper -->
+            <div class="absolute inset-0 -z-10 hidden md:block">
+                <img src="./assets/images/collection/collection-background.png" alt="Collection Background Wallpaper"
+                    class="w-full h-full object-cover">
+                <!-- Premium Overlay for Text Readability -->
+                <div class="absolute inset-0 bg-ivory/60 backdrop-blur-[1px]"></div>
+            </div>
+
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
                 <div class="mb-16 text-center">
                     <h2 id="collection-title" class="text-4xl sm:text-5xl font-serif">
@@ -168,7 +182,7 @@
                                 class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:ring-royal-black focus:border-royal-black transition">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                    stroke="currentColor" class="w-5 h-5 text-gray-400">
+                                    stroke="currentColor" class="w-5 h-5 text-royal-black">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
@@ -251,8 +265,7 @@
 
 
 
-                <!-- Collections Carousel -->
-                <!-- Collections Carousel -->
+
                 <div id="collections-carousel"
                     class="relative overflow-hidden rounded-lg bg-gray-50 mx-auto group md:h-[900px]"
                     style="height: 800px; max-height: 1000px; max-width: 800px; width: 100%;">
@@ -260,8 +273,6 @@
                     <!-- Carousel Track -->
                     <div id="collections-track"
                         class="flex justify-start w-full h-full overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth scrollbar-hide items-center">
-
-                        <!-- Slide 1: Daily Wear -->
                         <div
                             class="collection-slide min-w-full md:min-w-[50%] flex-shrink-0 h-full p-2 snap-center flex items-center justify-center transition-transform duration-500">
                             <div class="collection-card group/card block relative cursor-pointer w-full md:max-w-[320px] mx-auto px-2"
@@ -797,6 +808,36 @@
             </div>
         </section>
 
+        <!-- Newsletter Section -->
+        <section id="newsletter" class="bg-ivory border-t border-royal-black/5 py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-2xl mx-auto text-center">
+                    <span class="text-[10px] uppercase font-bold tracking-[0.4em] text-gray-400 mb-4 block">Limited
+                        Access</span>
+                    <h2 class="text-3xl md:text-5xl font-serif text-royal-black mb-6">The Winter Drop</h2>
+                    <p class="text-gray-500 mb-12 font-sans text-sm md:text-base tracking-wide max-w-md mx-auto">
+                        Subscribe to receive early access to our seasonal collections and exclusive "inner circle"
+                        updates.
+                    </p>
+                    <form id="newsletter-form" class="relative max-w-md mx-auto">
+                        <div
+                            class="relative flex items-center border-b border-royal-black/30 focus-within:border-royal-black transition-all duration-500">
+                            <input type="email" id="newsletter-email" placeholder="ENTER YOUR EMAIL" required
+                                class="w-full bg-transparent py-5 focus:outline-none text-xs font-bold tracking-[0.2em] uppercase text-royal-black placeholder:text-gray-300">
+                            <button type="submit"
+                                class="text-[10px] font-black uppercase tracking-[0.3em] text-royal-black hover:text-gray-400 transition-colors py-5 ml-4">
+                                Join
+                            </button>
+                        </div>
+                        <p id="newsletter-status"
+                            class="mt-6 text-[10px] uppercase font-bold tracking-[0.2em] text-green-600 hidden">
+                            Welcome to the circle. Check your inbox soon.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <div id="wishlist-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="wishlist-modal-title" role="dialog"
@@ -930,7 +971,7 @@
                 <div class="flex-1 overflow-y-auto px-6 py-6">
                     <!-- Reward Tracker -->
                     <div id="reward-tracker-container"
-                        class="mb-8 p-6 bg-gray-100 text-royal-black rounded-md hidden transition-all duration-500 shadow-xl border border-royal-black/5 text-center">
+                        class="mb-8 p-6 bg-ivory text-ivory rounded-md hidden transition-all duration-500 shadow-xl border border-royal-black/5 text-center">
                         <div class="flex flex-col items-center mb-4">
                             <div id="reward-tracker-icon"
                                 class="w-12 h-12 flex items-center justify-center bg-white rounded-lg shadow-sm border border-royal-black/5 mb-3 text-2xl">
@@ -938,12 +979,12 @@
                             </div>
                             <div>
                                 <p id="reward-tracker-text"
-                                    class="text-[10px] font-sans uppercase tracking-[0.2em] opacity-50 mb-1">
+                                    class="text-ivory text-[10px] font-sans uppercase tracking-[0.2em] opacity-50 mb-1">
                                     Next Reward
                                 </p>
                                 <h4 id="reward-status-text"
-                                    class="text-sm font-sans font-bold leading-tight max-w-[250px] mx-auto text-royal-black">
-                                    Add <span class="font-extrabold">₹0</span> more to unlock <span
+                                    class="text-sm font-sans font-bold leading-tight max-w-[250px] mx-auto text-ivory">
+                                    Add <span class="font-bold">₹0</span> more to unlock <span
                                         class="underline decoration-2 underline-offset-4">10% OFF</span>
                                 </h4>
                             </div>
@@ -1112,7 +1153,7 @@
 
                     <div>
                         <div class="flex items-center gap-4 mb-4">
-                            <img src="./assets/images/LOgo.png" class="w-16 h-16" alt="logo">
+                            <img src="./assets/images/main/logo.png" class="w-16 h-16" alt="logo">
                             <a href="#home" class="text-4xl font-serif font-bold text-ivory">
                                 Fusion
                             </a>
@@ -1179,7 +1220,7 @@
     </button>
     <button id="backTop" type="button" title="Back to top">↑</button>
 
-    <audio id="background-music" src="./assets/nightfall-future-bass-music-228100.mp3" loop></audio>
+    <audio id="background-music" src="./assets/music/music.mp3" loop></audio>
 
     <!-- Cookie Consent Modal -->
     <div id="cookie-consent-banner"
@@ -1437,6 +1478,16 @@
         </div>
     </div>
 
+
+    <!-- Floating Search Button -->
+    <a href="./pages/search.html" id="floating-search-btn" class="floating-search-btn" aria-label="Search Products">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+            class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+    </a>
+
     <div id="mobile-menu"
         class="hidden fixed inset-0 z-[9999] bg-royal-black/20 backdrop-blur-md flex items-center justify-center p-4">
         <div class="w-full max-w-[400px] bg-[#F7F5F2] rounded-[3rem] shadow-2xl overflow-hidden animate-fade-in">
@@ -1466,6 +1517,15 @@
                         class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">FAQs</a>
                     <a href="#testimonials"
                         class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Reviews</a>
+                    <a href="./pages/search.html"
+                        class="mobile-menu-link flex items-center gap-2 text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                        Search
+                    </a>
 
                     <div class="pt-5 mt-2 border-t border-black/5 flex flex-col gap-5">
                         <a href="#" id="wishlist-btn-mobile"
@@ -1494,6 +1554,8 @@
     <script src="assets/Javascript/shortcuts.js" defer></script>
     <script src="assets/Javascript/cookie-consent.js" defer></script>
     <script src="assets/Javascript/faq-chatbot.js" defer></script>
+    <script src="assets/Javascript/search.js" defer></script>
+    <script src="assets/Javascript/header.js" defer></script>
 </body>
 
 </html>

@@ -14,12 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             banner.classList.remove('opacity-0', 'pointer-events-none');
             banner.querySelector('div:last-child').classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
         }, 1000);
     }
 
     const hideBanner = () => {
         banner.classList.add('opacity-0', 'pointer-events-none');
         banner.querySelector('div:last-child').classList.add('scale-95');
+        document.body.style.overflow = '';
         setTimeout(() => {
             banner.remove();
         }, 600);
@@ -60,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('cookie-consent', 'rejected');
 
             // Clear current persistent data to respect the choice
-            localStorage.removeItem('ris_cart');
-            localStorage.removeItem('ris_wishlist');
+            localStorage.removeItem('fus_cart');
+            localStorage.removeItem('fus_wishlist');
             localStorage.removeItem('recentlyViewed');
             localStorage.removeItem('fusion_chat_history');
 

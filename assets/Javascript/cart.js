@@ -146,7 +146,7 @@ const renderCart = () => {
                 const remaining = nextTier.threshold - subtotal;
                 const progress = (subtotal / nextTier.threshold) * 100;
 
-                rewardStatusText.innerHTML = `Add <span class="font-extrabold text-royal-black">₹${remaining}</span> more to unlock <span class="text-royal-black underline decoration-2 underline-offset-4">${nextTier.label}</span>`;
+                rewardStatusText.innerHTML = `Add <span class="font-bold text-ivory">₹${remaining}</span> more to unlock <span class="text-ivory underline decoration-2 underline-offset-4">${nextTier.label}</span>`;
                 rewardTrackerBar.style.width = `${progress}%`;
                 rewardTrackerIcon.textContent = nextTier.icon;
             } else {

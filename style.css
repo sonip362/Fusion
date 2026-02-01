@@ -577,7 +577,8 @@ button {
 
 /* Floating Action Buttons Styling */
 #backTop,
-#music-toggle-btn {
+#music-toggle-btn,
+#floating-search-btn {
     position: fixed;
     width: 48px;
     height: 48px;
@@ -600,6 +601,12 @@ button {
     bottom: 24px;
 }
 
+#floating-search-btn {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 24px;
+}
+
 #backTop {
     left: 24px;
     bottom: 24px;
@@ -617,29 +624,44 @@ button {
 }
 
 #backTop:hover,
-#music-toggle-btn:hover {
+#music-toggle-btn:hover,
+#floating-search-btn:hover {
     background: #1A1A1A;
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
+#floating-search-btn:hover {
+    transform: translateX(-50%) translateY(-4px);
+}
+
 #backTop:active,
-#music-toggle-btn:active {
+#music-toggle-btn:active,
+#floating-search-btn:active {
     transform: scale(0.95);
+}
+
+#floating-search-btn:active {
+    transform: translateX(-50%) scale(0.95);
 }
 
 /* Mobile adjustments for floating buttons */
 @media (max-width: 768px) {
 
     #backTop,
-    #music-toggle-btn {
+    #music-toggle-btn,
+    #floating-search-btn {
         width: 44px;
         height: 44px;
     }
 
     #music-toggle-btn {
         right: 16px;
+        bottom: 16px;
+    }
+
+    #floating-search-btn {
         bottom: 16px;
     }
 
@@ -774,6 +796,7 @@ button {
         transform: translateX(100%);
     }
 }
+
 
 /* Mobile responsiveness */
 @media (max-width: 480px) {
