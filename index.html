@@ -112,13 +112,13 @@
                 <source media="(max-width: 768px)" srcset="./assets/images/main/h-mob.webp">
                 <img src="./assets/images/main/hero.webp"
                     alt="Cinematic fashion models wearing Royal Indian Studios outfits"
-                    class="absolute inset-0 w-full h-full object-cover -z-10 product-image" width="1920" height="1080"
+                    class="absolute inset-0 w-full h-full object-cover -z-10 product-image parallax-bg" width="1920" height="1080"
                     loading="lazy"
                     onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
                 <div class="absolute inset-0 bg-black/40"></div>
             </picture>
 
-            <div class="relative z-10 p-4 text-ivory">
+            <div class="relative z-10 p-4 text-ivory card-entrance">
                 <h1 id="hero-title-text"
                     class="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold mb-4 transition-opacity duration-500 ease-in-out"
                     style="will-change: opacity; contain: layout style paint;">
@@ -135,7 +135,7 @@
         </section>
 
         <!-- Recently Viewed Section -->
-        <section id="recently-viewed" data-section-name="Recently Viewed" class="py-20 sm:py-28 fade hidden">
+        <section id="recently-viewed" data-section-name="Recently Viewed" class="py-20 sm:py-28 fade hidden card-entrance">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl sm:text-5xl font-serif text-center mb-16 relative">
                     Recently Viewed
@@ -156,12 +156,12 @@
             <!-- Desktop-only Fullscreen Wallpaper -->
             <div class="absolute inset-0 -z-10 hidden md:block">
                 <img src="./assets/images/collection/collection-background.png" alt="Collection Background Wallpaper"
-                    class="w-full h-full object-cover">
+                    class="w-full h-full object-cover parallax-bg">
                 <!-- Premium Overlay for Text Readability -->
                 <div class="absolute inset-0 bg-ivory/60 backdrop-blur-[1px]"></div>
             </div>
 
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 card-entrance">
 
                 <div class="mb-16 text-center">
                     <h2 id="collection-title" class="text-4xl sm:text-5xl font-serif">
@@ -490,7 +490,7 @@
 
 
 
-        <section id="limited" data-section-name="Limited Edition" class="py-20 sm:py-28 fade">
+        <section id="limited" data-section-name="Limited Edition" class="py-20 sm:py-28 fade card-entrance">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative group">
                 <!-- Carousel Container -->
                 <div id="limited-carousel"
@@ -606,7 +606,7 @@
         </section>
 
 
-        <section id="testimonials" data-section-name="Reviews" class="py-20 sm:py-28 bg-gray-200 fade">
+        <section id="testimonials" data-section-name="Reviews" class="py-20 sm:py-28 bg-gray-200 fade card-entrance">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative group">
                 <h2 class="text-4xl sm:text-5xl font-serif text-center mb-16">
                     From Our Patrons
@@ -784,13 +784,13 @@
         <section id="about" class="py-20 sm:py-28 bg-gray-200 text-royal-black ">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div class="overflow-hidden rounded-lg skeleton">
+                    <div class="overflow-hidden rounded-lg skeleton card-entrance">
                         <img src="./assets/images/main/story.webp"
                             alt="An artisan craftsman working on intricate Indian embroidery"
                             class="w-full h-full object-cover product-image" loading="lazy" width="800" height="600"
                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
                     </div>
-                    <div>
+                    <div class="card-entrance">
                         <p class="font-sans uppercase tracking-widest text-sm mb-4 text-royal-black/80">Fusion</p>
                         <h2 class="text-4xl sm:text-5xl font-serif mb-6">
                             Fusion's Story

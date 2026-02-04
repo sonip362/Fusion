@@ -110,7 +110,7 @@
     "name": "Slim Pants",
     "price": "₹1,199",
     "originalPrice": "₹1,599",
-    "imageUrl": "./assets/images/product/ss.webp",
+    "imageUrl": "./assets/images/product/slim.webp",
     "category": "Men",
     "description": "Sharp slim-fit trousers for city wear.",
     "categoryId": {
@@ -125,7 +125,7 @@
     "name": "Modern Hoodie",
     "price": "₹799",
     "originalPrice": "₹1,299",
-    "imageUrl": "./assets/images/product/ghagra.webp",
+    "imageUrl": "./assets/images/product/hoodie.webp",
     "category": "Both Men & Women",
     "description": "A stylish hoodie that combines modern printing with contemporary design.",
     "categoryId": {
@@ -140,7 +140,7 @@
     "name": "Asym Top",
     "price": "₹1,699",
     "originalPrice": "₹2,499",
-    "imageUrl": "./assets/images/product/salwar kameez.webp",
+    "imageUrl": "./assets/images/product/asym.webp",
     "category": "Women",
     "description": "Bold asymmetrical top for statement styling.",
     "categoryId": {
@@ -155,7 +155,7 @@
     "name": "Denim Jeans",
     "price": "₹1,599",
     "originalPrice": "₹2,199",
-    "imageUrl": "./assets/images/product/angarkha.webp",
+    "imageUrl": "./assets/images/product/denim.webp",
     "category": "Men",
     "description": "Classic straight-fit denim jeans designed for durability and effortless urban style.",
     "categoryId": {
@@ -185,7 +185,7 @@
     "name": "Linen Shirts",
     "price": "₹759",
     "originalPrice": "₹1,099",
-    "imageUrl": "./assets/images/product/dhoti.webp",
+    "imageUrl": "./assets/images/product/linen.webp",
     "category": "Men",
     "description": "Breathable linen shirts ideal for hot and humid days.",
     "categoryId": {

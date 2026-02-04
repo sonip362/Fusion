@@ -154,10 +154,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // --- Parallax Effect ---
+    document.addEventListener('mousemove', (e) => {
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+        const parallaxElements = document.querySelectorAll('.parallax-bg');
 
+        parallaxElements.forEach(el => {
+            el.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        });
+    });
 
+    // --- Entrance Animations Observer ---
+    if ("IntersectionObserver" in window) {
+        const entranceObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    entranceObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
 
-
+        document.querySelectorAll('.card-entrance').forEach(el => {
+            entranceObserver.observe(el);
+        });
+    }
 
 
     // --- Confirm Dialogs ---

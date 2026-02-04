@@ -75,9 +75,9 @@ const renderRecentlyViewed = async () => {
             if (hasDiscount) {
                 const discountPercent = Math.round(((originalPriceVal - currentPriceVal) / originalPriceVal) * 100);
                 discountBadge = `
-                    <div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded z-20 
-                                opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        ${discountPercent}% discount
+                    <div class="bg-royal-black text-white text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full 
+                                opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+                        ${discountPercent}% OFF
                     </div>
                 `;
 
@@ -107,7 +107,9 @@ const renderRecentlyViewed = async () => {
                  data-features="${product.categoryId?.features || ''}">
                 
                 <div class="aspect-[4/5] w-full overflow-hidden rounded-lg bg-gray-200 relative skeleton">
-                    ${discountBadge}
+                    <div class="absolute inset-x-0 top-2 flex justify-center z-20 pointer-events-none">
+                        ${discountBadge}
+                    </div>
                 <img src="${product.imageUrl}" 
                      alt="${product.name}" 
                      class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105 product-image"

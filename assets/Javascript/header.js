@@ -33,13 +33,26 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!isTicking) {
                 window.requestAnimationFrame(() => {
                     handleNavHighlight();
+                    handleHeaderShrink();
                     isTicking = false;
                 });
                 isTicking = true;
             }
         });
 
+        const handleHeaderShrink = () => {
+            const header = document.getElementById('main-header');
+            if (!header) return;
+
+            if (window.scrollY > 100) {
+                header.classList.add('header-shrunk');
+            } else {
+                header.classList.remove('header-shrunk');
+            }
+        };
+
         // Initial check
         handleNavHighlight();
+        handleHeaderShrink();
     }
 });

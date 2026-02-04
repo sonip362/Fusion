@@ -117,14 +117,21 @@ document.addEventListener('DOMContentLoaded', async function () {
             const originalPrice = parseFloat(product.originalPrice.replace(/[^0-9.]/g, ''));
             const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
             if (discount > 0) {
-                discountBadge = `<span class="product-badge">${discount}% OFF</span>`;
+                discountBadge = `
+                    <div class="absolute top-2 left-1/2 -translate-x-1/2 bg-royal-black text-white text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full z-20 
+                                whitespace-nowrap">
+                        ${discount}% OFF
+                    </div>
+                `;
             }
         }
 
         card.innerHTML = `
-            <div class="product-image-wrapper">
+            <div class="product-image-wrapper relative">
+                <div class="absolute inset-x-0 top-2 flex justify-center z-20 pointer-events-none">
+                    ${discountBadge}
+                </div>
                 <img src="${product.imageUrl.replace('./', '../')}" alt="${product.name}" class="product-image" loading="lazy">
-                ${discountBadge}
                 <div class="quick-actions">
                     <button class="quick-action-btn quick-view-btn" aria-label="Quick View" title="Quick View">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">

@@ -11,7 +11,7 @@
 }
 
 @source "./index.html";
-@source "./script.js";
+@source "./assets/Javascript/**/*.js";
 @source "./products.json";
 
 /* Your custom body styles below */
@@ -27,13 +27,21 @@ body.scroll-lock {
 
 /* Header Glassmorphism Design */
 #main-header {
-    background: rgba(26, 26, 26, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 2px solid rgba(247, 245, 242, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(26, 26, 26, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(247, 245, 242, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
     border-radius: 9999px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#main-header.header-shrunk {
+    top: 0.5rem;
+    max-width: 90%;
+    background: rgba(26, 26, 26, 0.9);
+    border-radius: 9999px;
+    padding: 0.25rem 0;
 }
 
 #main-header nav {
@@ -732,19 +740,36 @@ button {
 
 /* Animations */
 .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.parallax-bg {
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+/* Luxury Card Entrance */
+.card-entrance {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.card-entrance.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Mobile Bottom Sheet for Sort */
@@ -814,4 +839,19 @@ button {
         bottom: 20px;
         right: 20px;
     }
+}
+
+/* Scrollbar polish for cart items */
+#cart-items-list {
+    scrollbar-width: thin;
+    scrollbar-color: #1A1A1A transparent;
+}
+
+#cart-items-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+#cart-items-list::-webkit-scrollbar-thumb {
+    background-color: #1A1A1A;
+    border-radius: 20px;
 }
