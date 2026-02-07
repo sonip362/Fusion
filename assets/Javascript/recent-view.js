@@ -42,11 +42,16 @@ const addToRecentlyViewed = (product) => {
 const renderRecentlyViewed = async () => {
     const section = document.getElementById('recently-viewed');
     const grid = document.getElementById('recently-viewed-grid');
+    const placeholder = document.getElementById('recently-viewed-placeholder');
+    const clearBtn = document.getElementById('clear-recently-viewed-btn');
 
     if (!section || !grid) return;
 
     if (recentlyViewed.length === 0) {
-        section.classList.add('hidden');
+        section.classList.remove('hidden');
+        grid.classList.add('hidden');
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (clearBtn) clearBtn.classList.add('hidden');
         return;
     }
 
@@ -58,11 +63,17 @@ const renderRecentlyViewed = async () => {
         const viewedProducts = recentlyViewed.map(id => allProducts.find(p => p.id === id)).filter(p => p);
 
         if (viewedProducts.length === 0) {
-            section.classList.add('hidden');
+            section.classList.remove('hidden');
+            grid.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+            if (clearBtn) clearBtn.classList.add('hidden');
             return;
         }
 
         section.classList.remove('hidden');
+        grid.classList.remove('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+        if (clearBtn) clearBtn.classList.remove('hidden');
 
         grid.innerHTML = viewedProducts.map(product => {
             const originalPriceVal = product.originalPrice ? parsePrice(product.originalPrice) : 0;
@@ -93,7 +104,7 @@ const renderRecentlyViewed = async () => {
             const lowStockLabel = showLowStock ? `<p class="mt-1 text-xs text-red-600 font-bold animate-pulse">Only 4 left!!</p>` : '';
 
             return `
-            <div class="group relative text-left product-card"
+            <div class="group relative text-left product-card animate-fade-in"
                  data-collection="${product.collection}"
                  data-id="${product.id}"
                  data-name="${product.name}"

@@ -49,6 +49,118 @@ const formatPrice = (priceNumber) => {
     }).format(priceNumber).replace('INR', '₹');
 };
 
+let fusionProducts = [];
+
+const setFusionProducts = (products) => {
+    fusionProducts = Array.isArray(products) ? products : [];
+};
+
+const getFusionProducts = () => fusionProducts;
+
+const resolveProductImageUrl = (url) => {
+    if (!url) return '';
+    if (window.location.pathname.includes('/pages/')) {
+        return url.replace('./', '../');
+    }
+    return url;
+};
+
+const getCompleteLookItems = (product, products) => {
+    if (!product || !Array.isArray(products)) return [];
+
+    const COMPLETE_LOOK_MAP = {
+        p1: ['p2', 'p3']
+    };
+
+    const isKurta = /kurta/i.test(product.name || '');
+    if (!isKurta) return [];
+
+    const selected = [];
+    const seen = new Set([product.id]);
+
+    const addIfFound = (item) => {
+        if (!item || seen.has(item.id)) return;
+        seen.add(item.id);
+        selected.push(item);
+    };
+
+    const mapIds = COMPLETE_LOOK_MAP[product.id];
+    if (mapIds && mapIds.length) {
+        mapIds.forEach(id => addIfFound(products.find(p => p.id === id)));
+    }
+
+    const findByKeyword = (keyword, collectionOnly) => {
+        const lower = keyword.toLowerCase();
+        return products.find(p => {
+            if (!p || seen.has(p.id)) return false;
+            if (collectionOnly && p.collection !== product.collection) return false;
+            return (p.name || '').toLowerCase().includes(lower);
+        });
+    };
+
+    if (selected.length < 2) {
+        addIfFound(findByKeyword('pants', true) || findByKeyword('pants', false));
+    }
+
+    if (selected.length < 2) {
+        addIfFound(findByKeyword('dupatta', true) || findByKeyword('dupatta', false));
+    }
+
+    if (selected.length < 2) {
+        addIfFound(findByKeyword('scarf', true) || findByKeyword('scarf', false));
+    }
+
+    return selected.slice(0, 2);
+};
+
+const renderQuickViewBundle = (product) => {
+    const container = document.getElementById('quick-view-bundle');
+    const list = document.getElementById('quick-view-bundle-items');
+    if (!container || !list) return;
+
+    const items = getCompleteLookItems(product, getFusionProducts());
+
+    if (!product || items.length === 0) {
+        container.classList.add('hidden');
+        list.innerHTML = '';
+        return;
+    }
+
+    container.classList.remove('hidden');
+    list.innerHTML = items.map(item => `
+        <div class="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
+            <div class="w-16 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                <img src="${resolveProductImageUrl(item.imageUrl)}" alt="${item.name}" class="w-full h-full object-cover"
+                    onerror="this.onerror=null;this.src='https://placehold.co/100x125/F7F5F2/1A1A1A?text=IMG';">
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] uppercase tracking-widest text-gray-400">${item.category || 'Style'}</p>
+                <p class="text-sm font-serif font-semibold text-royal-black">${item.name}</p>
+                <p class="text-sm text-gray-700">${item.price}</p>
+            </div>
+            <button type="button" class="bundle-add-btn px-3 py-1.5 rounded-full bg-royal-black text-ivory text-[10px] uppercase tracking-widest font-semibold hover:bg-gray-800 transition-colors"
+                data-bundle-id="${item.id}">
+                Add
+            </button>
+        </div>
+    `).join('');
+
+    list.querySelectorAll('.bundle-add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.bundleId;
+            const item = items.find(p => p.id === id);
+            if (item && typeof addItemToCart === 'function') {
+                addItemToCart(item);
+            }
+        });
+    });
+};
+
+window.setFusionProducts = setFusionProducts;
+window.getFusionProducts = getFusionProducts;
+window.resolveProductImageUrl = resolveProductImageUrl;
+window.renderQuickViewBundle = renderQuickViewBundle;
+
 const updateBadges = () => {
     const cartBadgeDesktop = document.getElementById('cart-badge-desktop');
     const cartBadgeMobile = document.getElementById('cart-badge-mobile');
@@ -72,9 +184,9 @@ const updateBadges = () => {
 };
 
 // Global handles for modals (needed by multiple scripts)
-let wishlistModal, cartModal, quickViewModalCtl;
+let wishlistModal, cartModal, quickViewModalCtl, currentQuickViewProduct;
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
 
     // Initialize state on load
     loadState();
@@ -272,15 +384,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const product = getProductData(productCard);
             if (!product) return;
 
-            if (e.target.closest('.quick-view-btn')) {
+            const quickViewBtn = e.target.closest('.quick-view-btn');
+            const addToCartBtn = e.target.closest('.add-to-cart-btn');
+            const addToWishlistBtn = e.target.closest('.add-to-wishlist-btn');
+
+            if (quickViewBtn) {
                 e.preventDefault(); e.stopPropagation();
                 openQuickView(product);
-            } else if (e.target.closest('.add-to-cart-btn')) {
+            } else if (addToCartBtn) {
                 e.preventDefault(); e.stopPropagation();
                 addItemToCart(product);
-            } else if (e.target.closest('.add-to-wishlist-btn')) {
+            } else if (addToWishlistBtn) {
                 e.preventDefault(); e.stopPropagation();
                 addItemToWishlist(product);
+            } else if (window.innerWidth < 768) {
+                // Mobile: Single tap opens Quick View
+                e.preventDefault();
+                openQuickView(product);
             }
         });
     }

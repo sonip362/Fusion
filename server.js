@@ -68,7 +68,6 @@ app.post('/api/chat', async (req, res) => {
             { role: 'user', content: message }
         ];
 
-        // Call Groq API
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -102,6 +101,95 @@ app.post('/api/chat', async (req, res) => {
 
     } catch (error) {
         console.error('Server Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Complete the Look Endpoint
+app.post('/api/complete-look', async (req, res) => {
+    try {
+        const { product } = req.body;
+
+        if (!product) {
+            return res.status(400).json({ error: 'Product is required' });
+        }
+
+        if (!process.env.GROQ_API_KEY) {
+            return res.status(500).json({ error: 'API key not configured' });
+        }
+
+        // Filter out the current product from available options
+        const otherProducts = products.filter(p => p.id !== product.id);
+
+        // Create a concise list of available products for the AI
+        const inventoryString = otherProducts.map(p =>
+            `ID: ${p.id}, Name: ${p.name}, Category: ${p.category}, Collection: ${p.collection}, Description: ${p.description}`
+        ).join('\n');
+
+        const prompt = `
+            You are a fashion stylist for Fusion. 
+            The user is viewing this product:
+            Name: ${product.name}
+            Category: ${product.category}
+            Collection: ${product.collection}
+            Description: ${product.description}
+            
+            From the following list of available products, select exactly 2 complementary products to complete the outfit (e.g., if it's a Top, find Bottoms or Accessories; if it's Bottoms, find a Top).
+            Prioritize items from the same collection ("${product.collection}").
+            
+            Available Products:
+            ${inventoryString}
+            
+            Return ONLY a valid JSON array of the 2 selected product IDs. Do not add any explanation or markdown. 
+            Example output: ["p2", "p5"]
+        `;
+
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'llama-3.3-70b-versatile',
+                messages: [
+                    { role: 'system', content: 'You are a helpful JSON-only API assistant.' },
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: 100,
+                temperature: 0.2
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Groq API failed');
+        }
+
+        const data = await response.json();
+        let content = data.choices[0]?.message?.content || '[]';
+
+        // Clean the response in case it has markdown code blocks
+        content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        let recommendedIds = [];
+        try {
+            recommendedIds = JSON.parse(content);
+        } catch (e) {
+            console.error('Failed to parse AI response:', content);
+            // Fallback: pick random items from same collection
+            recommendedIds = otherProducts
+                .filter(p => p.collection === product.collection)
+                .slice(0, 2)
+                .map(p => p.id);
+        }
+
+        // Retrieve full product details
+        const recommendations = products.filter(p => recommendedIds.includes(p.id));
+
+        res.json({ recommendations });
+
+    } catch (error) {
+        console.error('Complete Look Error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

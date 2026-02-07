@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             const response = await fetch('../assets/products.json');
             if (!response.ok) throw new Error('Failed to fetch products');
             allProducts = await response.json();
+            if (typeof setFusionProducts === 'function') {
+                setFusionProducts(allProducts);
+            }
             showLoading(false);
             return allProducts;
         } catch (error) {
@@ -59,6 +62,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (quickViewName) quickViewName.textContent = product.name;
         if (quickViewPrice) quickViewPrice.textContent = product.price;
         if (quickViewDesc) quickViewDesc.textContent = product.description || "No description available.";
+
+        if (typeof renderQuickViewBundle === 'function') {
+            renderQuickViewBundle(product);
+        }
 
         // Open modal using global controller if available
         if (typeof quickViewModalCtl !== 'undefined') {

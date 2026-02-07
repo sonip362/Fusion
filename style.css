@@ -81,6 +81,44 @@ body.scroll-lock {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Tablet Header Responsiveness (Orientation Specific) */
+/* Default State: Mobile Header for all screens initially */
+.main-nav-links,
+.desktop-header-items {
+    display: none !important;
+}
+
+.mobile-header-items {
+    display: flex !important;
+}
+
+/* Landscape Tablet / Medium Screens (iPad Landscape, etc.) */
+/* Most phones in landscape are < 1024px width, so they stay mobile. */
+@media (min-width: 1024px) and (orientation: landscape) {
+
+    .main-nav-links,
+    .desktop-header-items {
+        display: flex !important;
+    }
+
+    .mobile-header-items {
+        display: none !important;
+    }
+}
+
+/* Standard Desktop / Large Screens */
+@media (min-width: 1280px) {
+
+    .main-nav-links,
+    .desktop-header-items {
+        display: flex !important;
+    }
+
+    .mobile-header-items {
+        display: none !important;
+    }
+}
+
 /* Mobile Menu - Centered Card Design */
 #mobile-menu {
     position: fixed !important;

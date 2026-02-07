@@ -16,7 +16,11 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-
+    <!-- Preload Hero Images for LCP Optimization -->
+    <link rel="preload" href="./assets/images/main/hero.webp" as="image" fetchpriority="high"
+        media="(min-width: 769px)">
+    <link rel="preload" href="./assets/images/main/h-mob.webp" as="image" fetchpriority="high"
+        media="(max-width: 768px)">
 
 
 </head>
@@ -32,28 +36,24 @@
                     Fusion
                 </a>
 
-                <div class="main-nav-links hidden md:flex md:items-center md:space-x-4">
+                <div class="main-nav-links items-center space-x-4">
                     <a href="#home"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Home</a>
                     <a href="#shop-by-collection"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Collections</a>
-                    <a href="#limited"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">New
-                        Arrivals</a>
                     <a href="#testimonials"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Reviews</a>
                     <a href="#faq"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">FAQs</a>
                     <a href="#about"
                         class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">About</a>
-                    <a href="#newsletter"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Subscription</a>
+
                 </div>
 
 
 
                 <div class="flex items-center space-x-4">
-                    <div class="hidden md:flex items-center space-x-4">
+                    <div class="desktop-header-items items-center space-x-4">
                         <a href="#" id="header-ai-btn" aria-label="AI Assistant"
                             class="text-white hover:text-gray-300 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -82,7 +82,7 @@
                         </a>
                     </div>
                     <a href="#" id="mobile-header-ai-btn" aria-label="AI Assistant"
-                        class="md:hidden text-white hover:text-gray-300 transition-colors">
+                        class="mobile-header-items text-white hover:text-gray-300 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -90,7 +90,8 @@
                         </svg>
                     </a>
                     <button id="mobile-menu-btn" type="button"
-                        class="md:hidden p-2 text-white hover:text-gray-300 transition-colors" aria-label="Open menu">
+                        class="mobile-header-items p-2 text-white hover:text-gray-300 transition-colors"
+                        aria-label="Open menu">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -108,20 +109,18 @@
 
         <section id="home" data-section-name="Home"
             class="relative h-screen flex items-center justify-center text-center overflow-hidden">
-            <picture class="skeleton">
+            <picture>
                 <source media="(max-width: 768px)" srcset="./assets/images/main/h-mob.webp">
                 <img src="./assets/images/main/hero.webp"
                     alt="Cinematic fashion models wearing Royal Indian Studios outfits"
-                    class="absolute inset-0 w-full h-full object-cover -z-10 product-image parallax-bg" width="1920" height="1080"
-                    loading="lazy"
-                    onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
+                    class="absolute inset-0 w-full h-full object-cover -z-10 product-image parallax-bg" width="1920"
+                    height="1080" fetchpriority="high">
                 <div class="absolute inset-0 bg-black/40"></div>
             </picture>
 
-            <div class="relative z-10 p-4 text-ivory card-entrance">
-                <h1 id="hero-title-text"
-                    class="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold mb-4 transition-opacity duration-500 ease-in-out"
-                    style="will-change: opacity; contain: layout style paint;">
+            <div class="relative z-10 p-4 text-ivory">
+                <h1 id="hero-title-text" class="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold mb-4"
+                    style="contain: layout style paint;">
                     Fusion
                 </h1>
                 <p class="text-lg sm:text-xl font-sans mb-8 max-w-2xl mx-auto">
@@ -135,7 +134,7 @@
         </section>
 
         <!-- Recently Viewed Section -->
-        <section id="recently-viewed" data-section-name="Recently Viewed" class="py-20 sm:py-28 fade hidden card-entrance">
+        <section id="recently-viewed" data-section-name="Recently Viewed" class="py-20 sm:py-28 fade card-entrance">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl sm:text-5xl font-serif text-center mb-16 relative">
                     Recently Viewed
@@ -144,6 +143,22 @@
                         Clear history
                     </button>
                 </h2>
+
+                <div id="recently-viewed-placeholder"
+                    class="hidden flex flex-col items-center justify-center py-12 text-center opacity-60">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-10 h-10">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6 10.5c1.5-2.25 4.5-3 4.5-3s3 .75 4.5 3c-1.5 2.25-4.5 3-4.5 3s-3-.75-4.5-3Z" />
+                            <circle cx="10.5" cy="10.5" r="1" fill="currentColor" />
+                        </svg>
+                    </div>
+                    <p class="text-gray-500 font-serif text-xl">No products viewed recently</p>
+                </div>
+
                 <div id="recently-viewed-grid"
                     class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12">
                     <!-- Products will be injected dynamically -->
@@ -156,7 +171,7 @@
             <!-- Desktop-only Fullscreen Wallpaper -->
             <div class="absolute inset-0 -z-10 hidden md:block">
                 <img src="./assets/images/collection/collection-background.png" alt="Collection Background Wallpaper"
-                    class="w-full h-full object-cover parallax-bg">
+                    class="w-[1920px] h-[1080px] object-cover parallax-bg" loading="lazy">
                 <!-- Premium Overlay for Text Readability -->
                 <div class="absolute inset-0 bg-ivory/60 backdrop-blur-[1px]"></div>
             </div>
@@ -631,7 +646,7 @@
                                     top-tier. Honestly, I'm obsessed with how it fits. 10/10 recommend for anyone
                                     looking to level up their look."
                                 </p>
-                                <h4 class="text-xl font-serif font-bold text-royal-black">Olivia</h4>
+                                <h3 class="text-xl font-serif font-bold text-royal-black">Olivia</h3>
                                 <p class="text-sm text-gray-600 uppercase tracking-widest mt-1">New Orleans</p>
                             </div>
                         </div>
@@ -652,7 +667,7 @@
                                     and the fit is tailored perfectly. It's become a staple in my wardrobe for its
                                     effortless style and comfort."
                                 </p>
-                                <h4 class="text-xl font-serif font-bold text-royal-black">Michael</h4>
+                                <h3 class="text-xl font-serif font-bold text-royal-black">Michael</h3>
                                 <p class="text-sm text-gray-600 uppercase tracking-widest mt-1">London</p>
                             </div>
                         </div>
@@ -673,7 +688,7 @@
                                     quality is simply unmatched. It provides the perfect amount of warmth without
                                     feeling bulky."
                                 </p>
-                                <h4 class="text-xl font-serif font-bold text-royal-black">Emma</h4>
+                                <h3 class="text-xl font-serif font-bold text-royal-black">Emma</h3>
                                 <p class="text-sm text-gray-600 uppercase tracking-widest mt-1">Delhi</p>
                             </div>
                         </div>
@@ -815,7 +830,7 @@
                     <span class="text-[10px] uppercase font-bold tracking-[0.4em] text-gray-400 mb-4 block">Limited
                         Access</span>
                     <h2 class="text-3xl md:text-5xl font-serif text-royal-black mb-6">The Winter Drop</h2>
-                    <p class="text-gray-500 mb-12 font-sans text-sm md:text-base tracking-wide max-w-md mx-auto">
+                    <p class="text-gray-700 mb-12 font-sans text-sm md:text-base tracking-wide max-w-md mx-auto">
                         Subscribe to receive early access to our seasonal collections and exclusive "inner circle"
                         updates.
                     </p>
@@ -879,7 +894,7 @@
                             </svg>
                         </div>
                         <h3 class="text-xl font-serif text-royal-black mb-2">Clear Wishlist?</h3>
-                        <p class="text-sm text-gray-500 font-sans mb-6">Are you sure you want to remove all items from
+                        <p class="text-sm text-gray-700 font-sans mb-6">Are you sure you want to remove all items from
                             your wishlist?</p>
                         <div class="flex gap-3">
                             <button id="wishlist-confirm-cancel" type="button"
@@ -1077,6 +1092,15 @@
                     <p id="quick-view-description" class="font-sans text-base text-gray-700 leading-relaxed mb-6">
                         Product description...</p>
 
+                    <div id="quick-view-bundle" class="mt-6 border-t border-gray-200 pt-6 hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Complete the Look
+                            </h3>
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-gray-400">Style it with</span>
+                        </div>
+                        <div id="quick-view-bundle-items" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                    </div>
+
                     <div class="mb-6">
                         <h3 class="text-sm font-medium text-gray-900 mb-2">Size </h3>
                         <div class="flex space-x-2">
@@ -1099,6 +1123,30 @@
                             Add to Wishlist
                         </button>
                     </div>
+
+                    <!-- Complete the Look Section -->
+                    <div id="complete-look-container" class="mt-8 border-t border-gray-200 pt-6 hidden animate-fade-in">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-serif font-bold text-royal-black">Complete the Look</h3>
+                            <span
+                                class="text-[10px] uppercase tracking-widest text-gray-500 font-bold bg-gray-100 px-2 py-1 rounded">AI
+                                Styled</span>
+                        </div>
+                        <p class="text-[10px] text-royal-black italic -mt-2 mb-4">Note: AI-generated suggestions.
+                            Mistakes
+                            may occur.</p>
+
+                        <div id="complete-look-loading" class="hidden text-center py-4">
+                            <div
+                                class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-royal-black border-r-transparent align-middle mr-2">
+                            </div>
+                            <span class="text-sm font-sans text-gray-500">Styling...</span>
+                        </div>
+
+                        <div id="complete-look-grid" class="grid grid-cols-2 gap-4">
+                            <!-- Recommendations injected here -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1117,7 +1165,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
             </svg>
-            <p id="toast-message" class="font-sans text-sm font-medium">Item added successfully.</p>
+            <p id="toast-message" class="font-sans text-sm font-medium">Item added successfully.
+            </p>
         </div>
     </div>
 
@@ -1129,7 +1178,8 @@
             <div id="info-modal-panel"
                 class="relative w-full max-w-3xl max-h-[85vh] bg-ivory rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 scale-95">
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 id="info-modal-title" class="text-2xl font-serif text-royal-black">Title</h2>
+                    <h2 id="info-modal-title" class="text-2xl font-serif text-royal-black">Title
+                    </h2>
                     <button id="close-info-modal" type="button"
                         class="p-2 bg-ivory hover:text-royal-black rounded-full hover:bg-gray-100 transition-colors"
                         aria-label="Close panel">
@@ -1159,18 +1209,22 @@
                             </a>
                         </div>
                         <p class="font-sans text-sm max-w-xs">
-                            Fusion is a premium fashion brand that combines the best of premium quality with modern
+                            Fusion is a premium fashion brand that combines the best of premium
+                            quality with modern
                             design.
                         </p>
                     </div>
 
                     <div>
-                        <h5 class="text-lg font-serif font-bold text-ivory mb-4">Quick Links</h5>
+                        <h5 class="text-lg font-serif font-bold text-ivory mb-4">Quick Links
+                        </h5>
                         <ul class="space-y-3">
                             <li><a href="#shop-by-collection" class="hover:text-ivory transition-colors">Collections</a>
                             </li>
-                            <li><a href="#about" class="hover:text-ivory transition-colors">Our Story</a></li>
-                            <li><a href="#limited" class="hover:text-ivory transition-colors">Limited Edition</a></li>
+                            <li><a href="#about" class="hover:text-ivory transition-colors">Our
+                                    Story</a></li>
+                            <li><a href="#limited" class="hover:text-ivory transition-colors">Limited
+                                    Edition</a></li>
                         </ul>
                     </div>
 
@@ -1178,10 +1232,12 @@
                         <h5 class="text-lg font-serif font-bold text-ivory mb-4">Support</h5>
                         <ul class="space-y-3">
                             <li><button type="button" id="open-shipping-modal"
-                                    class="hover:text-ivory transition-colors text-left">Shipping & Returns</button>
+                                    class="hover:text-ivory transition-colors text-left">Shipping
+                                    & Returns</button>
                             </li>
                             <li><button type="button" id="open-sizing-modal"
-                                    class="hover:text-ivory transition-colors text-left">Sizing Guide</button></li>
+                                    class="hover:text-ivory transition-colors text-left">Sizing
+                                    Guide</button></li>
                         </ul>
                     </div>
 
@@ -1199,7 +1255,8 @@
                 </div>
 
                 <div class="mt-16 pt-8 border-t border-ivory/20 text-center">
-                    <p class="font-sans text-sm">&copy; 2026 Fusion. All Rights Reserved.<br>
+                    <p class="font-sans text-sm text-ivory/80">&copy; 2026 Fusion. All Rights
+                        Reserved.<br>
 
                 </div>
             </div>
@@ -1218,9 +1275,9 @@
                 d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
         </svg>
     </button>
-    <button id="backTop" type="button" title="Back to top">↑</button>
+    <button id="backTop" type="button" title="Back to top" aria-label="Back to top">↑</button>
 
-    <audio id="background-music" src="./assets/music/music.mp3" loop></audio>
+    <audio id="background-music" src="./assets/music/music.mp3" loop preload="none"></audio>
 
     <!-- Cookie Consent Modal -->
     <div id="cookie-consent-banner"
@@ -1239,7 +1296,8 @@
                 <div id="cookie-content">
                     <h3 class="text-2xl font-serif mb-4 text-ivory">Privacy Preference</h3>
                     <p class="text-sm font-sans text-ivory/70 leading-relaxed">
-                        We respect your privacy. We use cookies to improve your experience, personalize content, and
+                        We respect your privacy. We use cookies to improve your experience,
+                        personalize content, and
                         keep track of your shopping preferences.
                     </p>
                 </div>
@@ -1270,7 +1328,7 @@
             <div class="flex items-center gap-3">
                 <button id="faq-chat-clear"
                     class="text-[10px] uppercase tracking-widest text-ivory hover:text-ivory transition-colors">Clear</button>
-                <button id="faq-chat-close" class="text-ivory/80 hover:text-ivory">
+                <button id="faq-chat-close" class="text-ivory/80 hover:text-ivory" aria-label="Close assistant">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1300,7 +1358,8 @@
                 </svg>
             </div>
             <h3 class="text-xl font-serif text-royal-black mb-2">Clear Chat?</h3>
-            <p class="text-sm text-gray-500 font-sans mb-8">This will permanently delete your conversation history with
+            <p class="text-sm text-gray-700 font-sans mb-8">This will permanently delete your
+                conversation history with
                 Fusion AI.</p>
             <div class="flex flex-col w-full gap-3">
                 <button id="chat-confirm-ok"
@@ -1326,14 +1385,16 @@
                     class="flex-1 px-3 py-2 text-sm bg-white border border-gray-200 rounded-full focus:outline-none focus:border-royal-black transition-colors"
                     placeholder="Message..." autocomplete="off">
                 <button id="faq-chat-send"
-                    class="w-8 h-8 flex items-center justify-center bg-royal-black text-ivory rounded-full hover:bg-black transition-colors">
+                    class="w-8 h-8 flex items-center justify-center bg-royal-black text-ivory rounded-full hover:bg-black transition-colors"
+                    aria-label="Send message">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                 </button>
             </div>
-            <p class="text-[10px] text-gray-400 font-sans text-center">Fusion AI can make mistakes. Check important
+            <p class="text-[10px] text-gray-400 font-sans text-center">Fusion AI can make
+                mistakes. Check important
                 info.</p>
         </div>
     </div>
@@ -1347,9 +1408,11 @@
             <div id="filter-panel" data-transition-type="fade-scale"
                 class="relative w-full max-w-lg bg-ivory rounded-3xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 scale-95">
                 <div class="flex items-center justify-between px-8 py-6 border-b border-gray-100">
-                    <h2 class="text-2xl font-serif text-royal-black" id="filter-modal-title">Filters</h2>
+                    <h2 class="text-2xl font-serif text-royal-black" id="filter-modal-title">
+                        Filters</h2>
                     <button id="close-filter-modal" type="button"
-                        class="p-2 text-royal-black hover:bg-gray-100 rounded-full transition-colors">
+                        class="p-2 text-royal-black hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Close filters">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18 18 6M6 6l12 12" />
@@ -1360,9 +1423,11 @@
                 <div class="flex-1 overflow-y-auto px-8 py-6 space-y-8">
                     <!-- Styles Section -->
                     <div>
-                        <h3 class="text-sm uppercase tracking-widest text-gray-400 font-bold mb-4">Style</h3>
+                        <h3 class="text-sm uppercase tracking-widest text-gray-600 font-bold mb-4">
+                            Style</h3>
                         <div class="flex flex-wrap gap-2" id="filter-options-material">
-                            <button data-value="all" class="filter-option-btn active">All Styles</button>
+                            <button data-value="all" class="filter-option-btn active">All
+                                Styles</button>
                             <button data-value="casual" class="filter-option-btn">Casual</button>
                             <button data-value="formal" class="filter-option-btn">Formal</button>
                             <button data-value="athleisure" class="filter-option-btn">Athleisure</button>
@@ -1372,7 +1437,8 @@
 
                     <!-- Price Section -->
                     <div>
-                        <h3 class="text-sm uppercase tracking-widest text-gray-400 font-bold mb-4">Price Range</h3>
+                        <h3 class="text-sm uppercase tracking-widest text-gray-600 font-bold mb-4">
+                            Price Range</h3>
                         <div class="space-y-2" id="filter-options-price">
                             <button data-value="all" class="filter-option-row active">
                                 <span>All Prices</span>
@@ -1395,7 +1461,8 @@
 
                     <!-- Features Section -->
                     <div>
-                        <h3 class="text-sm uppercase tracking-widest text-gray-400 font-bold mb-4">Features</h3>
+                        <h3 class="text-sm uppercase tracking-widest text-gray-600 font-bold mb-4">
+                            Features</h3>
                         <div class="flex flex-wrap gap-2" id="filter-options-features">
                             <button data-value="all" class="filter-option-btn active">All</button>
                             <button data-value="minimalist" class="filter-option-btn">Minimalist</button>
@@ -1409,7 +1476,7 @@
 
                 <div class="px-8 py-6 bg-gray-50 border-t border-gray-100 flex gap-4">
                     <button id="clear-all-filters-btn"
-                        class="flex-1 py-4 text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-royal-black transition-colors">Clear
+                        class="flex-1 py-4 text-sm font-bold uppercase tracking-widest text-gray-700 hover:text-royal-black transition-colors">Clear
                         All</button>
                     <button id="apply-filters-btn"
                         class="flex-1 py-4 bg-royal-black text-ivory rounded-full text-sm font-bold uppercase tracking-widest hover:bg-gray-800 shadow-lg transition-all">Show
@@ -1428,9 +1495,11 @@
             <div id="sort-panel" data-transition-type="slide-y"
                 class="relative w-full max-w-sm bg-ivory rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col transform transition-all duration-300 opacity-0 translate-y-full sm:translate-y-0 sm:scale-95">
                 <div class="flex items-center justify-between px-8 py-6 border-b border-gray-100">
-                    <h2 class="text-xl font-serif text-royal-black" id="sort-modal-title">Sort By</h2>
+                    <h2 class="text-xl font-serif text-royal-black" id="sort-modal-title">Sort
+                        By</h2>
                     <button id="close-sort-modal" type="button"
-                        class="p-2 text-royal-black hover:bg-gray-100 rounded-full transition-colors">
+                        class="p-2 text-royal-black hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Close sort options">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18 18 6M6 6l12 12" />
@@ -1548,7 +1617,7 @@
     <script src="assets/Javascript/modal-logic.js" defer></script>
     <script src="assets/Javascript/cart.js" defer></script>
     <script src="assets/Javascript/wishlist.js" defer></script>
-    <script src="assets/Javascript/products..js" defer></script>
+    <script src="assets/Javascript/products.js" defer></script>
     <script src="assets/Javascript/filters.js" defer></script>
     <script src="assets/Javascript/recent-view.js" defer></script>
     <script src="assets/Javascript/shortcuts.js" defer></script>
