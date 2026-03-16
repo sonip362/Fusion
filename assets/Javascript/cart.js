@@ -1,5 +1,126 @@
 // --- Cart Operations ---
 
+// --- Cart Recommendations (You May Also Like) ---
+const renderCartRecommendations = async () => {
+    const recContainer = document.getElementById('cart-recommendations');
+    const recGrid = document.getElementById('cart-rec-grid');
+    const recLabel = document.getElementById('cart-rec-label');
+    if (!recContainer || !recGrid) return;
+
+    if (cart.length === 0) {
+        recContainer.classList.add('hidden');
+        recGrid.innerHTML = '';
+        return;
+    }
+
+    // Determine gender from cart items
+    let hasMen = false;
+    let hasWomen = false;
+    cart.forEach(item => {
+        const cat = (item.category || '').toLowerCase();
+        if (cat.includes('men') && !cat.includes('women')) hasMen = true;
+        if (cat.includes('women')) hasWomen = true;
+        if (cat.includes('both')) { hasMen = true; hasWomen = true; }
+    });
+
+    let genderFilter = 'both'; // show both
+    let labelText = 'For Everyone';
+    if (hasMen && !hasWomen) { genderFilter = 'men'; labelText = 'For Him'; }
+    else if (hasWomen && !hasMen) { genderFilter = 'women'; labelText = 'For Her'; }
+
+    if (recLabel) recLabel.textContent = labelText;
+
+    try {
+        const isSubPage = window.location.pathname.includes('/pages/');
+        const jsonPath = isSubPage ? '../assets/products.json' : './assets/products.json';
+        const res = await fetch(jsonPath, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to load products');
+        const allProducts = await res.json();
+
+        const cartIds = new Set(cart.map(i => i.id));
+
+        // Filter by gender
+        const candidates = allProducts.filter(p => {
+            if (cartIds.has(p.id)) return false; // already in cart
+            const cat = (p.category || '').toLowerCase();
+            if (genderFilter === 'men') {
+                return cat.includes('men') || cat.includes('both');
+            } else if (genderFilter === 'women') {
+                return cat.includes('women') || cat.includes('both');
+            }
+            return true; // both — show all
+        });
+
+        // Pick up to 4
+        const picks = candidates.slice(0, 4);
+
+        if (picks.length === 0) {
+            recContainer.classList.add('hidden');
+            return;
+        }
+
+        recContainer.classList.remove('hidden');
+
+        const resolveImg = (url) => {
+            if (!url) return '';
+            return window.location.pathname.includes('/pages/')
+                ? url.replace('./', '../')
+                : url;
+        };
+
+        recGrid.innerHTML = picks.map(p => `
+            <div class="group relative flex flex-col bg-gray-50 rounded-xl overflow-hidden border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all duration-300">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-200">
+                    <img src="${resolveImg(p.imageUrl)}" alt="${p.name}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         onerror="this.onerror=null;this.src='https://placehold.co/300x400/F7F5F2/1A1A1A?text=IMG';">
+                </div>
+                <div class="p-3 flex flex-col gap-2">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold mb-0.5">${p.category}</p>
+                        <h4 class="text-sm font-serif font-bold text-royal-black leading-tight line-clamp-1">${p.name}</h4>
+                        <p class="text-xs text-gray-600 mt-0.5">${p.price}</p>
+                    </div>
+                    <button type="button"
+                        class="cart-rec-add-btn w-full py-2 rounded-full bg-royal-black text-ivory text-[10px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors mt-auto"
+                        data-rec-id="${p.id}"
+                        data-rec-name="${p.name}"
+                        data-rec-price="${p.price}"
+                        data-rec-image="${resolveImg(p.imageUrl)}"
+                        data-rec-category="${p.category}"
+                        data-rec-description="${p.description || ''}">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Attach add-to-cart listeners
+        recGrid.querySelectorAll('.cart-rec-add-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const product = {
+                    id: btn.dataset.recId,
+                    name: btn.dataset.recName,
+                    price: btn.dataset.recPrice,
+                    imageUrl: btn.dataset.recImage,
+                    category: btn.dataset.recCategory,
+                    description: btn.dataset.recDescription,
+                };
+                addItemToCart(product);
+                // Re-render recommendations after adding
+                renderCartRecommendations();
+            });
+        });
+
+    } catch (err) {
+        console.error('Cart recommendations error:', err);
+        recContainer.classList.add('hidden');
+    }
+};
+
+
+
 const addItemToCart = (product) => {
     if (!product) return; // Guard
     const existingItem = cart.find(item => item.id === product.id);
@@ -179,4 +300,8 @@ const renderCart = () => {
 
     // update badges after DOM changes
     if (typeof updateBadges === 'function') updateBadges();
+
+    // Update recommendations
+    if (typeof renderCartRecommendations === 'function') renderCartRecommendations();
 };
+

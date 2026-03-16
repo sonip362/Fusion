@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
             if (discount > 0) {
                 discountBadge = `
-                    <div class="absolute top-2 left-1/2 -translate-x-1/2 bg-royal-black text-white text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full z-20 
-                                whitespace-nowrap">
+                    <div class="bg-royal-black text-white text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full 
+                                opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
                         ${discount}% OFF
                     </div>
                 `;
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         card.innerHTML = `
             <div class="product-image-wrapper relative">
-                <div class="absolute inset-x-0 top-2 flex justify-center z-20 pointer-events-none">
+                <div class="absolute right-2 md:inset-x-0 top-2 flex justify-end md:justify-center z-20 pointer-events-none">
                     ${discountBadge}
                 </div>
                 <img src="${product.imageUrl.replace('./', '../')}" alt="${product.name}" class="product-image" loading="lazy">
@@ -171,8 +171,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Card click - navigate to collection
         card.addEventListener('click', (e) => {
             if (e.target.closest('.quick-action-btn')) return;
-            // Navigate to collection section on main page
-            window.location.href = `../index.html#shop-by-collection`;
+            // Open Quick View Modal
+            openQuickView(product);
         });
 
         // Add to Cart

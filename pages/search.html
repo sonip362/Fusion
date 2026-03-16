@@ -335,38 +335,81 @@
             color: #fff;
         }
     </style>
+    <style id="header-override">
+        /* Immediate header override: black background + backdrop blur */
+        #main-header {
+            background: rgba(0,0,0,0.76) !important;
+            backdrop-filter: blur(18px) !important;
+            -webkit-backdrop-filter: blur(18px) !important;
+            border: 1px solid rgba(255,255,255,0.06) !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
+            color: #F7F5F2 !important;
+        }
+
+        #main-header.header-shrunk {
+            background: rgba(0,0,0,0.78) !important;
+        }
+
+        #main-header, #main-header a, #main-header button, #main-header svg {
+            color: #F7F5F2 !important;
+        }
+
+        #main-header .nav-link {
+            color: #F7F5F2 !important;
+        }
+
+        #main-header .nav-link.active {
+            background: rgba(255,255,255,0.06) !important;
+            color: #F7F5F2 !important;
+        }
+
+        /* Mobile drawer styling */
+        #mobile-menu>div {
+            background: rgba(0,0,0,0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(255,255,255,0.04) !important;
+            color: #F7F5F2 !important;
+        }
+    </style>
 </head>
 
 <body class="bg-ivory text-royal-black">
 
-    <!-- Header -->
-    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[100%] max-w-7xl ">
+    <header id="main-header" class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-7xl">
+        <nav style="padding: 0 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 3.5rem; gap: 1rem;">
 
-        <nav class="px-6 sm:px-8 lg:px-10">
-            <div class="flex justify-between items-center h-16">
-
-                <a href="../index.html" class="flex items-center gap-3 text-2xl font-serif font-bold text-ivory">
-                    Fusion
-                </a>
-
-                <div class="main-nav-links items-center space-x-4">
+                <!-- LEFT: Navigation Links -->
+                <div class="main-nav-links"
+                    style="display: flex; align-items: center; gap: 0.25rem; flex: 1; min-width: 0;">
                     <a href="../index.html#home"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Home</a>
+                        class="nav-link text-royal-black hover:opacity-70 transition-all duration-300 px-4 py-2 rounded-full whitespace-nowrap">Home</a>
                     <a href="../index.html#shop-by-collection"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Collections</a>
-                    <a href="../index.html#limited"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">New
-                        Arrivals</a>
+                        class="nav-link text-royal-black hover:opacity-70 transition-all duration-300 px-4 py-2 rounded-full whitespace-nowrap">Collections</a>
                     <a href="../index.html#testimonials"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">Reviews</a>
+                        class="nav-link text-royal-black hover:opacity-70 transition-all duration-300 px-4 py-2 rounded-full whitespace-nowrap">Reviews</a>
+                    <a href="../index.html#faq"
+                        class="nav-link text-royal-black hover:opacity-70 transition-all duration-300 px-4 py-2 rounded-full whitespace-nowrap">FAQs</a>
                     <a href="../index.html#about"
-                        class="nav-link text-ivory hover:text-gray-300 transition-all duration-300 px-4 py-2 rounded-full">About</a>
+                        class="nav-link text-royal-black hover:opacity-70 transition-all duration-300 px-4 py-2 rounded-full whitespace-nowrap">About</a>
                 </div>
 
-                <div class="flex items-center space-x-4">
-                    <div class="desktop-header-items items-center space-x-4">
+                <!-- CENTER: FUSION Logo Image -->
+                <div style="flex: 0 0 auto; display: flex; align-items: center; justify-content: center;">
+                    <a href="../index.html" style="display: flex; align-items: center; justify-content: center;">
+                        <img src="../assets/images/main/log.png" alt="Fusion"
+                            style="height: 2.25rem; width: auto; object-fit: contain; filter: brightness(100); transition: opacity 0.3s ease;">
+                    </a>
+                </div>
+
+                <!-- RIGHT: Action Icons -->
+                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; flex: 1;">
+                    <!-- Desktop icons (Visible only on desktop) -->
+                    <div class="hidden md:flex items-center gap-0.75rem" style="gap: 0.75rem;">
+                       
                         <a href="#" id="wishlist-btn-desktop" aria-label="Wishlist"
-                            class="text-white hover:text-gray-300 transition-colors has-badge">
+                            class="text-royal-black hover:opacity-70 transition-colors has-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -375,7 +418,7 @@
                             <span id="wishlist-badge-desktop" class="badge hidden" aria-hidden="true">0</span>
                         </a>
                         <a href="#" id="cart-btn-desktop" aria-label="Cart"
-                            class="text-white hover:text-gray-300 transition-colors has-badge">
+                            class="text-royal-black hover:opacity-70 transition-colors has-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -384,8 +427,9 @@
                             <span id="cart-badge-desktop" class="badge hidden" aria-hidden="true">0</span>
                         </a>
                     </div>
+                    <!-- Mobile icons (Simplified) -->
                     <button id="mobile-menu-btn" type="button"
-                        class="mobile-header-items p-2 text-white hover:text-gray-300 transition-colors"
+                        class="md:hidden p-2 text-royal-black hover:text-gray-300 transition-colors"
                         aria-label="Open menu">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
@@ -394,9 +438,9 @@
                         </svg>
                     </button>
                 </div>
+
             </div>
         </nav>
-
     </header>
 
     <!-- Search Hero Section -->
@@ -718,14 +762,7 @@
                     <p id="quick-view-description" class="font-sans text-base text-gray-700 leading-relaxed mb-6">
                         Product description...</p>
 
-                    <div id="quick-view-bundle" class="mt-6 border-t border-gray-200 pt-6 hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Complete the Look
-                            </h3>
-                            <span class="text-[10px] uppercase tracking-[0.2em] text-gray-400">Style it with</span>
-                        </div>
-                        <div id="quick-view-bundle-items" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-                    </div>
+
 
                     <div class="mb-6">
                         <h3 class="text-sm font-medium text-gray-900 mb-2">Size </h3>
@@ -804,6 +841,15 @@
                         class="mobile-menu-link text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">Reviews</a>
 
                     <div class="pt-5 mt-2 border-t border-black/5 flex flex-col gap-5">
+                        <a href="#" id="login-btn-mobile"
+                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                            <span>Account</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </a>
                         <a href="#" id="wishlist-btn-mobile"
                             class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
                             <span>Wishlist</span>

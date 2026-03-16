@@ -118,7 +118,7 @@ const renderRecentlyViewed = async () => {
                  data-features="${product.categoryId?.features || ''}">
                 
                 <div class="aspect-[4/5] w-full overflow-hidden rounded-lg bg-gray-200 relative skeleton">
-                    <div class="absolute inset-x-0 top-2 flex justify-center z-20 pointer-events-none">
+                    <div class="absolute right-2 md:inset-x-0 top-2 flex justify-end md:justify-center z-20 pointer-events-none">
                         ${discountBadge}
                     </div>
                 <img src="${product.imageUrl}" 

@@ -42,12 +42,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const handleHeaderShrink = () => {
             const header = document.getElementById('main-header');
+            const heroLogo = document.getElementById('hero-fusion-logo');
+            const headerLogo = document.querySelector('#main-header img');
+            
             if (!header) return;
 
-            if (window.scrollY > 100) {
+            // --- Scroll Position Logic ---
+            const scrollY = window.scrollY;
+            const threshold = 400; // Distance over which transition happens
+            const progress = Math.min(scrollY / threshold, 1);
+
+            // 1. Shrink and Move Hero Logo
+            if (heroLogo) {
+                const targetScale = 0.3; // Shrink to 30%
+                const scale = 1 - (progress * (1 - targetScale));
+                const translateY = -scrollY * 0.8; // Move up faster than scroll
+                
+                heroLogo.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                heroLogo.style.opacity = 1 - (progress * 1.5); // Fade out faster
+            }
+
+            // 2. Handle Header Style & Logo Opacity
+            if (scrollY > 100) {
                 header.classList.add('header-shrunk');
+                if (headerLogo) headerLogo.style.opacity = "1";
             } else {
                 header.classList.remove('header-shrunk');
+                // Gradually fade in header logo as hero fades out
+                if (headerLogo) headerLogo.style.opacity = progress.toString();
             }
         };
 
@@ -55,4 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
         handleNavHighlight();
         handleHeaderShrink();
     }
+
+    // Theme toggle removed
 });

@@ -164,19 +164,21 @@ window.renderQuickViewBundle = renderQuickViewBundle;
 const updateBadges = () => {
     const cartBadgeDesktop = document.getElementById('cart-badge-desktop');
     const cartBadgeMobile = document.getElementById('cart-badge-mobile');
+    const cartBadgeMobileHeader = document.getElementById('cart-badge-mobile-header');
     const wishlistBadgeDesktop = document.getElementById('wishlist-badge-desktop');
     const wishlistBadgeMobile = document.getElementById('wishlist-badge-mobile');
+    const wishlistBadgeMobileHeader = document.getElementById('wishlist-badge-mobile-header');
 
     const cartCount = cart.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
     const wishlistCount = wishlist.length;
 
-    [[cartBadgeDesktop, cartCount], [cartBadgeMobile, cartCount]].forEach(([el, count]) => {
+    [[cartBadgeDesktop, cartCount], [cartBadgeMobile, cartCount], [cartBadgeMobileHeader, cartCount]].forEach(([el, count]) => {
         if (!el) return;
         if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
         else { el.classList.add('hidden'); }
     });
 
-    [[wishlistBadgeDesktop, wishlistCount], [wishlistBadgeMobile, wishlistCount]].forEach(([el, count]) => {
+    [[wishlistBadgeDesktop, wishlistCount], [wishlistBadgeMobile, wishlistCount], [wishlistBadgeMobileHeader, wishlistCount]].forEach(([el, count]) => {
         if (!el) return;
         if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
         else { el.classList.add('hidden'); }
@@ -330,7 +332,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         panel: document.getElementById('wishlist-panel'),
         openBtns: [
             document.getElementById('wishlist-btn-desktop'),
-            document.getElementById('wishlist-btn-mobile')
+            document.getElementById('wishlist-btn-mobile'),
+            document.getElementById('wishlist-btn-mobile-header')
         ],
         closeBtn: document.getElementById('close-wishlist-modal'),
         backdrop: document.getElementById('wishlist-backdrop'),
@@ -342,7 +345,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         panel: document.getElementById('cart-panel'),
         openBtns: [
             document.getElementById('cart-btn-desktop'),
-            document.getElementById('cart-btn-mobile')
+            document.getElementById('cart-btn-mobile'),
+            document.getElementById('cart-btn-mobile-header')
         ],
         closeBtn: document.getElementById('close-cart-modal'),
         backdrop: document.getElementById('cart-backdrop'),

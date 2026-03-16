@@ -1,0 +1,318 @@
+/* Fusion login page – Figma-inspired layout and typography */
+
+:root {
+    --login-bg: #e8e8e8;
+    --login-text: #000000;
+    --login-text-muted: #6b6b6b;
+    --login-text-disclaimer: #9a9a9a;
+    --login-border: #000000;
+    --login-btn-primary-bg: #000000;
+    --login-btn-primary-text: #ffffff;
+    --login-input-border: #cccccc;
+    --login-font-serif: 'Libre Baskerville', 'Times New Roman', serif;
+    --login-font-sans: 'Outfit', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--login-bg);
+    font-family: var(--login-font-sans);
+    color: var(--login-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 100vh;
+}
+
+/* —— Left panel: form —— */
+.login-form-panel {
+    flex: 1 1 45%;
+    min-width: 280px;
+    padding: clamp(2rem, 5vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.login-brand {
+    font-family: var(--login-font-serif);
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--login-text);
+    margin: 0 0 2.5rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.field-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--login-text-muted);
+}
+
+.field-input {
+    width: 100%;
+    padding: 0.75rem 0;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--login-text);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--login-input-border);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field-input::placeholder {
+    color: var(--login-text-muted);
+}
+
+.field-input:focus {
+    border-bottom-color: var(--login-border);
+}
+
+.password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrap .field-input {
+    padding-right: 2.5rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--login-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: var(--login-text);
+}
+
+.password-toggle .icon-eye-off {
+    display: none;
+}
+
+.password-toggle[aria-pressed="true"] .icon-eye {
+    display: none;
+}
+
+.password-toggle[aria-pressed="true"] .icon-eye-off {
+    display: block;
+}
+
+.forgot-link {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--login-text-muted);
+    text-decoration: none;
+    margin: -0.25rem 0 0.5rem;
+    align-self: flex-start;
+}
+
+.forgot-link:hover {
+    color: var(--login-text);
+    text-decoration: underline;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+    background: var(--login-btn-primary-bg);
+    color: var(--login-btn-primary-text);
+    border-color: var(--login-btn-primary-bg);
+}
+
+.btn-primary:hover {
+    background: #1a1a1a;
+}
+
+.btn-outline {
+    background: var(--login-bg);
+    color: var(--login-text);
+    border-color: var(--login-border);
+}
+
+.btn-outline:hover {
+    background: #d8d8d8;
+}
+
+.btn-qr .qr-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Social section */
+.social-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--login-input-border);
+}
+
+.access-with {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--login-text-muted);
+    margin: 0 0 0.5rem;
+}
+
+.privacy-note {
+    font-size: 0.7rem;
+    line-height: 1.5;
+    color: var(--login-text-disclaimer);
+    margin: 0 0 1rem;
+}
+
+.privacy-note a {
+    color: var(--login-text-muted);
+    text-decoration: underline;
+}
+
+.privacy-note a:hover {
+    color: var(--login-text);
+}
+
+.btn-google {
+    background: var(--login-bg);
+    color: var(--login-text);
+    border: 1px solid var(--login-border);
+}
+
+.btn-google:hover {
+    background: #d8d8d8;
+}
+
+.google-icon {
+    flex-shrink: 0;
+}
+
+/* —— Right panel: imagery —— */
+.login-image-panel {
+    flex: 1 1 55%;
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--login-bg);
+}
+
+.login-image-main {
+    flex: 1;
+    min-height: 55vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80');
+}
+
+.login-image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0.5rem 0;
+    min-height: 200px;
+}
+
+.login-image-small {
+    aspect-ratio: 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login-image-a {
+    background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80');
+}
+
+.login-image-b {
+    background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80');
+}
+
+/* Hide image panel on small screens */
+@media (max-width: 767px) {
+    .login-image-panel {
+        display: none;
+    }
+
+    .login-form-panel {
+        max-width: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .login-wrapper {
+        flex-wrap: nowrap;
+    }
+
+    .login-form-panel {
+        margin: 0;
+        max-width: none;
+    }
+}

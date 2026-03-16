@@ -75,7 +75,7 @@ app.post('/api/chat', async (req, res) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'llama-3.3-70b-versatile',
+                model: 'llama-3.1-8b-instant',
                 messages: messages,
                 max_tokens: 500,
                 temperature: 0.7
@@ -135,7 +135,7 @@ app.post('/api/complete-look', async (req, res) => {
             Description: ${product.description}
             
             From the following list of available products, select exactly 2 complementary products to complete the outfit (e.g., if it's a Top, find Bottoms or Accessories; if it's Bottoms, find a Top).
-            Prioritize items from the same collection ("${product.collection}").
+            Prioritize items from the same collection ("${product.collection}").Always when searching for product if its Men pair with a men's product and women pair with a women's product.
             
             Available Products:
             ${inventoryString}
@@ -151,7 +151,7 @@ app.post('/api/complete-look', async (req, res) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'llama-3.3-70b-versatile',
+                model: 'llama-3.1-8b-instant',
                 messages: [
                     { role: 'system', content: 'You are a helpful JSON-only API assistant.' },
                     { role: 'user', content: prompt }

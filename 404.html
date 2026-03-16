@@ -1,26 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html class="light" lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=./404.html" />
-  <title>Redirecting...</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta http-equiv="refresh" content="0; url=./index.html" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#f8f6f6",
+            "background-light": "#f8f6f6",
+            "background-dark": "#000000",
+          },
+          fontFamily: {
+            "display": ["Public Sans", "sans-serif"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
   <style>
-    body {
-      background: #ffefd1;
-      color: #000000;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .animate-spin-slow {
+      animation: spin 2s linear infinite;
     }
   </style>
 </head>
 
-<body>
-  Redirecting...
+<body class="bg-background-dark font-display antialiased">
+  <div
+    class="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background-dark">
+    <div class="flex flex-col items-center max-w-[480px] w-full px-6">
+      <div class="mb-16">
+        <img alt="FUSION luxury brand logo" class="h-40 w-auto opacity-90 brightness-200"
+          data-alt="FUSION minimalist luxury brand logo in white" src="../assets/images/main/log.png" />
+      </div>
+      <div class="relative flex flex-col items-center gap-12">
+        <div class="relative flex items-center justify-center">
+          <div class="h-16 w-16 rounded-full border-[1px] border-primary/10 border-t-primary animate-spin-slow">
+          </div>
+        </div>
+        <div class="flex flex-col items-center gap-4">
+          <p class="text-xs font-light tracking-[0.5em] text-slate-100 uppercase">
+            Redefining Modern Wear
+          </p>
+          <div class="w-48 h-[1px] bg-slate-100/10 overflow-hidden">
+            <div class="h-full bg-primary/60 w-1/3 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-12 left-0 w-full flex justify-center px-4">
+        <p class="text-[10px] font-medium text-slate-100/40 tracking-widest uppercase">
+          Fusion Collective © 2024
+        </p>
+      </div>
+    </div>
+    <div class="absolute inset-0 pointer-events-none">
+      <div
+        class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50">
+      </div>
+    </div>
+  </div>
+  <div class="hidden">
+    <div class="layout-container flex h-full grow flex-col">
+      <div class="px-40 flex flex-1 justify-center py-5">
+        <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+          <div class="@container">
+            <div class="@[480px]:px-4 @[480px]:py-3">
+              <div
+                class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-background-dark @[480px]:rounded-xl min-h-[218px]"
+                data-alt="Abstract dark luxury fabric texture background"
+                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA02OcRtkoExGHWFWY1XEJWX17zgwdZ1RuLt5_3nJW0fJH_xljPzFstGjqxkPluhPQpMvHwwYqXWLvjdRkcryUxEpd-eCY1eszGv2cmDAChbpn5g0n58E3KSu4CmzYJ8WlTH--kdNPry01lrEfszYy3vRN_tuExe8qau2WOLXa2YbqW2yl82-DBmp_2nE3uofbmW894PMqTbQkNOv_P5MtH5E1l91TesvTVBkSvjxzxDNYEaXNtWSrkaIsZQRKcMEBM_wPQt0b3bg");'>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3 p-4">
+            <div class="flex gap-6 justify-between">
+              <p class="text-slate-100 text-base font-medium leading-normal">Loading...</p>
+            </div>
+            <div class="rounded bg-primary/20">
+              <div class="h-2 rounded bg-primary" style="width: 35%;"></div>
+            </div>
+            <p class="text-slate-100/60 text-sm font-normal leading-normal">Please wait while we prepare
+              your experience</p>
+          </div>
+          <p class="text-slate-100/60 text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center tracking-[0.3em]">
+            REDEFINING MODERN WEAR</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
