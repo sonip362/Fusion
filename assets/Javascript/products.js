@@ -1,5 +1,9 @@
 // --- Product Component ---
 
+// Module-local product cache — populated by fetchAndRenderProducts(),
+// used by loadCompleteTheLook() so fallback never depends on main.js globals.
+let _fetchedProducts = [];
+
 // Fix #4: Validate data from DOM
 const getProductData = (cardElement) => {
     if (!cardElement || !cardElement.dataset) {
@@ -46,10 +50,80 @@ const loadCompleteTheLook = async (product) => {
             body: JSON.stringify({ product })
         });
 
-        if (!res.ok) throw new Error('Failed to fetch recommendations');
+        const fallbackRecommendations = () => {
+            // Use module-local cache first, then try the global cache as a backup
+            const pool = _fetchedProducts.length > 0
+                ? _fetchedProducts
+                : (typeof getFusionProducts === 'function' ? getFusionProducts() : []) || [];
+            const filtered = pool.filter(p => p && p.id !== product.id);
+            if (filtered.length === 0) return [];
+            return filtered.slice().sort(() => Math.random() - 0.5).slice(0, 2);
+        };
+
+        if (!res.ok) {
+            const fallback = fallbackRecommendations();
+            if (fallback.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+            const recommendations = fallback;
+            loading.classList.add('hidden');
+            grid.classList.remove('hidden');
+            grid.innerHTML = recommendations.map(rec => {
+                const originalPriceVal = rec.originalPrice ? parsePrice(rec.originalPrice) : 0;
+                const currentPriceVal = parsePrice(rec.price);
+                const hasDiscount = originalPriceVal > currentPriceVal;
+
+                let priceDisplay = `<span class="text-sm font-medium text-royal-black">${rec.price}</span>`;
+                if (hasDiscount) {
+                    priceDisplay = `
+                       <div class="flex flex-col items-start">
+                           <span class="text-[10px] text-gray-500 line-through">${rec.originalPrice}</span>
+                           <span class="text-sm font-medium text-royal-black">${rec.price}</span>
+                       </div>
+                   `;
+                }
+
+                return `
+                <div class="complete-look-card cursor-pointer group flex items-center gap-3 bg-gray-50 p-2 rounded-lg hover:bg-white border border-transparent hover:border-gray-200 transition-all"
+                     data-id="${rec.id}">
+                    <div class="w-16 h-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-200">
+                        <img src="${rec.imageUrl}" alt="${rec.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onerror="this.onerror=null;this.src='https://placehold.co/100x125/F7F5F2/1A1A1A?text=IMG';">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-serif font-bold text-royal-black truncate">${rec.name}</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">${rec.collection}</p>
+                        ${priceDisplay}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-royal-black">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </div>
+                </div>
+               `;
+            }).join('');
+
+            grid.querySelectorAll('.complete-look-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const recId = card.dataset.id;
+                    const recProduct = recommendations.find(r => r.id === recId);
+                    if (recProduct) {
+                        openQuickView(recProduct);
+                    }
+                });
+            });
+            return;
+        }
 
         const data = await res.json();
-        const recommendations = data.recommendations || [];
+        // Empty arrays are truthy in JS, so check .length to trigger fallback properly
+        const serverRecs = Array.isArray(data.recommendations) && data.recommendations.length > 0
+            ? data.recommendations
+            : null;
+        const recommendations = serverRecs || fallbackRecommendations();
 
         loading.classList.add('hidden');
 
@@ -109,8 +183,53 @@ const loadCompleteTheLook = async (product) => {
         });
 
     } catch (err) {
-        console.error('Error styling look:', err);
-        container.classList.add('hidden');
+        // Use module-local cache first, then try global as backup
+        const pool = _fetchedProducts.length > 0
+            ? _fetchedProducts
+            : (typeof getFusionProducts === 'function' ? getFusionProducts() : []) || [];
+        const fallback = pool.filter(p => p && p.id !== product.id);
+        if (fallback.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+        loading.classList.add('hidden');
+        grid.classList.remove('hidden');
+        grid.innerHTML = fallback.slice().sort(() => Math.random() - 0.5).slice(0, 2).map(rec => {
+            const originalPriceVal = rec.originalPrice ? parsePrice(rec.originalPrice) : 0;
+            const currentPriceVal = parsePrice(rec.price);
+            const hasDiscount = originalPriceVal > currentPriceVal;
+
+            let priceDisplay = `<span class="text-sm font-medium text-royal-black">${rec.price}</span>`;
+            if (hasDiscount) {
+                priceDisplay = `
+                   <div class="flex flex-col items-start">
+                       <span class="text-[10px] text-gray-500 line-through">${rec.originalPrice}</span>
+                       <span class="text-sm font-medium text-royal-black">${rec.price}</span>
+                   </div>
+               `;
+            }
+
+            return `
+            <div class="complete-look-card cursor-pointer group flex items-center gap-3 bg-gray-50 p-2 rounded-lg hover:bg-white border border-transparent hover:border-gray-200 transition-all"
+                 data-id="${rec.id}">
+                <div class="w-16 h-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-200">
+                    <img src="${rec.imageUrl}" alt="${rec.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onerror="this.onerror=null;this.src='https://placehold.co/100x125/F7F5F2/1A1A1A?text=IMG';">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-serif font-bold text-royal-black truncate">${rec.name}</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wide mb-1">${rec.collection}</p>
+                    ${priceDisplay}
+                </div>
+                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-royal-black">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                </div>
+            </div>
+           `;
+        }).join('');
     }
 };
 
@@ -154,9 +273,15 @@ const fetchAndRenderProducts = async () => {
     if (!productGrid) return;
 
     try {
-        const res = await fetch('./assets/products.json', { cache: "no-store" });
-        if (!res.ok) throw new Error('Failed to load products.json');
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error('Failed to load products');
         const products = await res.json();
+
+        // Store in module-local cache first (race-condition-proof)
+        _fetchedProducts = Array.isArray(products) ? products : [];
+
+        // Also populate the global cache for other consumers (cart recs, etc.)
+        if (typeof setFusionProducts === 'function') setFusionProducts(products);
 
         // Build HTML for each product (keep structure & data-* attributes expected by existing JS)
         productGrid.innerHTML = products.map(product => {

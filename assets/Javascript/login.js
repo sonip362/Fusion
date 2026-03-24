@@ -1,91 +1,209 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const getElements = () => ({
+    let isRegisterMode = false;
+    let registerPhotoDataUrl = '';
+
+    const elements = {
         screen: document.getElementById('login-screen'),
+        form: document.getElementById('login-form-new'),
+        nameContainer: document.getElementById('register-name-container'),
+        nameInput: document.getElementById('register-name-new'),
+        photoContainer: document.getElementById('register-photo-container'),
+        photoInput: document.getElementById('register-photo-new'),
+        photoPreview: document.getElementById('register-photo-preview'),
         emailInput: document.getElementById('login-email-new'),
         passwordInput: document.getElementById('login-password-new'),
         submitBtn: document.getElementById('login-submit-btn'),
-        toggleBtn: document.getElementById('toggle-password-new'),
-        mobileMenu: document.getElementById('mobile-menu')
-    });
+        switchBtn: document.getElementById('switch-to-register-btn'),
+        forgotLink: document.getElementById('forgot-password-link'),
+        mobileMenu: document.getElementById('mobile-menu'),
 
-    const updateSubmitState = () => {
-        const { emailInput, passwordInput, submitBtn } = getElements();
-        if (!emailInput || !passwordInput || !submitBtn) return;
-        
-        const isValid = emailInput.value.includes('@') && passwordInput.value.length >= 6;
-        submitBtn.disabled = !isValid;
+        // QR Login UI
+        qrBtn: document.getElementById('qr-login-btn'),
+        qrPanel: document.getElementById('qr-login-panel'),
+        qrClose: document.getElementById('qr-login-close')
     };
 
+    const closeQrPanel = () => {
+        if (elements.qrPanel) elements.qrPanel.classList.add('hidden');
+    };
+
+    const openQrPanel = () => {
+        if (!elements.qrPanel) return;
+        elements.qrPanel.classList.remove('hidden');
+        if (typeof showMessage === 'function') {
+            showMessage('Coming Soon', 'QR login is not enabled yet. This is a placeholder.', 'success');
+        }
+    };
+
+    const updateUIState = () => {
+        if (isRegisterMode) {
+            elements.nameContainer.classList.remove('hidden');
+            if (elements.photoContainer) elements.photoContainer.classList.remove('hidden');
+            elements.nameInput.setAttribute('required', 'true');
+            elements.submitBtn.textContent = 'Sign Up';
+            elements.switchBtn.textContent = 'Already have an account? Log In';
+            elements.forgotLink.classList.add('hidden');
+        } else {
+            elements.nameContainer.classList.add('hidden');
+            if (elements.photoContainer) elements.photoContainer.classList.add('hidden');
+            elements.nameInput.removeAttribute('required');
+            elements.submitBtn.textContent = 'Log In';
+            elements.switchBtn.textContent = 'Create Account';
+            elements.forgotLink.classList.remove('hidden');
+        }
+    };
+
+    const validateForm = () => {
+        const emailValid = elements.emailInput.value.includes('@');
+        const passwordValid = elements.passwordInput.value.length >= 6;
+        const nameValid = !isRegisterMode || elements.nameInput.value.trim().length > 0;
+
+        elements.submitBtn.disabled = !(emailValid && passwordValid && nameValid);
+    };
+
+    const handleAuth = async (e) => {
+        e.preventDefault();
+        
+        const endpoint = isRegisterMode ? '/api/register' : '/api/login';
+        const payload = {
+            email: elements.emailInput.value,
+            password: elements.passwordInput.value,
+            guestId: (typeof getGuestId === 'function') ? getGuestId() : null,
+            ...(isRegisterMode && {
+                fullName: elements.nameInput.value,
+                profilePicture: registerPhotoDataUrl
+            })
+        };
+
+        try {
+            elements.submitBtn.disabled = true;
+            elements.submitBtn.textContent = isRegisterMode ? 'Creating Account...' : 'Logging In...';
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Error response from server
+                showMessage('Error', data.error || 'Something went wrong', 'error');
+            } else {
+                // Success!!
+                if (isRegisterMode) {
+                    showMessage('Welcome', 'Registration successful! You can now log in.', 'success');
+                    isRegisterMode = false; // Switch to login mode after successful registration
+                } else {
+                    const rewardCoinsAdded = Number(data.rewardCoinsAdded) || 0;
+                    if (rewardCoinsAdded > 0) {
+                        showMessage('Success', `Login successful! +${rewardCoinsAdded} coins added.`, 'success');
+                    } else {
+                        showMessage('Success', 'Login successful!', 'success');
+                    }
+                }
+                
+                if (data.user) {
+                    localStorage.setItem('fusion_user', JSON.stringify(data.user));
+                    // Optional: Refresh the page or update the header UI
+                    setTimeout(() => {
+                        closeLogin();
+                        window.location.reload(); 
+                    }, 500);
+                }
+            }
+
+        } catch (error) {
+            showMessage('Error', error.message, 'error');
+        } finally {
+            elements.submitBtn.disabled = false;
+            updateUIState();
+        }
+    };
+
+    // --- Drawer Controls ---
     const openLogin = (e) => {
         if (e) e.preventDefault();
-        const { screen, mobileMenu, emailInput } = getElements();
-
-        if (!screen) return;
-        if (mobileMenu) mobileMenu.classList.add('hidden');
-
-        // Reset positions and show screen
-        screen.classList.remove('translate-x-full');
-        screen.style.setProperty('translate', '0 0', 'important');
-        screen.style.setProperty('visibility', 'visible', 'important');
-        
+        if (elements.mobileMenu) elements.mobileMenu.classList.add('hidden');
+        elements.screen.classList.remove('translate-x-full');
+        elements.screen.style.setProperty('translate', '0 0', 'important');
+        elements.screen.style.setProperty('visibility', 'visible', 'important');
         document.body.style.overflow = 'hidden';
-
-        setTimeout(() => {
-            if (emailInput) emailInput.focus();
-        }, 500);
+        document.documentElement.classList.add('scroll-lock');
+        document.body.classList.add('scroll-lock');
     };
 
     const closeLogin = () => {
-        const { screen } = getElements();
-        if (screen) {
-            screen.classList.add('translate-x-full');
-            screen.style.setProperty('translate', '100% 0', 'important');
-        }
+        elements.screen.classList.add('translate-x-full');
+        elements.screen.style.setProperty('translate', '100% 0', 'important');
         document.body.style.overflow = '';
+        document.documentElement.classList.remove('scroll-lock');
+        document.body.classList.remove('scroll-lock');
+        closeQrPanel();
+        
+        // Dispatch event for cookie consent to show
+        document.dispatchEvent(new CustomEvent('loginClosed'));
     };
 
-    // Event Delegation
+    // --- Listeners ---
+    elements.form.addEventListener('submit', handleAuth);
+
+    elements.switchBtn.addEventListener('click', () => {
+        isRegisterMode = !isRegisterMode;
+        updateUIState();
+        validateForm();
+    });
+
     document.addEventListener('click', (e) => {
         const target = e.target;
-        
-        if (target.closest('#login-btn-desktop') || target.closest('#login-btn-mobile')) {
-            openLogin(e);
+        if (target.closest('#login-btn-desktop') || target.closest('#login-btn-mobile')) openLogin(e);
+        if (target.closest('#close-login-drawer')) closeLogin();
+        if (target.closest('#qr-login-btn')) {
+            e.preventDefault();
+            openQrPanel();
+        }
+        if (target.closest('#qr-login-close')) {
+            e.preventDefault();
+            closeQrPanel();
         }
         
-        if (target.closest('#close-login-drawer')) {
-            closeLogin();
-        }
-
         if (target.closest('#toggle-password-new')) {
-            const { passwordInput } = getElements();
-            if (passwordInput) {
-                const isMasked = passwordInput.type === 'password';
-                passwordInput.type = isMasked ? 'text' : 'password';
-                
-                const eyeVisible = document.getElementById('eye-visible-svg');
-                const eyeHidden = document.getElementById('eye-hidden-svg');
-                
-                if (isMasked) {
-                    // Password just became visible (type="text") -> Show 'Slash' Eye (Click to hide)
-                    if (eyeVisible) eyeVisible.classList.add('hidden');
-                    if (eyeHidden) eyeHidden.classList.remove('hidden');
-                } else {
-                    // Password just became masked (type="password") -> Show 'Open' Eye (Click to see)
-                    if (eyeVisible) eyeVisible.classList.remove('hidden');
-                    if (eyeHidden) eyeHidden.classList.add('hidden');
-                }
+            const isMasked = elements.passwordInput.type === 'password';
+            elements.passwordInput.type = isMasked ? 'text' : 'password';
+            // When masked: show "eye" (action: show). When visible: show "eye-slash" (action: hide).
+            document.getElementById('eye-visible-svg').classList.toggle('hidden', !isMasked);
+            document.getElementById('eye-hidden-svg').classList.toggle('hidden', isMasked);
+        }
+    });
+
+    document.addEventListener('input', validateForm);
+    document.addEventListener('change', (e) => {
+        if (!e.target.matches('#register-photo-new')) return;
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        if (!file.type || !file.type.startsWith('image/')) {
+            showMessage('Error', 'Please choose an image file.', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            showMessage('Error', 'Image must be under 2MB.', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            registerPhotoDataUrl = String(reader.result || '');
+            if (elements.photoPreview && registerPhotoDataUrl) {
+                elements.photoPreview.src = registerPhotoDataUrl;
             }
-        }
+        };
+        reader.onerror = () => showMessage('Error', 'Failed to read image file.', 'error');
+        reader.readAsDataURL(file);
     });
-
-    // Validation Listeners
-    document.addEventListener('input', (e) => {
-        if (e.target.id === 'login-email-new' || e.target.id === 'login-password-new') {
-            updateSubmitState();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLogin();
-    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLogin(); });
 });

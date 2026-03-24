@@ -13,9 +13,32 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <style>
+        /* Responsive back button: hide desktop top button on small screens and show bottom mobile button */
+        #checkout-back-home-mobile { display: none; }
+        @media (max-width: 767px) {
+            #checkout-back-home { display: none !important; }
+            #checkout-back-home-mobile { display: inline-flex !important; }
+        }
+        @media (min-width: 768px) {
+            #checkout-back-home-mobile { display: none !important; }
+        }
+    </style>
 </head>
 
 <body class="bg-ivory text-royal-black font-sans">
+
+    <!-- Back to Home (small fixed button) -->
+    <a href="../index.html" id="checkout-back-home"
+        style="position:fixed;top:1rem;left:1rem;z-index:80;display:inline-flex;align-items:center;gap:0.5rem;padding:0.45rem 0.7rem;background:#ffffffcc;border-radius:9999px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-weight:600;color:#111;backdrop-filter:blur(6px);text-decoration:none;">
+        ← Back
+    </a>
+
+    <!-- Mobile-only Back button (bottom) -->
+    <a href="../index.html" id="checkout-back-home-mobile"
+        style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:4.5rem;z-index:90;align-items:center;justify-content:center;padding:0.6rem 1rem;background:#fff;border-radius:9999px;box-shadow:0 10px 30px rgba(0,0,0,0.12);font-weight:700;color:#111;text-decoration:none;">
+        ← Back to Home
+    </a>
 
     <!-- Floating Mobile Total Bar -->
     <div
@@ -285,6 +308,23 @@
                             <p id="coupon-message" class="text-[11px] mt-2 font-medium hidden"></p>
                         </div>
 
+                        <div id="coin-section" class="mt-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Reward Coins</p>
+                                <p class="text-sm font-bold text-royal-black"><span id="coin-balance">0</span> available</p>
+                            </div>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                <input type="number" id="coin-redeem-input" min="0" step="1"
+                                    class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none transition-all font-medium"
+                                    placeholder="Coins to redeem">
+                                <button id="apply-coins"
+                                    class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">
+                                    Apply Coins
+                                </button>
+                            </div>
+                            <p id="coin-message" class="text-[11px] mt-2 font-medium text-gray-500"></p>
+                        </div>
+
                         <button id="confirm-order-btn"
                             class="w-full mt-8 bg-royal-black text-ivory py-3.5 rounded-full font-bold uppercase tracking-wider hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                             Place Order
@@ -303,6 +343,7 @@
         </div>
     </main>
 
+    <script src="../assets/Javascript/music-player.js"></script>
     <script src="../assets/Javascript/checkout.js"></script>
 </body>
 

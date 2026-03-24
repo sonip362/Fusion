@@ -15,13 +15,10 @@
 
     <!-- Preload critical assets -->
     <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap">
-    <link rel="preload" href="./assets/products.json" as="fetch" type="application/json" crossorigin>
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Bodoni+Moda:opsz,wght@6..96,700&family=Inter:wght@300;400;500&display=swap">
 
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Bodoni+Moda:opsz,wght@6..96,700&family=Inter:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Bodoni+Moda:opsz,wght@6..96,700&family=Inter:wght@300;400;500&display=swap">
 
     <!-- Preload Hero Images for LCP Optimization -->
     <link rel="preload" href="./assets/images/main/hero.webp" as="image" fetchpriority="high"
@@ -31,7 +28,6 @@
 
     <!-- Preloader Styles (from 404.html) -->
     <style>
-        /* Modern Login Styling */
         .brand-logo {
             font-family: 'Bodoni Moda', serif;
             letter-spacing: -0.02em;
@@ -185,43 +181,7 @@
             overflow: hidden;
         }
     </style>
-    <style id="header-override">
-        /* Immediate header override: black background + backdrop blur */
-        #main-header {
-            background: rgba(0,0,0,0.76) !important;
-            backdrop-filter: blur(18px) !important;
-            -webkit-backdrop-filter: blur(18px) !important;
-            border: 1px solid rgba(255,255,255,0.06) !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
-            color: #F7F5F2 !important;
-        }
 
-        #main-header.header-shrunk {
-            background: rgba(0,0,0,0.78) !important;
-        }
-
-        #main-header, #main-header a, #main-header button, #main-header svg {
-            color: #F7F5F2 !important;
-        }
-
-        #main-header .nav-link {
-            color: #F7F5F2 !important;
-        }
-
-        #main-header .nav-link.active {
-            background: rgba(255,255,255,0.06) !important;
-            color: #F7F5F2 !important;
-        }
-
-        /* Mobile drawer styling */
-        #mobile-menu>div {
-            background: rgba(0,0,0,0.92) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            border: 1px solid rgba(255,255,255,0.04) !important;
-            color: #F7F5F2 !important;
-        }
-    </style>
 </head>
 
 <body class="bg-ivory text-royal-black loading">
@@ -279,15 +239,36 @@
                 <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; flex: 1;">
                     <!-- Desktop icons (Visible only on desktop) -->
                     <div class="hidden md:flex items-center gap-0.75rem" style="gap: 0.75rem;">
-                        
-                        <a href="#" id="login-btn-desktop" aria-label="Login"
-                            class="text-royal-black hover:opacity-70 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                            </svg>
-                        </a>
+
+                        <!-- Desktop User Profile / Login -->
+                        <div id="user-profile-desktop" class="flex items-center gap-2">
+                            <a href="#" id="login-btn-desktop" aria-label="Login"
+                                class="text-royal-black hover:opacity-70 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </a>
+                            <div id="user-info-desktop"
+                                class="hidden flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-gray-100 shadow-sm">
+                                <img id="user-avatar-desktop" src="" alt="Profile"
+                                    class="w-7 h-7 rounded-full object-cover border border-black/10 cursor-pointer">
+                                <span class="text-[10px] font-bold text-black uppercase tracking-wider">Welcome, <span
+                                        id="user-name-desktop">User</span></span>
+                                <div class="w-[1px] h-3 bg-gray-200 mx-1"></div>
+                                <button id="logout-btn-desktop"
+                                    class="group flex items-center gap-1.5 text-[9px] uppercase tracking-widest font-black text-black transition-colors">
+                                    Logout
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor"
+                                        class="w-3.5 h-3.5 group-hover:scale-110 transition-transform text-black group-hover:text-red-600">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <a href="#" id="header-ai-btn" aria-label="AI Assistant"
                             class="text-royal-black hover:opacity-70 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -974,63 +955,107 @@
                 </h2>
                 <p class="font-sans text-gray-600 mb-8">Got questions? Our AI assistant is here to help! 💬</p>
 
-                <!-- FAQ Accordion -->
-                <div class="faq-accordion mt-8">
-                    <p class="font-sans text-lg text-gray-700 leading-relaxed">
-                        <span class="block text-left">
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">How do I find my
-                                perfect fit?</strong>
-                            Each product page includes a detailed size guide tailored to the specific cut and fabric of
-                            the
-                            garment. If you are between sizes, we recommend choosing the larger size for a relaxed,
-                            modern
-                            silhouette.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">What is your
-                                return
-                                policy?</strong>
-                            We accept returns of unworn, unwashed items in their original packaging within 14 days of
-                            delivery. Simply contact our support team to initiate the process.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">Do you offer
-                                international shipping?</strong>
-                            Yes, we ship our collections worldwide. Shipping rates and delivery windows are
-                            automatically
-                            calculated at checkout based on your destination.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">How long does
-                                shipping
-                                take?</strong>
-                            Standard domestic shipping typically takes 3-5 business days. International shipping varies
-                            by
-                            location but generally arrives within 7-14 business days.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">Can I track my
-                                order?</strong>
-                            Absolutely. Once your order has been dispatched, you will receive an email with a tracking
-                            number and a link to monitor your delivery's progress in real-time.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">Are your materials
-                                sustainably sourced?</strong>
-                            Sustainability is at our core. We partner with ethical suppliers to source premium organic
-                            cotton and recycled fabrics, ensuring minimal environmental impact.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">Can I change or
-                                cancel
-                                my order?</strong>
-                            Orders are processed quickly, but we will do our best to accommodate changes if requested
-                            within
-                            2 hours of placement. Please contact us immediately via our support team.
-                            <br><br>
-                            <strong class="block text-xl font-serif font-bold mb-2 text-forest-green">Do you offer gift
-                                wrapping?</strong>
-                            Yes, we provide elegant gift packaging options at checkout. Each item is carefully wrapped
-                            in
-                            our signature eco-friendly tissue and placed in a premium gift box.
 
-                        </span>
-                    </p>
+                <!-- FAQ Accordion -->
+                <div class="faq-accordion mt-12 space-y-2">
+                    <!-- Item 1 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">How do I find my perfect fit?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Each product page includes a detailed size guide tailored to the specific cut and fabric
+                                of the garment. If you are between sizes, we recommend choosing the larger size for a
+                                relaxed, modern silhouette.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">What is your return policy?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>We accept returns of unworn, unwashed items in their original packaging within 14 days of
+                                delivery. Simply contact our support team to initiate the process.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">Do you offer international shipping?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes, we ship our collections worldwide. Shipping rates and delivery windows are
+                                automatically calculated at checkout based on your destination.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">How long does shipping take?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Standard domestic shipping typically takes 3-5 business days. International shipping
+                                varies by location but generally arrives within 7-14 business days.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">Can I track my order?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Absolutely. Once your order has been dispatched, you will receive an email with a
+                                tracking number and a link to monitor your delivery's progress in real-time.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">Are your materials sustainably sourced?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Sustainability is at our core. We partner with ethical suppliers to source premium
+                                organic cotton and recycled fabrics, ensuring minimal environmental impact.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 7 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">Can I change or cancel my order?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Orders are processed quickly, but we will do our best to accommodate changes if requested
+                                within 2 hours of placement. Please contact us immediately via our support team.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 8 -->
+                    <div class="faq-item">
+                        <button class="faq-question group" aria-expanded="false">
+                            <h3 class="text-royal-black">Do you offer gift wrapping?</h3>
+                            <div class="faq-icon" aria-hidden="true"></div>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes, we provide elegant gift packaging options at checkout. Each item is carefully
+                                wrapped in our signature eco-friendly tissue and placed in a premium gift box.</p>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </section>
 
@@ -1038,9 +1063,9 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div class="overflow-hidden rounded-lg skeleton card-entrance">
-                        <img src="./assets/images/main/story.webp"
-                            alt="An artisan craftsman working on intricate Indian embroidery"
-                            class="w-full h-full object-cover product-image" loading="lazy" width="800" height="600"
+                        <img src="./assets/images/main/story.webp" -
+                            alt="An artisan craftsman working on intricate Indian embroidery" -
+                            class="w-full h-full object-cover product-image" loading="lazy" width="800" height="600" -
                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');">
                     </div>
                     <div class="card-entrance">
@@ -1049,9 +1074,11 @@
                             Fusion's Story
                         </h2>
                         <p class="font-sans text-lg text-royal-black/90 leading-relaxed">
-                            Fusion started with a simple idea: fashion should be a mix of everything you love. We blend
+                            Fusion started with a simple idea: fashion should be a mix of everything you love. We
+                            blend
                             timeless classics with modern, edgy details to create pieces that work for your real life.
-                            Our goal is to make stylish, easy-to-wear clothes that help you feel confident and uniquely
+                            Our goal is to make stylish, easy-to-wear clothes that help you feel confident and
+                            uniquely
                             you every day. From casual basics to standout statement pieces, Fusion is all about
                             celebrating individuality through fashion. Join us on this journey to redefine modern
                             wear—one outfit at a time.
@@ -1059,6 +1086,7 @@
                     </div>
                 </div>
             </div>
+
         </section>
 
         <!-- Newsletter Section -->
@@ -1234,7 +1262,7 @@
                             </div>
                             <div>
                                 <p id="reward-tracker-text"
-                                    class="text-ivory text-[10px] font-sans uppercase tracking-[0.2em] opacity-50 mb-1">
+                                    class="text-black text-[10px] font-sans uppercase tracking-[0.2em] opacity-50 mb-1">
                                     Next Reward
                                 </p>
                                 <h4 id="reward-status-text"
@@ -1294,7 +1322,7 @@
                             <span id="cart-rec-label"
                                 class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold"></span>
                         </div>
-                        <div id="cart-rec-grid" class="grid grid-cols-2 gap-3">
+                        <div id="cart-rec-grid" class="grid grid-cols-3 gap-2">
                             <!-- Dynamically injected -->
                         </div>
                     </div>
@@ -1449,106 +1477,109 @@
         </div>
     </div>
 
-    <section id=footer>
-        <footer class="bg-royal-black text-ivory/70 pt-20 pb-10">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer class="bg-royal-black text-ivory/70 pt-20 pb-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
 
-                    <div>
-                        <div class="flex items-center gap-4 mb-4">
-                            <img src="./assets/images/main/logo.png" class="w-16 h-16" alt="logo" width="64"
-                                height="64">
-                            <a href="#home" class="text-4xl font-serif font-bold text-ivory">
-                                Fusion
-                            </a>
-                        </div>
-                        <p class="font-sans text-sm max-w-xs">
-                            Fusion is a premium fashion brand that combines the best of premium
-                            quality with modern
-                            design.
-                        </p>
+                <div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="./assets/images/main/logo.png" class="w-16 h-16" alt="logo" width="64" height="64">
+                        <a href="#home" class="text-4xl font-serif font-bold text-ivory">
+                            Fusion
+                        </a>
                     </div>
-
-                    <div>
-                        <h5 class="text-lg font-serif font-bold text-ivory mb-4">Quick Links
-                        </h5>
-                        <ul class="space-y-3">
-                            <li><a href="#shop-by-collection" class="hover:text-ivory transition-colors">Collections</a>
-                            </li>
-                            <li><a href="#about" class="hover:text-ivory transition-colors">Our
-                                    Story</a></li>
-                            <li><a href="#limited" class="hover:text-ivory transition-colors">Limited
-                                    Edition</a></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h5 class="text-lg font-serif font-bold text-ivory mb-4">Support</h5>
-                        <ul class="space-y-3">
-                            <li><button type="button" id="open-shipping-modal"
-                                    class="hover:text-ivory transition-colors text-left">Shipping
-                                    & Returns</button>
-                            </li>
-                            <li><button type="button" id="open-sizing-modal"
-                                    class="hover:text-ivory transition-colors text-left">Sizing
-                                    Guide</button></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h5 class="text-lg font-serif font-bold text-ivory mb-4">Contact</h5>
-                        <ul class="space-y-3">
-                            <li><a href="mailto:info@fusion.com"
-                                    class="hover:text-ivory transition-colors">info@fusion.com</a>
-                            </li>
-                            <li><a href="tel:+910000000000" class="hover:text-ivory transition-colors">+91 (000)
-                                    000-0000</a></li>
-                        </ul>
-                    </div>
-
+                    <p class="font-sans text-sm max-w-xs">
+                        Fusion is a premium fashion brand that combines the best of premium
+                        quality with modern
+                        design.
+                    </p>
                 </div>
 
-                <div
-                    class="mt-16 pt-8 border-t border-ivory/20 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div class="flex gap-6">
-                        <a href="https://facebook.com"
-                            class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
-                            aria-label="Facebook">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                            </svg>
-                        </a>
-                        <a href="https://instagram.com"
-                            class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
-                            aria-label="Instagram">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-                            </svg>
-                        </a>
-                        <a href="https://twitter.com"
-                            class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
-                            aria-label="Twitter">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z" />
-                            </svg>
-                        </a>
-                        <a href="https://youtube.com"
-                            class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
-                            aria-label="YouTube">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                            </svg>
-                        </a>
-                    </div>
-                    <p class="font-sans text-sm text-ivory/80">&copy; 2026 Fusion. All Rights Reserved.</p>
+                <div>
+                    <h5 class="text-lg font-serif font-bold text-ivory mb-4">Quick Links
+                    </h5>
+                    <ul class="space-y-3">
+                        <li><a href="#shop-by-collection" class="hover:text-ivory transition-colors">Collections</a>
+                        </li>
+                        <li><a href="#about" class="hover:text-ivory transition-colors">Our
+                                Story</a></li>
+                        <li><a href="#limited" class="hover:text-ivory transition-colors">Limited
+                                Edition</a></li>
+                    </ul>
                 </div>
+
+                <div>
+                    <h5 class="text-lg font-serif font-bold text-ivory mb-4">Support</h5>
+                    <ul class="space-y-3">
+                        <li><button type="button" id="open-shipping-modal"
+                                class="hover:text-ivory transition-colors text-left">Shipping
+                                & Returns</button>
+                        </li>
+                        <li><button type="button" id="open-sizing-modal"
+                                class="hover:text-ivory transition-colors text-left">Sizing
+                                Guide</button>
+                        </li>
+                        <li><button type="button" id="open-privacy-modal"
+                                class="hover:text-ivory transition-colors text-left">Privacy policy
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-lg font-serif font-bold text-ivory mb-4">Contact</h5>
+                    <ul class="space-y-3">
+                        <li><a href="mailto:info@fusion.com"
+                                class="hover:text-ivory transition-colors">info@fusion.com</a>
+                        </li>
+                        <li><a href="tel:+910000000000" class="hover:text-ivory transition-colors">+91 (000)
+                                000-0000</a></li>
+                    </ul>
+                </div>
+
             </div>
-        </footer>
-    </section>
+
+            <div
+                class="mt-16 pt-8 border-t border-ivory/20 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex gap-6">
+                    <a href="https://facebook.com"
+                        class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
+                        aria-label="Facebook">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                    </a>
+                    <a href="https://instagram.com"
+                        class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
+                        aria-label="Instagram">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+                        </svg>
+                    </a>
+                    <a href="https://twitter.com"
+                        class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
+                        aria-label="Twitter">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z" />
+                        </svg>
+                    </a>
+                    <a href="https://youtube.com"
+                        class="text-ivory/60 hover:text-ivory transition-all duration-300 hover:-translate-y-1"
+                        aria-label="YouTube">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                        </svg>
+                    </a>
+                </div>
+                <p class="font-sans text-sm text-ivory/80">&copy; 2026 Fusion. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
 
     <button id="music-toggle-btn" type="button" title="Toggle music" class="hidden">
         <svg id="music-on-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -1884,15 +1915,37 @@
                     </a>
 
                     <div class="pt-5 mt-2 border-t border-black/5 flex flex-col gap-5">
-                        <a href="#" id="login-btn-mobile"
-                            class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
-                            <span>Account</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                            </svg>
-                        </a>
+                        <div id="user-profile-mobile">
+                            <a href="#" id="login-btn-mobile"
+                                class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
+                                <span>Account</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </a>
+                            <div id="user-info-mobile"
+                                class="hidden flex flex-col gap-3 py-3 px-4 bg-black/5 rounded-2xl">
+                                <div
+                                    class="flex items-center justify-between text-lg font-bold text-black uppercase tracking-widest">
+                                    <div class="flex items-center gap-3">
+                                        <img id="user-avatar-mobile" src="" alt="Profile"
+                                            class="w-10 h-10 rounded-full object-cover border border-black/10 cursor-pointer">
+                                        <span>Welcome, <span id="user-name-mobile">User</span></span>
+                                    </div>
+                                </div>
+                                <button id="logout-btn-mobile"
+                                    class="flex items-center gap-2 text-[10px] font-black text-red-600 uppercase tracking-[0.2em] border-t border-black/5 pt-3">
+                                    <span>Log Out</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-4 h-4 text-red-600">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <a href="#" id="wishlist-btn-mobile"
                             class="mobile-menu-link flex items-center justify-between text-xl font-medium text-royal-black/80 hover:text-royal-black transition-colors">
                             <span>Wishlist</span>
@@ -1930,99 +1983,277 @@
                         <!-- Brand Logo -->
                         <h1 class="brand-logo font-bold text-black uppercase">Fusion</h1>
 
-                        <form id="login-form-new" class="space-y-8">
-                            <!-- Email Pill -->
-                            <div class="space-y-2">
-                                <label class="label-text ml-6">Email Address</label>
-                                <input id="login-email-new" class="fusion-input" type="email"
-                                    placeholder="you@example.com" required>
-                            </div>
+                        <!-- Auth View (Hidden when logged In) -->
+                        <div id="auth-view-content" class="space-y-8">
+                            <form id="login-form-new" class="space-y-8">
+                                <!-- Full Name Pill (Hidden by default for login) -->
+                                <div id="register-name-container" class="space-y-2 hidden">
+                                    <label class="label-text ml-6">Full Name</label>
+                                    <input id="register-name-new" class="fusion-input" type="text"
+                                        placeholder="John Doe">
+                                </div>
 
-                            <!-- Password Pill -->
-                            <div class="space-y-2 relative">
-                                <label class="label-text ml-6">Password</label>
-                                <div class="relative">
-                                    <input id="login-password-new" class="fusion-input" type="password"
-                                        placeholder="••••••••" required>
-                                    <button type="button" id="toggle-password-new"
-                                        class="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-black transition-all duration-300">
-                                        <!-- Eye (Visible) - Cleaner Geometric Design -->
-                                        <svg id="eye-visible-svg" class="w-5 h-5" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                <div id="register-photo-container" class="space-y-2 hidden">
+                                    <label class="label-text ml-6">Profile Picture (Optional)</label>
+                                    <div class="flex items-center gap-3">
+                                        <img id="register-photo-preview" src="assets/images/main/placeholder.png"
+                                            alt="Profile Preview"
+                                            class="w-12 h-12 rounded-full object-cover border border-black/10">
+                                        <input id="register-photo-new" class="fusion-input !py-3" type="file"
+                                            accept="image/*">
+                                    </div>
+                                </div>
+
+                                <!-- Email Pill -->
+                                <div class="space-y-2">
+                                    <label class="label-text ml-6">Email Address</label>
+                                    <input id="login-email-new" class="fusion-input" type="email"
+                                        placeholder="you@example.com" required>
+                                </div>
+
+                                <!-- Password Pill -->
+                                <div class="space-y-2 relative">
+                                    <label class="label-text ml-6">Password</label>
+                                    <div class="relative">
+                                        <input id="login-password-new" class="fusion-input" type="password"
+                                            placeholder="••••••••" required>
+                                        <button type="button" id="toggle-password-new"
+                                            class="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-black transition-all duration-300">
+                                            <!-- Eye (Visible) -->
+                                            <svg id="eye-visible-svg" class="w-5 h-5" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                viewBox="0 0 24 24">
+                                                <path
+                                                    d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                            <!-- Eye Slash (Hidden) -->
+                                            <svg id="eye-hidden-svg" class="w-5 h-5 hidden" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                                                <path
+                                                    d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                                                <path
+                                                    d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                                                <line x1="2" x2="22" y1="2" y2="22" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <a id="forgot-password-link"
+                                    class="helper-text hover:text-black transition-colors underline underline-offset-4 block ml-4"
+                                    href="#">Have you forgotten your password?</a>
+
+                                <!-- Primary Actions -->
+                                <div class="flex flex-col space-y-4 pt-6">
+                                    <button type="submit" id="login-submit-btn" disabled
+                                        class="w-full bg-black text-white py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold text-ivory transition-all disabled:opacity-30 disabled:cursor-not-allowed">Log
+                                        In</button>
+                                    <button type="button" id="switch-to-register-btn"
+                                        class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold hover:bg-royal-black hover:text-white transition-all">Create
+                                        Account</button>
+                                    <button type="button" id="qr-login-btn"
+                                        class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold flex items-center justify-center space-x-3 hover:bg-black hover:text-white transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                             viewBox="0 0 24 24">
                                             <path
-                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                            <circle cx="12" cy="12" r="3" />
+                                                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M16.725 13.725L15.15 15.3m0 0l-1.575 1.575m1.575-1.575l-1.575-1.575m1.575 1.575l1.575 1.575M20.25 10.5v.008H20.25V10.5zm0 3v.008H20.25V13.5zm-3-3v.008H17.25V10.5zm0 3v.008H17.25V13.5zM13.5 20.25V21H14.25V20.25H13.5zm0-3V18H14.25V17.25H13.5zm3 3V21H17.25V20.25H16.725zm0-3V18H17.25V17.25H16.725zm3 3V21H20.25V20.25H19.725zm0-3V18H20.25V17.25H19.725z"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
-                                        <!-- Eye Slash (Hidden) - Cleaner Geometric Design -->
-                                        <svg id="eye-hidden-svg" class="w-5 h-5 hidden" fill="none"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" viewBox="0 0 24 24">
-                                            <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                                        <span>Log in with QR code</span>
+                                    </button>
+
+                                    <!-- QR Login Panel (opens on demand) -->
+                                    <div id="qr-login-panel"
+                                        class="hidden w-full rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div>
+                                                <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-black">
+                                                    QR
+                                                    Login</p>
+                                                <p class="text-xs text-zinc-500 mt-1">Coming soon. Placeholder only.</p>
+                                            </div>
+                                            <button type="button" id="qr-login-close"
+                                                class="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-black transition-colors">
+                                                Close
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-4 flex items-center justify-center">
+                                            <div
+                                                class="w-56 h-56 rounded-2xl border border-black/10 bg-zinc-50 flex items-center justify-center">
+                                                <svg width="196" height="196" viewBox="0 0 196 196" aria-hidden="true">
+                                                    <rect width="196" height="196" fill="#fff" />
+                                                    <rect x="10" y="10" width="50" height="50" fill="#000" />
+                                                    <rect x="18" y="18" width="34" height="34" fill="#fff" />
+                                                    <rect x="24" y="24" width="22" height="22" fill="#000" />
+
+                                                    <rect x="136" y="10" width="50" height="50" fill="#000" />
+                                                    <rect x="144" y="18" width="34" height="34" fill="#fff" />
+                                                    <rect x="150" y="24" width="22" height="22" fill="#000" />
+
+                                                    <rect x="10" y="136" width="50" height="50" fill="#000" />
+                                                    <rect x="18" y="144" width="34" height="34" fill="#fff" />
+                                                    <rect x="24" y="150" width="22" height="22" fill="#000" />
+
+                                                    <!-- Random-ish modules (placeholder) -->
+                                                    <rect x="78" y="22" width="10" height="10" fill="#000" />
+                                                    <rect x="98" y="22" width="10" height="10" fill="#000" />
+                                                    <rect x="78" y="42" width="10" height="10" fill="#000" />
+                                                    <rect x="108" y="52" width="10" height="10" fill="#000" />
+                                                    <rect x="78" y="62" width="10" height="10" fill="#000" />
+                                                    <rect x="98" y="62" width="10" height="10" fill="#000" />
+
+                                                    <rect x="78" y="88" width="10" height="10" fill="#000" />
+                                                    <rect x="88" y="98" width="10" height="10" fill="#000" />
+                                                    <rect x="108" y="98" width="10" height="10" fill="#000" />
+                                                    <rect x="128" y="88" width="10" height="10" fill="#000" />
+                                                    <rect x="118" y="118" width="10" height="10" fill="#000" />
+                                                    <rect x="88" y="118" width="10" height="10" fill="#000" />
+                                                    <rect x="78" y="128" width="10" height="10" fill="#000" />
+
+                                                    <rect x="78" y="150" width="10" height="10" fill="#000" />
+                                                    <rect x="98" y="150" width="10" height="10" fill="#000" />
+                                                    <rect x="118" y="150" width="10" height="10" fill="#000" />
+                                                    <rect x="138" y="140" width="10" height="10" fill="#000" />
+                                                    <rect x="148" y="160" width="10" height="10" fill="#000" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Social Login Footer -->
+                                <div class="pt-10 space-y-6">
+                                    <div class="space-y-4">
+                                        <p class="label-text ml-4">Access With</p>
+                                        <p class="text-[0.65rem] text-zinc-500 max-w-sm leading-relaxed ml-4">By logging
+                                            in
+                                            with my social login, I agree to link my account in accordance with the <a
+                                                class="underline hover:text-black"
+                                                href="./assets/privacy-policy.html">Privacy
+                                                Policy</a></p>
+                                    </div>
+                                    <button type="button"
+                                        class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold flex items-center justify-center space-x-3 hover:bg-white transition-all group">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24">
                                             <path
-                                                d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                                                fill="#4285F4"></path>
                                             <path
-                                                d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                                            <line x1="2" x2="22" y1="2" y2="22" />
+                                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                                                fill="#34A853"></path>
+                                            <path
+                                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                                                fill="#FBBC05"></path>
+                                            <path
+                                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                                                fill="#EA4335"></path>
+                                        </svg>
+                                        <span>Continue with Google</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Account Management View (Visible when logged in) -->
+                        <div id="account-view-content" class="space-y-10 hidden">
+                            <div class="space-y-2">
+                                <p class="label-text ml-6">Personal Profile</p>
+                                <div
+                                    class="bg-white/50 backdrop-blur-sm rounded-[2rem] p-6 border border-black/5 flex items-center gap-6">
+                                    <div class="relative group">
+                                        <img id="account-view-avatar" src="assets/images/main/placeholder.png"
+                                            alt="Profile"
+                                            class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-lg">
+                                        <button id="account-change-photo-btn"
+                                            class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="2" stroke="white" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h2 id="account-view-name" class="text-2xl font-serif font-bold text-black">User
+                                            Name</h2>
+                                        <p id="account-view-email" class="text-sm text-zinc-500 font-sans">
+                                            user@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <p class="label-text ml-6">Privacy & Data</p>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <button id="download-data-btn"
+                                        class="w-full flex items-center justify-between bg-white hover:bg-zinc-50 px-8 py-6 rounded-full border border-black/10 transition-all group">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 bg-black/5 rounded-full flex items-center justify-center text-black">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                </svg>
+                                            </div>
+                                            <div class="text-left">
+                                                <p class="text-[10px] font-black uppercase tracking-widest text-black">
+                                                    Download My Data</p>
+                                                <p class="text-[10px] text-zinc-400">Request all personal data collected
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor"
+                                            class="w-4 h-4 text-zinc-300 group-hover:text-black transition-colors">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                        </svg>
+                                    </button>
+
+                                    <button id="delete-account-btn"
+                                        class="w-full flex items-center justify-between bg-white hover:bg-red-50 px-8 py-6 rounded-full border border-red-100 transition-all group">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="w-10 h-10 bg-red-100/50 rounded-full flex items-center justify-center text-red-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </div>
+                                            <div class="text-left">
+                                                <p
+                                                    class="text-[10px] font-black uppercase tracking-widest text-red-600">
+                                                    Delete Account</p>
+                                                <p class="text-[9px] text-red-300">Permanently remove your account and
+                                                    data</p>
+                                            </div>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor"
+                                            class="w-4 h-4 text-red-200 group-hover:text-red-600 transition-colors">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                         </svg>
                                     </button>
                                 </div>
                             </div>
 
-                            <a class="helper-text hover:text-black transition-colors underline underline-offset-4 block ml-4"
-                                href="#">Have you forgotten your password?</a>
-
-                            <!-- Primary Actions -->
-                            <div class="flex flex-col space-y-4 pt-6">
-                                <button id="login-submit-btn" disabled
-                                    class="w-full bg-black text-white py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold hover:bg-gray-300 text-ivory transition-all disabled:opacity-30 disabled:cursor-not-allowed">Log
-                                    In</button>
-                                <button type="button"
-                                    class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold hover:bg-gray-300 hover:text-white transition-all">Register</button>
-                                <button type="button"
-                                    class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold flex items-center justify-center space-x-3 hover:bg-black hover:text-white transition-all">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                        <path
-                                            d="M16.725 13.725L15.15 15.3m0 0l-1.575 1.575m1.575-1.575l-1.575-1.575m1.575 1.575l1.575 1.575M20.25 10.5v.008H20.25V10.5zm0 3v.008H20.25V13.5zm-3-3v.008H17.25V10.5zm0 3v.008H17.25V13.5zM13.5 20.25V21H14.25V20.25H13.5zm0-3V18H14.25V17.25H13.5zm3 3V21H17.25V20.25H16.725zm0-3V18H17.25V17.25H16.725zm3 3V21H20.25V20.25H19.725zm0-3V18H20.25V17.25H19.725z"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span>Log in with QR code</span>
-                                </button>
-                            </div>
-
-                            <!-- Social Login Footer -->
-                            <div class="pt-10 space-y-6">
-                                <div class="space-y-4">
-                                    <p class="label-text ml-4">Access With</p>
-                                    <p class="text-[0.65rem] text-zinc-500 max-w-sm leading-relaxed ml-4">By logging in
-                                        with my social login, I agree to link my account in accordance with the <a
-                                            class="underline hover:text-black" href="./assets/shipping.html">Privacy
-                                            Policy</a></p>
-                                </div>
-                                <button type="button"
-                                    class="w-full border border-black py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold flex items-center justify-center space-x-3 hover:bg-white transition-all group">
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24">
-                                        <path
-                                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                                            fill="#4285F4"></path>
-                                        <path
-                                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                                            fill="#34A853"></path>
-                                        <path
-                                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
-                                            fill="#FBBC05"></path>
-                                        <path
-                                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                                            fill="#EA4335"></path>
-                                    </svg>
-                                    <span>Continue with Google</span>
-                                </button>
-                            </div>
-                        </form>
+                            <button id="logout-btn-drawer"
+                                class="w-full bg-black text-white py-5 rounded-full text-xs tracking-[0.2em] uppercase font-bold transition-all hover:bg-zinc-800">
+                                Log Out
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -2049,9 +2280,121 @@
     </div>
 
 
-    <script src="assets/Javascript/main.js" defer></script>
+    <!-- Avatar Editor Modal -->
+    <div id="avatar-editor-modal" class="fixed inset-0 z-[10001] hidden flex items-center justify-center p-4">
+        <div id="avatar-editor-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div id="avatar-editor-panel"
+            class="relative w-full max-w-xl bg-white rounded-[2rem] p-6 md:p-8 shadow-2xl transition-all duration-300 opacity-0 scale-95"
+            data-transition-type="fade">
+            <div class="flex items-center justify-between gap-4 mb-4">
+                <h3 class="text-lg md:text-xl font-serif font-bold text-black">Edit Profile Picture</h3>
+                <button id="avatar-editor-close" type="button"
+                    class="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-black transition-colors">
+                    Close
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+                <div class="space-y-3">
+                    <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-black">Drag & Drop</p>
+                    <div id="avatar-dropzone"
+                        class="h-48 rounded-2xl border-2 border-dashed border-black/20 bg-zinc-50 flex flex-col items-center justify-center text-center px-4 cursor-pointer transition-colors">
+                        <p class="text-xs text-zinc-600">Drop image here or click to upload</p>
+                        <p class="text-[10px] uppercase tracking-[0.15em] text-zinc-400 mt-2">PNG JPG WEBP GIF</p>
+                    </div>
+                    <input id="avatar-editor-file-input" type="file" accept="image/*" class="hidden">
+                    <label for="avatar-editor-zoom"
+                        class="text-[10px] uppercase tracking-[0.2em] font-bold text-black block">Zoom</label>
+                    <input id="avatar-editor-zoom" type="range" min="1" max="3" step="0.01" value="1"
+                        class="w-full accent-black">
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-black">Preview</p>
+                    <div class="flex items-center justify-center">
+                        <div id="avatar-preview-circle"
+                            class="relative w-44 h-44 rounded-full overflow-hidden bg-zinc-100 border border-black/10 cursor-grab touch-none">
+                            <img id="avatar-preview-image" src="" alt="Avatar Preview"
+                                class="absolute top-1/2 left-1/2 max-w-none select-none pointer-events-none">
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-zinc-500 text-center">Drag inside the circle to position image.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-3">
+                <button id="avatar-editor-cancel" type="button"
+                    class="px-6 py-3 rounded-full border border-black text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-zinc-100 transition-colors">
+                    Cancel
+                </button>
+                <button id="avatar-editor-accept" type="button"
+                    class="px-6 py-3 rounded-full bg-black text-white text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-zinc-800 transition-colors">
+                    Accept
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Message Modal (Alert replacement) -->
+    <div id="message-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" id="message-modal-backdrop"></div>
+        <div id="message-modal-panel"
+            class="relative w-full max-w-sm bg-white rounded-[2.5rem] p-10 shadow-2xl transition-all duration-300 opacity-0 scale-95"
+            data-transition-type="fade">
+            <div class="text-center">
+                <div id="message-modal-icon"
+                    class="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-8 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                </div>
+                <h3 id="message-modal-title"
+                    class="text-2xl font-bold font-serif text-black uppercase tracking-tight mb-3">Notice</h3>
+                <p id="message-modal-text" class="text-zinc-500 text-sm leading-relaxed px-2 mb-8">Message goes here.
+                </p>
+                <button id="message-modal-close"
+                    class="w-full bg-black text-white py-5 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-zinc-800 transition-all">Okay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="delete-confirm-modal" class="fixed inset-0 z-[10001] hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" id="delete-confirm-backdrop"></div>
+        <div id="delete-confirm-panel"
+            class="relative w-full max-w-sm bg-white rounded-[2.5rem] p-10 shadow-2xl transition-all duration-300 opacity-0 scale-95"
+            data-transition-type="fade">
+            <div class="text-center">
+                <div
+                    class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-8 text-red-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold font-serif text-black uppercase tracking-tight mb-3">Delete Account?</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed px-2 mb-8">
+                    This action is <strong class="text-black">permanent</strong>. You will lose all your reward coins,
+                    order history, and saved items.
+                </p>
+                <div class="flex flex-col gap-3">
+                    <button id="delete-confirm-final-btn"
+                        class="w-full bg-red-600 text-white py-5 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-red-700 transition-all shadow-lg">Confirm
+                        Deletion</button>
+                    <button id="delete-confirm-cancel-btn"
+                        class="w-full bg-zinc-100 text-zinc-600 py-5 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-zinc-200 transition-all">Go
+                        Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/Javascript/modal-logic.js"></script>
+    <script src="assets/Javascript/main.js"></script>
+    <script src="assets/Javascript/music-player.js" defer></script>
     <script src="assets/Javascript/toast-message.js" defer></script>
-    <script src="assets/Javascript/modal-logic.js" defer></script>
     <script src="assets/Javascript/cart.js" defer></script>
     <script src="assets/Javascript/wishlist.js" defer></script>
     <script src="assets/Javascript/products.js" defer></script>

@@ -1,5 +1,18 @@
 // --- Cart Operations ---
 
+// Preload coupon tiers into a global cache so cart UI can show unlocked coupons
+(function preloadCouponTiers() {
+    try {
+        const isSubPage = window.location.pathname.includes('/pages/');
+        const url = isSubPage ? '../assets/data/coupons.json' : './assets/data/coupons.json';
+        fetch(url, { cache: 'no-store' })
+            .then(r => { if (!r.ok) throw new Error('Failed to load coupons.json'); return r.json(); })
+            .then(json => { if (Array.isArray(json)) window.__cachedCouponTiers = json; })
+            .catch(err => { console.warn('preloadCouponTiers:', err); });
+    } catch (e) { console.warn('preloadCouponTiers error', e); }
+})();
+
+
 // --- Cart Recommendations (You May Also Like) ---
 const renderCartRecommendations = async () => {
     const recContainer = document.getElementById('cart-recommendations');
@@ -32,10 +45,9 @@ const renderCartRecommendations = async () => {
 
     try {
         const isSubPage = window.location.pathname.includes('/pages/');
-        const jsonPath = isSubPage ? '../assets/products.json' : './assets/products.json';
-        const res = await fetch(jsonPath, { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to load products');
-        const allProducts = await res.json();
+        const response = await fetch('/api/products', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Failed to load products');
+        const allProducts = await response.json();
 
         const cartIds = new Set(cart.map(i => i.id));
 
@@ -51,8 +63,8 @@ const renderCartRecommendations = async () => {
             return true; // both — show all
         });
 
-        // Pick up to 4
-        const picks = candidates.slice(0, 4);
+        // Pick up to 3
+        const picks = candidates.slice(0, 6);
 
         if (picks.length === 0) {
             recContainer.classList.add('hidden');
@@ -75,11 +87,11 @@ const renderCartRecommendations = async () => {
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          onerror="this.onerror=null;this.src='https://placehold.co/300x400/F7F5F2/1A1A1A?text=IMG';">
                 </div>
-                <div class="p-3 flex flex-col gap-2">
+                <div class="p-2 flex flex-col gap-1.5">
                     <div>
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold mb-0.5">${p.category}</p>
-                        <h4 class="text-sm font-serif font-bold text-royal-black leading-tight line-clamp-1">${p.name}</h4>
-                        <p class="text-xs text-gray-600 mt-0.5">${p.price}</p>
+                        <p class="text-[9px] uppercase tracking-widest text-gray-400 font-semibold mb-0.5">${p.category}</p>
+                        <h4 class="text-xs font-serif font-bold text-royal-black leading-tight line-clamp-1">${p.name}</h4>
+                        <p class="text-[10px] text-gray-600 mt-0.5">${p.price}</p>
                     </div>
                     <button type="button"
                         class="cart-rec-add-btn w-full py-2 rounded-full bg-royal-black text-ivory text-[10px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors mt-auto"
@@ -206,6 +218,23 @@ const renderCart = () => {
             return sum + (parsePrice(item.price) * (Number(item.quantity) || 1));
         }, 0);
 
+        // If coupon data hasn't been loaded yet, fetch it now and re-render once available.
+        if (typeof window.__cachedCouponTiers === 'undefined' && !window.__couponFetchInProgress) {
+            try {
+                window.__couponFetchInProgress = true;
+                const isSubPage = window.location.pathname.includes('/pages/');
+                const url = isSubPage ? '../assets/data/coupons.json' : './assets/data/coupons.json';
+                fetch(url, { cache: 'no-store' })
+                    .then(r => { if (!r.ok) throw new Error('Failed to load coupons.json'); return r.json(); })
+                    .then(json => { if (Array.isArray(json)) window.__cachedCouponTiers = json; })
+                    .catch(err => { console.warn('renderCart: could not load coupons.json', err); })
+                    .finally(() => { window.__couponFetchInProgress = false; renderCart(); });
+            } catch (e) {
+                window.__couponFetchInProgress = false;
+            }
+            return; // wait for async load
+        }
+
         cartItemsList.innerHTML = cart.map(item => {
             const quantity = Number(item.quantity) || 1;
             const itemPrice = parsePrice(item.price) * quantity;
@@ -249,11 +278,31 @@ const renderCart = () => {
         const couponContainer = document.getElementById('unlocked-coupon-container');
         const couponCodeText = document.getElementById('unlocked-coupon-code');
 
-        const tiers = [
-            { threshold: 1500, label: '10% OFF', code: 'FUSION10', icon: '✨' },
-            { threshold: 3000, label: '20% OFF', code: 'FUSION20', icon: '🔥' },
-            { threshold: 5000, label: 'VIP 30% OFF', code: 'KINGFUSION', icon: '👑' }
+        // Load coupon tiers (cached) or default
+        const defaultTiers = [
+            { threshold: 1500, code: 'FUSION10', discount: 0.10 },
+            { threshold: 3000, code: 'FUSION20', discount: 0.20 },
+            { threshold: 5000, code: 'KINGFUSION', discount: 0.30 }
         ];
+
+        // Use globally cached coupon list if available (loaded at module start)
+        const rawTiers = (window.__cachedCouponTiers && Array.isArray(window.__cachedCouponTiers) && window.__cachedCouponTiers.length)
+            ? window.__cachedCouponTiers
+            : defaultTiers;
+
+        // Map raw tiers to display tiers with label/icon
+        const tiers = rawTiers.slice().sort((a, b) => a.threshold - b.threshold).map((t, idx, arr) => {
+            const pct = Math.round((Number(t.discount) || 0) * 100);
+            let icon = '✨';
+            if (pct >= 30) icon = '👑';
+            else if (pct >= 20) icon = '🔥';
+            return {
+                threshold: Number(t.threshold),
+                label: (pct > 0) ? `${pct}% OFF` : 'Discount',
+                code: String(t.code || '').toUpperCase(),
+                icon
+            };
+        });
 
         if (rewardTrackerContainer && rewardStatusText && rewardTrackerBar) {
             rewardTrackerContainer.classList.remove('hidden');

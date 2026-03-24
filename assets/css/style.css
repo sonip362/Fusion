@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-    --color-ivory: #F7F5F2;
+    --color-ivory: #F3F4F6;
     --color-royal-black: #1A1A1A;
-    --color-beige: #F7F5F2;
+    --color-beige: #F3F4F6;
 
     /* Adding fonts for your 'Royal' vision */
     --font-sans: "DM Sans", sans-serif;
@@ -12,10 +12,10 @@
 
 /* ===== Global Theme Tokens ===== */
 :root {
-    --fusion-bg: #F7F5F2;
+    --fusion-bg: #F3F4F6;
     --fusion-text: #1A1A1A;
     --fusion-accent-gold: #D4AF37;
-    --fusion-accent-ivory: #F7F5F2;
+    --fusion-accent-ivory: #F3F4F6;
 
     /* Glass defaults (light) */
     --fusion-header-glass-bg: rgba(255, 255, 255, 0.7);
@@ -23,7 +23,7 @@
     --fusion-header-glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 
     --fusion-drawer-overlay: rgba(26, 26, 26, 0.4);
-    --fusion-drawer-bg: #F7F5F2;
+    --fusion-drawer-bg: #F3F4F6;
 }
 
 html[data-theme="dark"] {
@@ -64,12 +64,13 @@ body.scroll-lock {
 
 /* Header Glassmorphism Design */
 #main-header {
-    background: rgba(0,0,0,0.76);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0, 0, 0, 0.76) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
     border-radius: 9999px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+    color: #F7F5F2 !important;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     /* NO position:relative here — it breaks fixed positioning stacking */
 }
@@ -77,14 +78,25 @@ body.scroll-lock {
 #main-header.header-shrunk {
     top: 0.5rem;
     max-width: 90%;
-    background: rgba(0,0,0,0.78);
+    background: rgba(0, 0, 0, 0.78) !important;
     border-radius: 9999px;
     padding: 0.25rem 0;
 }
 
 /* Ensure header text and icons are visible on dark bg */
-#main-header, #main-header a, #main-header button, #main-header svg {
+#main-header,
+#main-header a,
+#main-header button,
+#main-header svg {
     color: #F7F5F2 !important;
+}
+
+/* Exception for User Profile Pill to keep it black */
+#main-header #user-info-desktop,
+#main-header #user-info-desktop *,
+#main-header #user-info-mobile,
+#main-header #user-info-mobile * {
+    color: #1A1A1A !important;
 }
 
 #main-header .nav-link {
@@ -92,8 +104,8 @@ body.scroll-lock {
 }
 
 #main-header .nav-link.active {
-    background: rgba(255,255,255,0.06) !important;
-    color: #F7F5F2 !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
 }
 
 /* Nav is the relative parent so the absolute logo centres within it */
@@ -129,8 +141,8 @@ body.scroll-lock {
 }
 
 .nav-link.active {
-    background: #818181 !important;
-    color: #1b1917 !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -215,7 +227,11 @@ body.scroll-lock {
 #mobile-menu>div {
     width: 100%;
     max-width: 400px;
-    background: var(--fusion-drawer-bg);
+    background: rgba(0, 0, 0, 0.92) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    color: #F7F5F2 !important;
     border-radius: 3rem !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     padding: 2.5rem;
@@ -398,6 +414,19 @@ button {
     transform: rotate(45deg);
 }
 
+/* Reward tracker box styling in cart */
+#reward-tracker-container {
+    background-color: #f3f4f6;
+    /* light gray */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    padding: 1rem;
+    border-radius: 1rem;
+    color: var(--fusion-text, #c5c5c5);
+}
+
+
+
 .faq-chat-toggle .toggle-text {
     display: none;
 }
@@ -518,6 +547,7 @@ button {
 .chat-close-btn:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
 .faq-chat-suggestions {
     display: flex;
     flex-wrap: wrap;
@@ -898,7 +928,7 @@ button {
 
 /* Reward Tracker Enhancements */
 #reward-tracker-container {
-    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+    background: linear-gradient(135deg, #505050 0%, #5c5c5c 100%);
 }
 
 #reward-tracker-bar {
@@ -949,7 +979,7 @@ button {
 /* Scrollbar polish for cart items */
 #cart-items-list {
     scrollbar-width: thin;
-    scrollbar-color: #1A1A1A transparent;
+    scrollbar-color: #ececec transparent;
 }
 
 #cart-items-list::-webkit-scrollbar {
@@ -959,4 +989,115 @@ button {
 #cart-items-list::-webkit-scrollbar-thumb {
     background-color: #1A1A1A;
     border-radius: 20px;
+
 }
+
+/* ===== FAQ Accordion Styles ===== */
+.faq-accordion {
+    text-align: left;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+    width: 100%;
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-align: left;
+    transition: all 0.3s ease;
+    color: var(--color-royal-black);
+}
+
+.faq-question:hover {
+    opacity: 0.8;
+}
+
+.faq-question h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+    color: inherit;
+    font-family: var(--font-serif);
+}
+
+.faq-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
+
+.faq-icon::before,
+.faq-icon::after {
+    content: '';
+    position: absolute;
+    background-color: currentColor;
+    border-radius: 2px;
+}
+
+/* Horizontal line */
+.faq-icon::before {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+/* Vertical line to create + */
+.faq-icon::after {
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    transform: translateX(-50%);
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(135deg); /* Rotates + into an X shape */
+}
+
+/* Add specialized animation for X shift */
+.faq-item.active .faq-icon::before,
+.faq-item.active .faq-icon::after {
+    background-color: #ef4444; /* Optional: turn X redish when open */
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 600px; /* Large enough to fit any answer */
+    opacity: 1;
+    padding-bottom: 1.5rem;
+}
+
+.faq-answer p {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.7;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .faq-question h3 {
+        font-size: 1rem;
+    }
+}

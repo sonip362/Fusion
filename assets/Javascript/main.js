@@ -1,38 +1,131 @@
+// --- Cookie Helpers ---
+const setCookie = (name, value, days) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+};
+
+const getCookie = (name) => {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+};
+
+const getGuestId = () => {
+    let gid = getCookie('fusion_guest_id');
+    if (!gid) {
+        gid = 'gs_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        setCookie('fusion_guest_id', gid, 30);
+    }
+    return gid;
+};
+
 // --- App State (Global) ---
 let cart = [];
 let wishlist = [];
+let recentlyViewed = [];
 
 // --- State Management ---
-const loadState = () => {
-    const consent = localStorage.getItem('cookie-consent');
-    if (consent === 'rejected') {
-        cart = [];
-        wishlist = [];
-        return;
-    }
+const loadState = async () => {
+    const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+    const guestId = getGuestId();
 
     try {
-        cart = JSON.parse(localStorage.getItem('fus_cart') || '[]');
-    } catch {
+        // Fetch state from MongoDB - no fields in body means "Fetch Only" for the server
+        const syncData = {
+            email: loggedInUser?.email || null,
+            guestId: loggedInUser?.email ? null : guestId
+        };
+
+        const response = await fetch('/api/user/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(syncData)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            cart = data.cart || [];
+            wishlist = data.wishlist || [];
+            recentlyViewed = data.recentlyViewed || [];
+
+            // If logged in, update the local user object with latest server state
+            if (loggedInUser && data.type === 'user') {
+                loggedInUser.cart = cart;
+                loggedInUser.wishlist = wishlist;
+                loggedInUser.rewardCoins = data.rewardCoins;
+                localStorage.setItem('fusion_user', JSON.stringify(loggedInUser));
+            }
+            // Update chat history for FAQ bot
+            if (data.chatHistory && Array.isArray(data.chatHistory) && data.chatHistory.length > 0) {
+                localStorage.setItem('fusion_chat_history', JSON.stringify(data.chatHistory));
+            }
+
+            console.log("✅ Synced state from MongoDB (Source of Truth)");
+        } else {
+            console.warn("MongoDB sync failed on load, falling back to empty state.");
+            cart = [];
+            wishlist = [];
+            recentlyViewed = [];
+        }
+    } catch (error) {
+        console.error("Critical error during loadState:", error);
         cart = [];
-        console.warn("Corrupted cart data in localStorage, resetting.");
-    }
-    try {
-        wishlist = JSON.parse(localStorage.getItem('fus_wishlist') || '[]');
-    } catch {
         wishlist = [];
-        console.warn("Corrupted wishlist data in localStorage, resetting.");
+        recentlyViewed = [];
     }
+
+    // Always update UI after loading
+    if (typeof updateBadges === 'function') updateBadges();
+    if (typeof renderRecentlyViewed === 'function') renderRecentlyViewed();
 };
 
-const saveState = () => {
+const saveState = async () => {
+    const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+    const guestId = getGuestId();
+
+    // Prepare sync payload - ONLY include fields that are actually being saved
+    const syncData = {
+        email: loggedInUser?.email || null,
+        guestId: loggedInUser?.email ? null : guestId,
+        cart: cart,
+        wishlist: wishlist,
+        recentlyViewed: recentlyViewed
+    };
+
+    // Only SYNC TO MONGODB if consent is accepted
     const consent = localStorage.getItem('cookie-consent');
-    if (consent !== 'accepted') {
-        // Only save in memory if rejected or not yet decided
-        return;
+    if (consent === 'accepted') {
+        try {
+            const response = await fetch('/api/user/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(syncData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (loggedInUser && data.type === 'user') {
+                    loggedInUser.cart = cart;
+                    loggedInUser.wishlist = wishlist;
+                    localStorage.setItem('fusion_user', JSON.stringify(loggedInUser));
+                }
+            }
+        } catch (err) {
+            console.warn("Failed to sync with server:", err);
+        }
+    } else {
+        // If rejected OR not yet decided, we do NOT save to MongoDB
+        // We still keep it in local memory 'cart' / 'wishlist' variables
+        // and only use localStorage as a fallback if Not Rejected
+        if (consent !== 'rejected') {
+            localStorage.setItem('fus_cart', JSON.stringify(cart));
+            localStorage.setItem('fus_wishlist', JSON.stringify(wishlist));
+            localStorage.setItem('recentlyViewed', JSON.stringify(recentlyViewed));
+        }
     }
-    localStorage.setItem('fus_cart', JSON.stringify(cart));
-    localStorage.setItem('fus_wishlist', JSON.stringify(wishlist));
+
+    if (typeof updateBadges === 'function') updateBadges();
 };
 
 // --- Helper Functions ---
@@ -56,6 +149,250 @@ const setFusionProducts = (products) => {
 };
 
 const getFusionProducts = () => fusionProducts;
+
+const buildProfilePlaceholder = (fullName) => {
+    const initials = String(fullName || 'U')
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0].toUpperCase())
+        .join('') || 'U';
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="128" height="128" fill="#111827"/><text x="64" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" fill="#FFFFFF">${initials}</text></svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
+const getProfileImageSrc = (user) => {
+    if (user && typeof user.profilePicture === 'string' && user.profilePicture.trim()) {
+        return user.profilePicture;
+    }
+    return 'assets/images/main/placeholder.png';
+};
+
+const updateAuthUI = () => {
+    const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+
+    // Desktop elements
+    const loginBtnDesktop = document.getElementById('login-btn-desktop');
+    const userInfoDesktop = document.getElementById('user-info-desktop');
+    const userNameDesktop = document.getElementById('user-name-desktop');
+    const userAvatarDesktop = document.getElementById('user-avatar-desktop');
+
+    // Mobile elements
+    const loginBtnMobile = document.getElementById('login-btn-mobile');
+    const userInfoMobile = document.getElementById('user-info-mobile');
+    const userNameMobile = document.getElementById('user-name-mobile');
+    const userAvatarMobile = document.getElementById('user-avatar-mobile');
+
+    if (loggedInUser) {
+        const firstName = (loggedInUser.fullName || 'User').split(' ')[0];
+        const avatarSrc = getProfileImageSrc(loggedInUser);
+
+        if (loginBtnDesktop) loginBtnDesktop.classList.add('hidden');
+        if (userInfoDesktop) userInfoDesktop.classList.remove('hidden');
+        if (userNameDesktop) userNameDesktop.textContent = firstName;
+        if (userAvatarDesktop) userAvatarDesktop.src = avatarSrc;
+
+        if (loginBtnMobile) loginBtnMobile.classList.add('hidden');
+        if (userInfoMobile) userInfoMobile.classList.remove('hidden');
+        if (userNameMobile) userNameMobile.textContent = firstName;
+        if (userAvatarMobile) userAvatarMobile.src = avatarSrc;
+
+        // Update Account Drawer View
+        const authView = document.getElementById('auth-view-content');
+        const accountView = document.getElementById('account-view-content');
+        if (authView) authView.classList.add('hidden');
+        if (accountView) {
+            accountView.classList.remove('hidden');
+            const accName = document.getElementById('account-view-name');
+            const accEmail = document.getElementById('account-view-email');
+            const accAvatar = document.getElementById('account-view-avatar');
+            if (accName) accName.textContent = loggedInUser.fullName || 'User';
+            if (accEmail) accEmail.textContent = loggedInUser.email;
+            if (accAvatar) accAvatar.src = avatarSrc;
+        }
+    } else {
+        if (loginBtnDesktop) loginBtnDesktop.classList.remove('hidden');
+        if (userInfoDesktop) userInfoDesktop.classList.add('hidden');
+
+        if (loginBtnMobile) loginBtnMobile.classList.remove('hidden');
+        if (userInfoMobile) userInfoMobile.classList.add('hidden');
+
+        // Reset Account Drawer View
+        const authView = document.getElementById('auth-view-content');
+        const accountView = document.getElementById('account-view-content');
+        if (authView) authView.classList.remove('hidden');
+        if (accountView) accountView.classList.add('hidden');
+    }
+};
+
+const handleLogout = () => {
+    localStorage.removeItem('fusion_user');
+    updateAuthUI(); // Update UI immediately
+    window.location.reload();
+};
+
+const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Failed to read image file.'));
+    reader.readAsDataURL(file);
+});
+
+const AVATAR_PREVIEW_SIZE = 176;
+const AVATAR_EXPORT_SIZE = 512;
+
+const avatarEditorState = {
+    imageDataUrl: '',
+    imageEl: null,
+    zoom: 1,
+    offsetX: 0,
+    offsetY: 0,
+    dragging: false,
+    dragStartX: 0,
+    dragStartY: 0,
+    dragStartOffsetX: 0,
+    dragStartOffsetY: 0,
+    isSaving: false
+};
+
+let messageModalControls;
+let avatarEditorModalControls;
+let deleteConfirmModalControls;
+
+const getAvatarEditorElements = () => ({
+    previewCircle: document.getElementById('avatar-preview-circle'),
+    previewImage: document.getElementById('avatar-preview-image'),
+    zoomSlider: document.getElementById('avatar-editor-zoom'),
+    dropzone: document.getElementById('avatar-dropzone'),
+    fileInput: document.getElementById('avatar-editor-file-input')
+});
+
+const clampAvatarOffsets = () => {
+    if (!avatarEditorState.imageEl) return;
+    const imgW = avatarEditorState.imageEl.naturalWidth || 1;
+    const imgH = avatarEditorState.imageEl.naturalHeight || 1;
+    const baseScale = Math.max(AVATAR_PREVIEW_SIZE / imgW, AVATAR_PREVIEW_SIZE / imgH);
+    const drawW = imgW * baseScale * avatarEditorState.zoom;
+    const drawH = imgH * baseScale * avatarEditorState.zoom;
+    const maxX = Math.max(0, (drawW - AVATAR_PREVIEW_SIZE) / 2);
+    const maxY = Math.max(0, (drawH - AVATAR_PREVIEW_SIZE) / 2);
+
+    avatarEditorState.offsetX = Math.max(-maxX, Math.min(maxX, avatarEditorState.offsetX));
+    avatarEditorState.offsetY = Math.max(-maxY, Math.min(maxY, avatarEditorState.offsetY));
+};
+
+const renderAvatarPreview = () => {
+    const { previewImage } = getAvatarEditorElements();
+    if (!previewImage || !avatarEditorState.imageEl) return;
+
+    clampAvatarOffsets();
+    const imgW = avatarEditorState.imageEl.naturalWidth || 1;
+    const imgH = avatarEditorState.imageEl.naturalHeight || 1;
+    const baseScale = Math.max(AVATAR_PREVIEW_SIZE / imgW, AVATAR_PREVIEW_SIZE / imgH);
+    const drawW = imgW * baseScale * avatarEditorState.zoom;
+    const drawH = imgH * baseScale * avatarEditorState.zoom;
+
+    previewImage.style.width = `${drawW}px`;
+    previewImage.style.height = `${drawH}px`;
+    previewImage.style.transform = `translate(calc(-50% + ${avatarEditorState.offsetX}px), calc(-50% + ${avatarEditorState.offsetY}px))`;
+};
+
+const setAvatarEditorImage = (dataUrl) => new Promise((resolve, reject) => {
+    const { previewImage, zoomSlider } = getAvatarEditorElements();
+    if (!previewImage) {
+        reject(new Error('Avatar preview is unavailable.'));
+        return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+        avatarEditorState.imageDataUrl = dataUrl;
+        avatarEditorState.imageEl = img;
+        avatarEditorState.zoom = 1;
+        avatarEditorState.offsetX = 0;
+        avatarEditorState.offsetY = 0;
+
+        previewImage.src = dataUrl;
+        if (zoomSlider) zoomSlider.value = '1';
+        renderAvatarPreview();
+        resolve();
+    };
+    img.onerror = () => reject(new Error('Could not load selected image.'));
+    img.src = dataUrl;
+});
+
+const saveProfilePictureToServer = async (profilePictureDataUrl) => {
+    const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+    if (!loggedInUser || !loggedInUser.email) {
+        throw new Error('Please log in first.');
+    }
+
+    const response = await fetch('/api/user/profile-picture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: loggedInUser.email,
+            profilePicture: profilePictureDataUrl
+        })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || 'Failed to update profile picture.');
+    }
+
+    loggedInUser.profilePicture = data.profilePicture || profilePictureDataUrl;
+    localStorage.setItem('fusion_user', JSON.stringify(loggedInUser));
+    updateAuthUI();
+};
+
+const exportAvatarEditorImage = () => {
+    if (!avatarEditorState.imageEl) {
+        throw new Error('Please drop an image first.');
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = AVATAR_EXPORT_SIZE;
+    canvas.height = AVATAR_EXPORT_SIZE;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Image export failed.');
+
+    const imgW = avatarEditorState.imageEl.naturalWidth || 1;
+    const imgH = avatarEditorState.imageEl.naturalHeight || 1;
+    const baseScale = Math.max(AVATAR_EXPORT_SIZE / imgW, AVATAR_EXPORT_SIZE / imgH);
+    const drawW = imgW * baseScale * avatarEditorState.zoom;
+    const drawH = imgH * baseScale * avatarEditorState.zoom;
+    const pixelFactor = AVATAR_EXPORT_SIZE / AVATAR_PREVIEW_SIZE;
+    const drawX = (AVATAR_EXPORT_SIZE - drawW) / 2 + (avatarEditorState.offsetX * pixelFactor);
+    const drawY = (AVATAR_EXPORT_SIZE - drawH) / 2 + (avatarEditorState.offsetY * pixelFactor);
+
+    ctx.drawImage(avatarEditorState.imageEl, drawX, drawY, drawW, drawH);
+    return canvas.toDataURL('image/jpeg', 0.9);
+};
+
+const showMessage = (title, text, type = 'success') => {
+    const titleEl = document.getElementById('message-modal-title');
+    const textEl = document.getElementById('message-modal-text');
+    const iconEl = document.getElementById('message-modal-icon');
+
+    if (titleEl) titleEl.textContent = title;
+    if (textEl) textEl.textContent = text;
+
+    if (iconEl) {
+        if (type === 'error') {
+            iconEl.classList.remove('bg-black');
+            iconEl.classList.add('bg-red-600');
+            iconEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>';
+        } else {
+            iconEl.classList.add('bg-black');
+            iconEl.classList.remove('bg-red-600');
+            iconEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>';
+        }
+    }
+
+    if (messageModalControls) messageModalControls.open();
+};
 
 const resolveProductImageUrl = (url) => {
     if (!url) return '';
@@ -93,7 +430,7 @@ const getCompleteLookItems = (product, products) => {
         const lower = keyword.toLowerCase();
         return products.find(p => {
             if (!p || seen.has(p.id)) return false;
-            if (collectionOnly && p.collection !== product.collection) return false;
+            if (collectionOnly && (p.collectionName || p.collection) !== (product.collectionName || product.collection)) return false;
             return (p.name || '').toLowerCase().includes(lower);
         });
     };
@@ -164,34 +501,65 @@ window.renderQuickViewBundle = renderQuickViewBundle;
 const updateBadges = () => {
     const cartBadgeDesktop = document.getElementById('cart-badge-desktop');
     const cartBadgeMobile = document.getElementById('cart-badge-mobile');
-    const cartBadgeMobileHeader = document.getElementById('cart-badge-mobile-header');
     const wishlistBadgeDesktop = document.getElementById('wishlist-badge-desktop');
     const wishlistBadgeMobile = document.getElementById('wishlist-badge-mobile');
-    const wishlistBadgeMobileHeader = document.getElementById('wishlist-badge-mobile-header');
 
     const cartCount = cart.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
     const wishlistCount = wishlist.length;
 
-    [[cartBadgeDesktop, cartCount], [cartBadgeMobile, cartCount], [cartBadgeMobileHeader, cartCount]].forEach(([el, count]) => {
+    [[cartBadgeDesktop, cartCount], [cartBadgeMobile, cartCount]].forEach(([el, count]) => {
         if (!el) return;
         if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
-        else { el.classList.add('hidden'); }
+        else { el.classList.add('hidden'); el.textContent = '0'; }
     });
 
-    [[wishlistBadgeDesktop, wishlistCount], [wishlistBadgeMobile, wishlistCount], [wishlistBadgeMobileHeader, wishlistCount]].forEach(([el, count]) => {
+    [[wishlistBadgeDesktop, wishlistCount], [wishlistBadgeMobile, wishlistCount]].forEach(([el, count]) => {
         if (!el) return;
         if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
-        else { el.classList.add('hidden'); }
+        else { el.classList.add('hidden'); el.textContent = '0'; }
     });
 };
 
 // Global handles for modals (needed by multiple scripts)
 let wishlistModal, cartModal, quickViewModalCtl, currentQuickViewProduct;
-
 document.addEventListener('DOMContentLoaded', async function () {
 
     // Initialize state on load
-    loadState();
+    await loadState();
+    updateAuthUI();
+
+    // POP UP LOGIN AT FIRST (if not logged in)
+    const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+    if (!loggedInUser) {
+        // We wait for DOM and triggers
+        setTimeout(() => {
+            const loginBtn = document.getElementById('login-btn-desktop');
+            if (loginBtn) loginBtn.click();
+        }, 500);
+    }
+
+
+    // Initialize Message Modal
+    messageModalControls = initializeModal({
+        modal: document.getElementById('message-modal'),
+        panel: document.getElementById('message-modal-panel'),
+        closeBtn: document.getElementById('message-modal-close'),
+        backdrop: document.getElementById('message-modal-backdrop')
+    });
+
+    avatarEditorModalControls = initializeModal({
+        modal: document.getElementById('avatar-editor-modal'),
+        panel: document.getElementById('avatar-editor-panel'),
+        closeBtn: document.getElementById('avatar-editor-close'),
+        backdrop: document.getElementById('avatar-editor-backdrop')
+    });
+
+    deleteConfirmModalControls = initializeModal({
+        modal: document.getElementById('delete-confirm-modal'),
+        panel: document.getElementById('delete-confirm-panel'),
+        closeBtn: document.getElementById('delete-confirm-cancel-btn'),
+        backdrop: document.getElementById('delete-confirm-backdrop')
+    });
 
     // --- Prevent default on placeholder links ---
     document.querySelectorAll('a[href="#"]').forEach(link => {
@@ -489,6 +857,250 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (clearWishlistBtn) clearWishlistBtn.addEventListener('click', clearWishlist);
     if (clearRecentlyViewedBtn) clearRecentlyViewedBtn.addEventListener('click', clearRecentlyViewed);
 
+    // Logout listeners
+    const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
+    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+    if (logoutBtnDesktop) logoutBtnDesktop.addEventListener('click', handleLogout);
+    if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+
+    // Avatar editor listeners
+    const userAvatarDesktop = document.getElementById('user-avatar-desktop');
+    const userAvatarMobile = document.getElementById('user-avatar-mobile');
+    const avatarEditorAccept = document.getElementById('avatar-editor-accept');
+    const avatarEditorCancel = document.getElementById('avatar-editor-cancel');
+    const {
+        previewCircle: avatarPreviewCircle,
+        zoomSlider: avatarZoomSlider,
+        dropzone: avatarDropzone,
+        fileInput: avatarFileInput
+    } = getAvatarEditorElements();
+
+    const openAccountDrawer = () => {
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) {
+            loginScreen.classList.remove('translate-x-full');
+            document.documentElement.classList.add('scroll-lock');
+            document.body.classList.add('scroll-lock');
+        }
+    };
+
+    const openAvatarEditor = async () => {
+        const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+        if (!loggedInUser) {
+            showMessage('Error', 'Please log in first.', 'error');
+            return;
+        }
+
+        try {
+            await setAvatarEditorImage(getProfileImageSrc(loggedInUser));
+            if (avatarEditorModalControls) avatarEditorModalControls.open();
+        } catch (error) {
+            showMessage('Error', error.message || 'Failed to open avatar editor.', 'error');
+        }
+    };
+
+    const handleAvatarFile = async (file) => {
+        if (!file) return;
+        if (!file.type || !file.type.startsWith('image/')) {
+            showMessage('Error', 'Please choose an image file.', 'error');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            showMessage('Error', 'Image must be under 2MB.', 'error');
+            return;
+        }
+
+        try {
+            const dataUrl = await readFileAsDataUrl(file);
+            await setAvatarEditorImage(dataUrl);
+        } catch (error) {
+            showMessage('Error', error.message || 'Failed to read image.', 'error');
+        }
+    };
+
+    if (userAvatarDesktop) {
+        userAvatarDesktop.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openAccountDrawer();
+        });
+    }
+    if (userAvatarMobile) {
+        userAvatarMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openAccountDrawer();
+        });
+    }
+
+    // Account Management Action Listeners
+    const downloadDataBtn = document.getElementById('download-data-btn');
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const deleteConfirmFinalBtn = document.getElementById('delete-confirm-final-btn');
+    const logoutBtnDrawer = document.getElementById('logout-btn-drawer');
+    const changePhotoBtn = document.getElementById('account-change-photo-btn');
+
+    if (changePhotoBtn) changePhotoBtn.addEventListener('click', openAvatarEditor);
+    if (logoutBtnDrawer) logoutBtnDrawer.addEventListener('click', handleLogout);
+
+    if (downloadDataBtn) {
+        downloadDataBtn.addEventListener('click', async () => {
+            const user = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+            if (!user) return;
+
+            try {
+                const response = await fetch('/api/user/download-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const blob = new Blob([JSON.stringify(data.userData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `fusion_data_${user.email.split('@')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('Data download started', 'success');
+                } else {
+                    const error = await response.json();
+                    showMessage('Error', error.error || 'Failed to download data.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Error', 'An unexpected error occurred.', 'error');
+            }
+        });
+    }
+
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', () => {
+            if (deleteConfirmModalControls) deleteConfirmModalControls.open();
+        });
+    }
+
+    if (deleteConfirmFinalBtn) {
+        deleteConfirmFinalBtn.addEventListener('click', async () => {
+            const user = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+            if (!user) return;
+
+            try {
+                const response = await fetch('/api/user/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email })
+                });
+
+                if (response.ok) {
+                    if (deleteConfirmModalControls) deleteConfirmModalControls.close();
+                    localStorage.removeItem('fusion_user');
+                    showMessage('Success', 'Your account has been deleted. Refreshing...', 'success');
+                    setTimeout(() => window.location.reload(), 2000);
+                } else {
+                    const error = await response.json();
+                    showMessage('Error', error.error || 'Failed to delete account.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Error', 'An unexpected error occurred.', 'error');
+            }
+        });
+    }
+
+    if (avatarEditorCancel && avatarEditorModalControls) {
+        avatarEditorCancel.addEventListener('click', avatarEditorModalControls.close);
+    }
+
+    if (avatarDropzone) {
+        avatarDropzone.addEventListener('click', () => {
+            if (avatarFileInput) avatarFileInput.click();
+        });
+        avatarDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            avatarDropzone.classList.add('border-black/40', 'bg-zinc-100');
+        });
+        avatarDropzone.addEventListener('dragleave', () => {
+            avatarDropzone.classList.remove('border-black/40', 'bg-zinc-100');
+        });
+        avatarDropzone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            avatarDropzone.classList.remove('border-black/40', 'bg-zinc-100');
+            const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            await handleAvatarFile(file);
+        });
+    }
+
+    if (avatarFileInput) {
+        avatarFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files && e.target.files[0];
+            await handleAvatarFile(file);
+            e.target.value = '';
+        });
+    }
+
+    if (avatarZoomSlider) {
+        avatarZoomSlider.addEventListener('input', (e) => {
+            avatarEditorState.zoom = Number(e.target.value || 1);
+            renderAvatarPreview();
+        });
+    }
+
+    if (avatarPreviewCircle) {
+        avatarPreviewCircle.addEventListener('pointerdown', (e) => {
+            if (!avatarEditorState.imageEl) return;
+            avatarEditorState.dragging = true;
+            avatarEditorState.dragStartX = e.clientX;
+            avatarEditorState.dragStartY = e.clientY;
+            avatarEditorState.dragStartOffsetX = avatarEditorState.offsetX;
+            avatarEditorState.dragStartOffsetY = avatarEditorState.offsetY;
+            avatarPreviewCircle.classList.remove('cursor-grab');
+            avatarPreviewCircle.classList.add('cursor-grabbing');
+        });
+    }
+
+    window.addEventListener('pointermove', (e) => {
+        if (!avatarEditorState.dragging) return;
+        avatarEditorState.offsetX = avatarEditorState.dragStartOffsetX + (e.clientX - avatarEditorState.dragStartX);
+        avatarEditorState.offsetY = avatarEditorState.dragStartOffsetY + (e.clientY - avatarEditorState.dragStartY);
+        renderAvatarPreview();
+    });
+
+    window.addEventListener('pointerup', () => {
+        if (!avatarEditorState.dragging) return;
+        avatarEditorState.dragging = false;
+        if (avatarPreviewCircle) {
+            avatarPreviewCircle.classList.remove('cursor-grabbing');
+            avatarPreviewCircle.classList.add('cursor-grab');
+        }
+    });
+
+    if (avatarEditorAccept) {
+        avatarEditorAccept.addEventListener('click', async () => {
+            if (avatarEditorState.isSaving) return;
+            avatarEditorState.isSaving = true;
+            avatarEditorAccept.disabled = true;
+            const originalAcceptText = avatarEditorAccept.textContent;
+            avatarEditorAccept.textContent = 'Saving...';
+            try {
+                const exportedDataUrl = exportAvatarEditorImage();
+                await saveProfilePictureToServer(exportedDataUrl);
+                if (avatarEditorModalControls) avatarEditorModalControls.close();
+                setTimeout(() => {
+                    showMessage('Success', 'Profile picture updated.', 'success');
+                }, 320);
+            } catch (error) {
+                showMessage('Error', error.message || 'Failed to update profile picture.', 'error');
+            } finally {
+                avatarEditorState.isSaving = false;
+                avatarEditorAccept.disabled = false;
+                avatarEditorAccept.textContent = originalAcceptText;
+            }
+        });
+    }
+
     // --- Intersection Observer ---
     if ("IntersectionObserver" in window) {
         const observer = new IntersectionObserver((entries) => {
@@ -565,6 +1177,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // --- Info Modal ---
     const openShippingBtn = document.getElementById('open-shipping-modal');
     const openSizingBtn = document.getElementById('open-sizing-modal');
+    const openPrivacyBtn = document.getElementById('open-privacy-modal');
     const closeInfoModalBtn = document.getElementById('close-info-modal');
     const infoModalBackdrop = document.getElementById('info-modal-backdrop');
 
@@ -573,6 +1186,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     if (openSizingBtn) {
         openSizingBtn.addEventListener('click', () => openInfoModal('Sizing Guide', './assets/sizing.html'));
+    }
+     if (openPrivacyBtn) {
+        openPrivacyBtn.addEventListener('click', () => openInfoModal('Privacy Policy', './assets/privacy-policy.html'));
     }
     if (closeInfoModalBtn) {
         closeInfoModalBtn.addEventListener('click', closeInfoModal);
@@ -604,9 +1220,39 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+
     if (typeof initializeNewsletter === 'function') initializeNewsletter();
 
+    // --- FAQ Accordion Logic ---
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (faqItems.length > 0) {
+        faqItems.forEach(item => {
+            const questionBtn = item.querySelector('.faq-question');
+            questionBtn.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                // Toggle current item
+                if (isActive) {
+                    item.classList.remove('active');
+                    questionBtn.setAttribute('aria-expanded', 'false');
+                } else {
+                    item.classList.add('active');
+                    questionBtn.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+    }
+
 });
+
 
 // carousel logic
 const initializeLimitedCarousel = () => {
@@ -860,11 +1506,6 @@ const initializeCollectionsCarousel = () => {
         });
     });
 
-    // Auto-play logic (Optional, mostly for desktop usually)
-    // User didn't strictly ask to remove it, but scrollable usually implies manual control.
-    // Let's keep it simple: no auto-play for now as user asked for "scrollable" and specific click interactions.
-    // The previous implementation had it, but sliding tracks with auto-play can be tricky with interactions.
-    // I will exclude explicit auto-play to respect the "scrollable" request on mobile and manual click on desktop.
 
     // Handle resize to reset/adjust state
     window.addEventListener('resize', () => {

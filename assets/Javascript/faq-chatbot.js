@@ -12,7 +12,6 @@
     let isTyping = false;
 
     // DOM Elements
-    // DOM Elements
     const chatToggleBtn = document.getElementById('faq-chat-toggle');
     const headerAiBtn = document.getElementById('header-ai-btn');
     const mobileHeaderAiBtn = document.getElementById('mobile-header-ai-btn');
@@ -58,8 +57,6 @@
             });
         });
 
-
-
         // Load history if cookies accepted
         if (localStorage.getItem('cookie-consent') === 'accepted') {
             const savedHistory = localStorage.getItem(CHAT_STORAGE_KEY);
@@ -89,7 +86,6 @@
     function showClearConfirmation() {
         if (!chatConfirmOverlay) return;
         chatConfirmOverlay.classList.remove('hidden');
-        // Small delay to allow 'hidden' to be removed before adding opacity
         setTimeout(() => {
             chatConfirmOverlay.classList.remove('opacity-0', 'scale-95');
         }, 10);
@@ -117,7 +113,6 @@
 
         if (chatContainer.classList.contains('open')) {
             chatInput?.focus();
-            // Add welcome message if first time
             if (chatMessages.children.length === 0) {
                 addMessage('Hello! 👋 I\'m your Fusion Website Assistant. Ask me about our collections, products, or store policies!', 'assistant');
             }
@@ -126,7 +121,7 @@
 
     function closeChat() {
         chatContainer.classList.remove('open');
-        chatToggleBtn.classList.remove('active');
+        chatToggleBtn?.classList.remove('active');
     }
 
     function handleKeyPress(e) {
@@ -140,24 +135,26 @@
         const message = chatInput?.value.trim();
         if (!message || isTyping) return;
 
-        // Add user message
         addMessage(message, 'user');
         chatInput.value = '';
 
-        // Add to history
         chatHistory.push({ role: 'user', content: message });
         saveChatHistory();
 
-        // Show typing indicator
         showTypingIndicator();
 
         try {
+            const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
+            const guestId = (typeof getGuestId === 'function') ? getGuestId() : null;
+
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: message,
-                    history: chatHistory
+                    history: chatHistory,
+                    email: loggedInUser?.email || null,
+                    guestId: loggedInUser ? null : guestId
                 })
             });
 
@@ -170,7 +167,6 @@
             const data = await response.json();
             const aiMessage = data.message;
 
-            // Add AI response
             addMessage(aiMessage, 'assistant');
             chatHistory.push({ role: 'assistant', content: aiMessage });
             saveChatHistory();
@@ -192,12 +188,8 @@
 
         messageDiv.appendChild(bubble);
         chatMessages.appendChild(messageDiv);
-
-        // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Animate in
-        // Animate in
         if (animate) {
             requestAnimationFrame(() => {
                 messageDiv.classList.add('visible');
@@ -205,7 +197,6 @@
         } else {
             messageDiv.classList.add('visible');
         }
-
     }
 
     function showTypingIndicator() {
@@ -236,7 +227,6 @@
         }
     }
 
-    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

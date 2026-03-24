@@ -1,0 +1,27 @@
+[
+  {
+    "threshold": 1500,
+    "code": "FUSION10",
+    "discount": 0.10
+  },
+  {
+    "threshold": 3000,
+    "code": "FUSION20",
+    "discount": 0.20
+  },
+  {
+    "threshold": 5000,
+    "code": "KINGFUSION",
+    "discount": 0.30
+  },
+  {
+    "threshold": 7000,
+    "code": "ROYALTYFUSION",
+    "discount": 0.40
+  },
+  {
+    "threshold": 10000,
+    "code": "LEGENDFUSION",
+    "discount": 0.50
+  }
+]

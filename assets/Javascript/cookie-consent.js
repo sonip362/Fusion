@@ -9,13 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if user has already made a choice
     const consent = localStorage.getItem('cookie-consent');
+    const loggedInUser = localStorage.getItem('fusion_user');
+
+    const showConsentAfterLogin = () => {
+        if (!localStorage.getItem('cookie-consent')) {
+            setTimeout(() => {
+                banner.classList.remove('opacity-0', 'pointer-events-none');
+                banner.querySelector('div:last-child').classList.remove('scale-95');
+                document.body.style.overflow = 'hidden';
+            }, 500);
+        }
+    };
+
     if (!consent) {
-        // Show modal after a short delay
-        setTimeout(() => {
-            banner.classList.remove('opacity-0', 'pointer-events-none');
-            banner.querySelector('div:last-child').classList.remove('scale-95');
-            document.body.style.overflow = 'hidden';
-        }, 1000);
+        if (!loggedInUser) {
+            // Wait for user to finish with the initial mandatory login popup
+            document.addEventListener('loginClosed', showConsentAfterLogin, { once: true });
+        } else {
+            // User is already logged in, show after delay
+            setTimeout(showConsentAfterLogin, 2000);
+        }
     }
 
     const hideBanner = () => {

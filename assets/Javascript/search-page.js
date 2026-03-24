@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const fetchProducts = async () => {
         try {
             showLoading(true);
-            const response = await fetch('../assets/products.json');
+            const response = await fetch('/api/products');
             if (!response.ok) throw new Error('Failed to fetch products');
             allProducts = await response.json();
             if (typeof setFusionProducts === 'function') {
