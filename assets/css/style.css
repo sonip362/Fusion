@@ -227,11 +227,11 @@ body.scroll-lock {
 #mobile-menu>div {
     width: 100%;
     max-width: 400px;
-    background: rgba(0, 0, 0, 0.92) !important;
+    background: var(--fusion-drawer-bg);
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.04) !important;
-    color: #F7F5F2 !important;
+    border: 1px solid rgba(0, 0, 0, 0.04) !important;
+    color: var(--fusion-text) !important;
     border-radius: 3rem !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     padding: 2.5rem;
@@ -492,6 +492,15 @@ button {
     pointer-events: auto;
 }
 
+.faq-chat-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 995;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease;
+}
+
 .faq-chat-header {
     display: flex;
     align-items: center;
@@ -716,6 +725,18 @@ button {
 .faq-chat-send:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+body.faq-chat-mobile-open {
+    overflow: hidden;
+}
+
+body.faq-chat-mobile-open .faq-chat-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+    background:
+        radial-gradient(120% 80% at 50% 30%, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 70%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.62) 100%);
 }
 
 /* Floating Action Buttons Styling */
@@ -959,17 +980,120 @@ button {
 
 
 /* Mobile responsiveness */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .faq-chat-container {
+        inset: 0;
         bottom: 0;
         right: 0;
         left: 0;
         width: 100%;
         max-width: 100%;
-        max-height: 80vh;
-        border-radius: 20px 20px 0 0;
+        max-height: 100dvh;
+        border-radius: 0;
+        background: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+        transform: translateY(24px);
+        justify-content: flex-end;
+        overflow: hidden;
     }
 
+    .faq-chat-container.open::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(120% 80% at 50% 30%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.46) 0%, rgba(0, 0, 0, 0.66) 100%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+   
+
+    .faq-chat-container>* {
+        position: relative;
+        z-index: 1;
+    }
+
+    .faq-chat-header {
+        position: absolute;
+        top: 12px;
+        left: 14px;
+        right: 14px;
+        z-index: 2;
+        padding: 0;
+        background: transparent;
+        color: rgba(243, 244, 246, 0.9);
+    }
+
+    .faq-chat-header #faq-chat-clear {
+        background: rgba(255, 255, 255, 0.85);
+        color: #1f2937;
+        border-radius: 9999px;
+        padding: 0.32rem 0.7rem;
+        letter-spacing: 0.08em;
+    }
+
+    .faq-chat-suggestions {
+        display: none;
+    }
+
+    .faq-chat-messages {
+        min-height: 0;
+        max-height: none;
+        padding: 3.8rem 12px 92px;
+        background: transparent;
+    }
+
+    .faq-chat-message .message-bubble {
+        background: rgba(255, 255, 255, 0.94) !important;
+        color: #111827 !important;
+        border-radius: 16px;
+    }
+
+    .faq-chat-message.user .message-bubble {
+        background: rgba(17, 24, 39, 0.9) !important;
+        color: #f9fafb !important;
+    }
+
+    .faq-chat-input-container {
+        border-top: none;
+        background: transparent;
+        padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 14px);
+        gap: 0;
+    }
+
+    .faq-chat-input-row {
+        align-items: center;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .faq-chat-input-row #faq-chat-input {
+        height: 46px;
+        padding: 0 18px;
+        border-radius: 9999px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        font-size: 0.95rem;
+    }
+
+    .faq-chat-input-row #faq-chat-send {
+        width: 44px;
+        height: 44px;
+        border-radius: 9999px;
+        border: 1.5px solid rgba(31, 41, 55, 0.8);
+        background: rgba(255, 255, 255, 0.86);
+        color: #111827;
+    }
+
+    .faq-chat-input-container p {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
     .faq-chat-toggle {
         bottom: 20px;
         right: 20px;
@@ -1100,4 +1224,4 @@ button {
     .faq-question h3 {
         font-size: 1rem;
     }
-}
+}

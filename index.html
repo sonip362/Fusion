@@ -180,6 +180,74 @@
         body.loading {
             overflow: hidden;
         }
+
+        /* Info modal content styles (scoped to avoid global page overrides) */
+        #info-modal-content main,
+        #info-modal-content .container,
+        #info-modal-content .size-guide {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        #info-modal-content p {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        #info-modal-content .size-guide {
+            border: 2px solid #111827;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        #info-modal-content .size-guide h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            letter-spacing: 1px;
+            color: #111827;
+        }
+
+        #info-modal-content .table-wrapper {
+            overflow-x: auto;
+        }
+
+        #info-modal-content table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        #info-modal-content th,
+        #info-modal-content td {
+            border: 1px solid #111827;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            color: #111827;
+        }
+
+        #info-modal-content th {
+            background: #111827;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        #info-modal-content tbody tr:nth-child(even) td {
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 600px) {
+            #info-modal-content .size-guide {
+                padding: 16px;
+            }
+
+            #info-modal-content th,
+            #info-modal-content td {
+                font-size: 13px;
+                padding: 10px;
+            }
+        }
     </style>
 
 </head>
@@ -1926,7 +1994,7 @@
                                 </svg>
                             </a>
                             <div id="user-info-mobile"
-                                class="hidden flex flex-col gap-3 py-3 px-4 bg-black/5 rounded-2xl">
+                                class="hidden flex flex-col gap-3 py-3 px-4 bg-black/5 rounded-xl">
                                 <div
                                     class="flex items-center justify-between text-lg font-bold text-black uppercase tracking-widest">
                                     <div class="flex items-center gap-3">

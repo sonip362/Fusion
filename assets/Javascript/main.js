@@ -1341,7 +1341,7 @@ const openInfoModal = (title, htmlFile) => {
             const mainContent = doc.querySelector('main') || doc.querySelector('.container') || doc.querySelector('.size-guide') || doc.body;
 
             if (mainContent) {
-                infoModalContent.innerHTML = mainContent.innerHTML;
+                infoModalContent.innerHTML = mainContent.outerHTML;
             } else {
                 infoModalContent.innerHTML = '<p class="text-gray-600">Content could not be loaded.</p>';
             }

@@ -65,6 +65,50 @@
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
         }
 
+        .search-placeholder-rotator {
+            position: absolute;
+            top: 50%;
+            left: 1.5rem;
+            right: 4.5rem;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1.125rem;
+            line-height: 1.2;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: opacity 0.2s ease;
+        }
+
+        .search-placeholder-rotator.is-hidden {
+            opacity: 0;
+        }
+
+        .search-placeholder-text {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            will-change: transform, opacity;
+        }
+
+        .search-placeholder-text.is-exit {
+            transform: translateY(-110%);
+            opacity: 0;
+        }
+
+        .search-placeholder-text.is-enter {
+            transform: translateY(110%);
+            opacity: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .search-placeholder-text {
+                transition: none;
+            }
+        }
+
         .search-icon-btn {
             position: absolute;
             right: 1rem;
@@ -80,6 +124,61 @@
 
         .search-icon-btn:hover {
             color: #fff;
+        }
+
+        .search-recommendations {
+            position: absolute;
+            top: calc(100% + 0.65rem);
+            left: 0;
+            right: 0;
+            z-index: 40;
+            background: rgba(23, 23, 23, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .search-recommendations.hidden {
+            display: none;
+        }
+
+        .search-recommendation-item {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: transparent;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .search-recommendation-item:last-child {
+            border-bottom: 0;
+        }
+
+        .search-recommendation-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-recommendation-name {
+            font-weight: 500;
+            font-size: 0.98rem;
+        }
+
+        .search-recommendation-meta {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
         }
 
         .clear-search-btn {
@@ -217,7 +316,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: rgba(255, 255, 255, 0.8);
             padding: 0.5rem 1rem;
-            border-radius: 9999px;
+            
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -459,7 +558,10 @@
 
             <div class="search-input-wrapper">
                 <input type="search" id="main-search-input" class="search-input-main"
-                    placeholder="Search products, collections..." autocomplete="off" autofocus>
+                    placeholder="" autocomplete="off" autofocus>
+                <div id="search-placeholder-rotator" class="search-placeholder-rotator" aria-hidden="true">
+                    <span id="search-placeholder-text" class="search-placeholder-text">Search for denim</span>
+                </div>
                 <button type="button" id="clear-search" class="clear-search-btn" aria-label="Clear search">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4">
@@ -473,6 +575,8 @@
                             d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </button>
+                <div id="search-recommendations" class="search-recommendations hidden" role="listbox"
+                    aria-label="Search recommendations"></div>
             </div>
 
             <!-- Popular Search Suggestions -->

@@ -15,6 +15,7 @@
     const chatToggleBtn = document.getElementById('faq-chat-toggle');
     const headerAiBtn = document.getElementById('header-ai-btn');
     const mobileHeaderAiBtn = document.getElementById('mobile-header-ai-btn');
+    const chatBackdrop = document.getElementById('faq-chat-backdrop');
     const chatContainer = document.getElementById('faq-chat-container');
     const chatMessages = document.getElementById('faq-chat-messages');
     const chatInput = document.getElementById('faq-chat-input');
@@ -41,6 +42,7 @@
         });
 
         chatCloseBtn?.addEventListener('click', closeChat);
+        chatBackdrop?.addEventListener('click', closeChat);
         chatClearBtn?.addEventListener('click', showClearConfirmation);
         chatConfirmOk?.addEventListener('click', confirmClearChat);
         chatConfirmCancel?.addEventListener('click', hideClearConfirmation);
@@ -56,6 +58,8 @@
                 }
             });
         });
+
+        window.addEventListener('resize', syncMobileChatState, { passive: true });
 
         // Load history if cookies accepted
         if (localStorage.getItem('cookie-consent') === 'accepted') {
@@ -75,6 +79,8 @@
                 }
             }
         }
+
+        syncMobileChatState();
     }
 
     function saveChatHistory() {
@@ -110,6 +116,7 @@
     function toggleChat() {
         chatContainer.classList.toggle('open');
         chatToggleBtn?.classList.toggle('active');
+        syncMobileChatState();
 
         if (chatContainer.classList.contains('open')) {
             chatInput?.focus();
@@ -122,6 +129,16 @@
     function closeChat() {
         chatContainer.classList.remove('open');
         chatToggleBtn?.classList.remove('active');
+        syncMobileChatState();
+    }
+
+    function isMobileView() {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function syncMobileChatState() {
+        const shouldLock = isMobileView() && chatContainer.classList.contains('open');
+        document.body.classList.toggle('faq-chat-mobile-open', shouldLock);
     }
 
     function handleKeyPress(e) {
@@ -184,7 +201,11 @@
 
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
-        bubble.textContent = content;
+        if (role === 'assistant') {
+            bubble.innerHTML = formatAssistantMessage(content);
+        } else {
+            bubble.textContent = content;
+        }
 
         messageDiv.appendChild(bubble);
         chatMessages.appendChild(messageDiv);
@@ -197,6 +218,32 @@
         } else {
             messageDiv.classList.add('visible');
         }
+    }
+
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatAssistantMessage(content) {
+        let html = escapeHtml(content || '');
+
+        // Convert formatting markers after escaping to keep rendering safe.
+        html = html
+            .replace(/^(?:\*|-)\s+(.+)$/gm, '• $1')
+            .replace(/\*\*\*([^*\n]+)\*\*\*/g, '<strong><em>$1</em></strong>')
+            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/__([^_\n]+)__/g, '<u>$1</u>')
+            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+            .replace(/_([^_\n]+)_/g, '<em>$1</em>')
+            .replace(/~~([^~\n]+)~~/g, '<del>$1</del>')
+            .replace(/\n/g, '<br>');
+
+        return html;
     }
 
     function showTypingIndicator() {

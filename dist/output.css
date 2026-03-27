@@ -85,7 +85,6 @@
     --leading-tight: 1.25;
     --leading-normal: 1.5;
     --leading-relaxed: 1.625;
-    --radius-sm: 0.25rem;
     --radius-md: 0.375rem;
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;
@@ -296,9 +295,6 @@
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
-  .top-1 {
-    top: calc(var(--spacing) * 1);
-  }
   .top-1\/2 {
     top: calc(1/2 * 100%);
   }
@@ -346,9 +342,6 @@
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
-  }
-  .left-1 {
-    left: calc(var(--spacing) * 1);
   }
   .left-1\/2 {
     left: calc(1/2 * 100%);
@@ -434,9 +427,6 @@
   .-mt-2 {
     margin-top: calc(var(--spacing) * -2);
   }
-  .mt-0 {
-    margin-top: calc(var(--spacing) * 0);
-  }
   .mt-0\.5 {
     margin-top: calc(var(--spacing) * 0.5);
   }
@@ -472,9 +462,6 @@
   }
   .mr-3 {
     margin-right: calc(var(--spacing) * 3);
-  }
-  .mb-0 {
-    margin-bottom: calc(var(--spacing) * 0);
   }
   .mb-0\.5 {
     margin-bottom: calc(var(--spacing) * 0.5);
@@ -559,9 +546,6 @@
   }
   .aspect-\[4\/5\] {
     aspect-ratio: 4/5;
-  }
-  .h-1 {
-    height: calc(var(--spacing) * 1);
   }
   .h-1\.5 {
     height: calc(var(--spacing) * 1.5);
@@ -667,9 +651,6 @@
   }
   .w-0 {
     width: calc(var(--spacing) * 0);
-  }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
   }
   .w-1\/3 {
     width: calc(1/3 * 100%);
@@ -800,14 +781,8 @@
   .flex-1 {
     flex: 1;
   }
-  .flex-shrink {
-    flex-shrink: 1;
-  }
   .flex-shrink-0 {
     flex-shrink: 0;
-  }
-  .flex-grow {
-    flex-grow: 1;
   }
   .grow {
     flex-grow: 1;
@@ -815,20 +790,12 @@
   .border-collapse {
     border-collapse: collapse;
   }
-  .-translate-x-1 {
-    --tw-translate-x: calc(var(--spacing) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1/2 * 100%) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .translate-x-full {
     --tw-translate-x: 100%;
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .-translate-y-1 {
-    --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-y-1\/2 {
@@ -936,9 +903,6 @@
   }
   .justify-start {
     justify-content: flex-start;
-  }
-  .gap-1 {
-    gap: calc(var(--spacing) * 1);
   }
   .gap-1\.5 {
     gap: calc(var(--spacing) * 1.5);
@@ -1165,9 +1129,6 @@
       border-color: color-mix(in oklab, var(--color-black) 40%, transparent);
     }
   }
-  .border-blue-400 {
-    border-color: var(--color-blue-400);
-  }
   .border-blue-400\/30 {
     border-color: color-mix(in srgb, oklch(70.7% 0.165 254.624) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1209,9 +1170,6 @@
   }
   .border-red-100 {
     border-color: var(--color-red-100);
-  }
-  .border-red-500 {
-    border-color: var(--color-red-500);
   }
   .border-red-500\/20 {
     border-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
@@ -1366,9 +1324,6 @@
       background-color: color-mix(in oklab, var(--color-red-100) 50%, transparent);
     }
   }
-  .bg-red-500 {
-    background-color: var(--color-red-500);
-  }
   .bg-red-500\/10 {
     background-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 10%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1398,9 +1353,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-royal-black) 20%, transparent);
     }
-  }
-  .bg-slate-100 {
-    background-color: var(--color-slate-100);
   }
   .bg-slate-100\/10 {
     background-color: color-mix(in srgb, oklch(96.8% 0.007 247.896) 10%, transparent);
@@ -1524,9 +1476,6 @@
   }
   .\!py-3 {
     padding-block: calc(var(--spacing) * 3) !important;
-  }
-  .py-0 {
-    padding-block: calc(var(--spacing) * 0);
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
@@ -3186,11 +3135,11 @@ html.scroll-lock, body.scroll-lock {
 #mobile-menu>div {
   width: 100%;
   max-width: 400px;
-  background: rgba(0, 0, 0, 0.92) !important;
+  background: var(--fusion-drawer-bg);
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
-  color: #F7F5F2 !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  color: var(--fusion-text) !important;
   border-radius: 3rem !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   padding: 2.5rem;
@@ -3388,6 +3337,14 @@ a, button {
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
+.faq-chat-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 995;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
 .faq-chat-header {
   display: flex;
   align-items: center;
@@ -3578,6 +3535,14 @@ a, button {
 .faq-chat-send:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+body.faq-chat-mobile-open {
+  overflow: hidden;
+}
+body.faq-chat-mobile-open .faq-chat-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+  background: radial-gradient(120% 80% at 50% 30%, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 70%), linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.62) 100%);
 }
 #backTop, #music-toggle-btn, #floating-search-btn {
   position: fixed;
@@ -3823,16 +3788,102 @@ a, button {
     transform: translateX(100%);
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .faq-chat-container {
+    inset: 0;
     bottom: 0;
     right: 0;
     left: 0;
     width: 100%;
     max-width: 100%;
-    max-height: 80vh;
-    border-radius: 20px 20px 0 0;
+    max-height: 100dvh;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    transform: translateY(24px);
+    justify-content: flex-end;
+    overflow: hidden;
   }
+  .faq-chat-container.open::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 80% at 50% 30%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%), linear-gradient(180deg, rgba(0, 0, 0, 0.46) 0%, rgba(0, 0, 0, 0.66) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .faq-chat-container>* {
+    position: relative;
+    z-index: 1;
+  }
+  .faq-chat-header {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    right: 14px;
+    z-index: 2;
+    padding: 0;
+    background: transparent;
+    color: rgba(243, 244, 246, 0.9);
+  }
+  .faq-chat-header #faq-chat-clear {
+    background: rgba(255, 255, 255, 0.85);
+    color: #1f2937;
+    border-radius: 9999px;
+    padding: 0.32rem 0.7rem;
+    letter-spacing: 0.08em;
+  }
+  .faq-chat-suggestions {
+    display: none;
+  }
+  .faq-chat-messages {
+    min-height: 0;
+    max-height: none;
+    padding: 3.8rem 12px 92px;
+    background: transparent;
+  }
+  .faq-chat-message .message-bubble {
+    background: rgba(255, 255, 255, 0.94) !important;
+    color: #111827 !important;
+    border-radius: 16px;
+  }
+  .faq-chat-message.user .message-bubble {
+    background: rgba(17, 24, 39, 0.9) !important;
+    color: #f9fafb !important;
+  }
+  .faq-chat-input-container {
+    border-top: none;
+    background: transparent;
+    padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    gap: 0;
+  }
+  .faq-chat-input-row {
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+  }
+  .faq-chat-input-row #faq-chat-input {
+    height: 46px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.92);
+    font-size: 0.95rem;
+  }
+  .faq-chat-input-row #faq-chat-send {
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    border: 1.5px solid rgba(31, 41, 55, 0.8);
+    background: rgba(255, 255, 255, 0.86);
+    color: #111827;
+  }
+  .faq-chat-input-container p {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
   .faq-chat-toggle {
     bottom: 20px;
     right: 20px;

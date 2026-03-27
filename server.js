@@ -519,6 +519,15 @@ async function getFUSION_CONTEXT() {
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history = [], email, guestId } = req.body;
+        const groqApiKey = process.env.GROQ_API_KEY;
+        const normalizedMessage = typeof message === 'string' ? message.trim() : '';
+
+        if (!groqApiKey) {
+            return res.status(503).json({ error: 'AI assistant is not configured. Missing GROQ_API_KEY.' });
+        }
+        if (!normalizedMessage) {
+            return res.status(400).json({ error: 'Message is required.' });
+        }
 
         // Build fresh product context for every request
         const products = await Product.find({});
@@ -555,30 +564,70 @@ ${productContext}
   * Rights: You can request access, correction, or deletion of your MongoDB profile at any time.
 
 Tone: Helpful, professional, and specific. Use emojis sparingly.
+Formatting:
+- Use markdown-style emphasis in responses when useful:
+  * Bold with **text**
+  * Italic with *text*
+  * Underline with __text__
+  * Strikethrough with ~~text~~
+- In most answers, include at least one bold or italic phrase for readability.
 Keep answers under 75 words.
 `;
 
+        const allowedRoles = new Set(['system', 'user', 'assistant']);
+        const cleanedHistory = Array.isArray(history)
+            ? history
+                .filter(item => item && typeof item === 'object')
+                .map(item => ({
+                    role: String(item.role || '').toLowerCase(),
+                    content: typeof item.content === 'string' ? item.content.trim() : ''
+                }))
+                .filter(item => allowedRoles.has(item.role) && item.content.length > 0)
+            : [];
+
         const messages = [
             { role: 'system', content: currentContext },
-            ...history.slice(-10),
-            { role: 'user', content: message }
+            ...cleanedHistory.slice(-10),
+            { role: 'user', content: normalizedMessage }
         ];
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'llama-3.1-8b-instant',
-                messages: messages,
-                max_tokens: 500
-            })
-        });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+        let response;
+        try {
+            response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${groqApiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.1-8b-instant',
+                    messages: messages,
+                    max_tokens: 500
+                }),
+                signal: controller.signal
+            });
+        } finally {
+            clearTimeout(timeout);
+        }
 
         if (!response.ok) {
-            throw new Error('AI Service Error');
+            const rawError = await response.text();
+            let providerMessage = `AI provider returned ${response.status}.`;
+            try {
+                const parsed = JSON.parse(rawError);
+                providerMessage = parsed?.error?.message || providerMessage;
+            } catch (_) { }
+
+            console.error('Chat API provider error:', {
+                status: response.status,
+                message: providerMessage,
+                body: rawError.slice(0, 500)
+            });
+
+            const statusCode = response.status === 429 ? 429 : 502;
+            return res.status(statusCode).json({ error: providerMessage });
         }
 
         const data = await response.json();
@@ -588,7 +637,7 @@ Keep answers under 75 words.
         try {
             if (email || guestId) {
                 const newMessages = [
-                    { role: 'user', content: message, timestamp: new Date() },
+                    { role: 'user', content: normalizedMessage, timestamp: new Date() },
                     { role: 'assistant', content: aiMessage, timestamp: new Date() }
                 ];
 
@@ -612,6 +661,9 @@ Keep answers under 75 words.
         res.json({ message: aiMessage, model: data.model });
     } catch (error) {
         console.error('Chat API Error:', error);
+        if (error?.name === 'AbortError') {
+            return res.status(504).json({ error: 'AI service timeout. Please try again.' });
+        }
         res.status(500).json({ error: 'Internal server error while processing chat.' });
     }
 });

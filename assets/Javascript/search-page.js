@@ -1,6 +1,9 @@
 // Search Page JavaScript
 document.addEventListener('DOMContentLoaded', async function () {
     const searchInput = document.getElementById('main-search-input');
+    const searchPlaceholderRotator = document.getElementById('search-placeholder-rotator');
+    const searchPlaceholderText = document.getElementById('search-placeholder-text');
+    const searchRecommendations = document.getElementById('search-recommendations');
     const clearSearchBtn = document.getElementById('clear-search');
     const resultsGrid = document.getElementById('search-results-grid');
     const noResults = document.getElementById('no-results');
@@ -21,6 +24,147 @@ document.addEventListener('DOMContentLoaded', async function () {
     let allProducts = [];
     let debounceTimer;
     let currentQuickViewProduct = null;
+    let placeholderRotateTimer;
+    let placeholderSwapTimer;
+    const placeholderPhrases = [
+        'Search for denim',
+        'Search for kurtas',
+        'Search for hoodies',
+        'Search for jackets',
+        'Search for cotton shirts'
+    ];
+    const placeholderTransitionMs = 350;
+    const placeholderIntervalMs = 2300;
+    const searchDebounceMs = 300;
+    const minRecommendationQueryLength = 2;
+    const maxRecommendations = 6;
+    let placeholderIndex = 0;
+
+    const updatePlaceholderVisibility = () => {
+        if (!searchInput || !searchPlaceholderRotator) return;
+        const shouldHide = searchInput.value.trim().length > 0;
+        searchPlaceholderRotator.classList.toggle('is-hidden', shouldHide);
+    };
+
+    const rotatePlaceholderText = () => {
+        if (!searchPlaceholderText || placeholderPhrases.length < 2) return;
+        searchPlaceholderText.classList.add('is-exit');
+
+        clearTimeout(placeholderSwapTimer);
+        placeholderSwapTimer = setTimeout(() => {
+            placeholderIndex = (placeholderIndex + 1) % placeholderPhrases.length;
+            searchPlaceholderText.textContent = placeholderPhrases[placeholderIndex];
+            searchPlaceholderText.classList.remove('is-exit');
+            searchPlaceholderText.classList.add('is-enter');
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    searchPlaceholderText.classList.remove('is-enter');
+                });
+            });
+        }, placeholderTransitionMs);
+    };
+
+    const startPlaceholderAnimation = () => {
+        if (!searchPlaceholderText || placeholderPhrases.length === 0) return;
+        searchPlaceholderText.textContent = placeholderPhrases[placeholderIndex];
+        updatePlaceholderVisibility();
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || placeholderPhrases.length < 2) {
+            return;
+        }
+
+        clearInterval(placeholderRotateTimer);
+        placeholderRotateTimer = setInterval(rotatePlaceholderText, placeholderIntervalMs);
+    };
+
+    const hideRecommendations = () => {
+        if (!searchRecommendations) return;
+        searchRecommendations.classList.add('hidden');
+        searchRecommendations.innerHTML = '';
+    };
+
+    const escapeHtml = (value) => {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    };
+
+    const getRecommendations = (query) => {
+        const normalized = query.trim().toLowerCase();
+        if (normalized.length < minRecommendationQueryLength) return [];
+
+        const unique = new Set();
+        const startsWithMatches = [];
+        const includesMatches = [];
+
+        allProducts.forEach((product) => {
+            if (!product || !product.name) return;
+
+            const name = String(product.name).trim();
+            if (!name) return;
+
+            const nameLower = name.toLowerCase();
+            const key = nameLower;
+            if (unique.has(key)) return;
+
+            const category = product.category ? String(product.category) : 'Product';
+
+            if (nameLower.startsWith(normalized)) {
+                unique.add(key);
+                startsWithMatches.push({ name, category });
+                return;
+            }
+
+            if (nameLower.includes(normalized)) {
+                unique.add(key);
+                includesMatches.push({ name, category });
+            }
+        });
+
+        return startsWithMatches.concat(includesMatches).slice(0, maxRecommendations);
+    };
+
+    const renderRecommendations = (query) => {
+        if (!searchRecommendations) return;
+
+        const recommendations = getRecommendations(query);
+        if (recommendations.length === 0) {
+            hideRecommendations();
+            return;
+        }
+
+        searchRecommendations.innerHTML = recommendations.map((item) => {
+            const safeName = escapeHtml(item.name);
+            const safeCategory = escapeHtml(item.category);
+            return `
+                <button type="button" class="search-recommendation-item" data-query="${safeName}">
+                    <span class="search-recommendation-name">${safeName}</span>
+                    <span class="search-recommendation-meta">${safeCategory}</span>
+                </button>
+            `;
+        }).join('');
+
+        searchRecommendations.classList.remove('hidden');
+
+        const recommendationButtons = searchRecommendations.querySelectorAll('.search-recommendation-item');
+        recommendationButtons.forEach((button) => {
+            button.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+            });
+
+            button.addEventListener('click', () => {
+                const selectedQuery = button.dataset.query || '';
+                searchInput.value = selectedQuery;
+                performSearch(selectedQuery);
+                updatePlaceholderVisibility();
+                hideRecommendations();
+            });
+        });
+    };
 
     // Fetch products from JSON
     const fetchProducts = async () => {
@@ -239,6 +383,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (query.length === 0) {
             renderProducts(allProducts, false);
             clearSearchBtn.classList.remove('visible');
+            hideRecommendations();
             return;
         }
 
@@ -263,13 +408,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             performSearch(query);
-        }, 300);
+            renderRecommendations(query);
+        }, searchDebounceMs);
     };
 
     // Event Listeners
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             debouncedSearch(e.target.value);
+            updatePlaceholderVisibility();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length >= minRecommendationQueryLength) {
+                renderRecommendations(searchInput.value);
+            }
         });
 
         // Check for query parameter in URL
@@ -277,9 +430,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         const queryParam = urlParams.get('q');
         if (queryParam) {
             searchInput.value = queryParam;
+            updatePlaceholderVisibility();
             // Wait for products to load, then search
             await fetchProducts();
             performSearch(queryParam);
+            renderRecommendations(queryParam);
         } else {
             // Load and display all products as featured
             await fetchProducts();
@@ -293,6 +448,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             searchInput.focus();
             clearSearchBtn.classList.remove('visible');
             renderProducts(allProducts, false);
+            updatePlaceholderVisibility();
+            hideRecommendations();
         });
     }
 
@@ -302,6 +459,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             searchInput.focus();
             clearSearchBtn.classList.remove('visible');
             renderProducts(allProducts, false);
+            updatePlaceholderVisibility();
+            hideRecommendations();
         });
     }
 
@@ -311,11 +470,21 @@ document.addEventListener('DOMContentLoaded', async function () {
             const query = tag.dataset.query;
             searchInput.value = query;
             performSearch(query);
+            updatePlaceholderVisibility();
+            renderRecommendations(query);
         });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchRecommendations || !searchInput) return;
+        if (searchInput.contains(e.target) || searchRecommendations.contains(e.target)) return;
+        hideRecommendations();
     });
 
     // Initial load if no query param (already handled above)
     // Redundant check removed to avoid double fetch
+
+    startPlaceholderAnimation();
 
     // Initialize state visuals
     if (typeof updateBadges === 'function') updateBadges();
