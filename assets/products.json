@@ -200,7 +200,7 @@
     "name": "Light Tunic",
     "price": "₹1,599",
     "originalPrice": "₹2,099",
-    "imageUrl": "./assets/images/product/benarasi.webp",
+    "imageUrl": "./assets/images/product/light.webp",
     "category": "Women",
     "description": "Airy tunic designed for all-day summer comfort",
     "categoryId": {
@@ -215,7 +215,7 @@
     "name": "Cotton Scarf",
     "price": "₹499",
     "originalPrice": "₹799",
-    "imageUrl": "./assets/images/product/salwar kameez.webp",
+    "imageUrl": "./assets/images/product/scarf.webp",
     "category": "Both Men & Women",
     "description": "Soft cotton scarf for light protection",
     "categoryId": {
@@ -245,7 +245,7 @@
     "name": "Relaxed Pants",
     "price": "₹999",
     "originalPrice": "₹1,499",
-    "imageUrl": "./assets/images/product/pants.webp",
+    "imageUrl": "./assets/images/product/relaxed.webp",
     "category": "Both Men & Women",
     "description": "Loose-fit pants focused on comfort and easy movement.",
     "categoryId": {
