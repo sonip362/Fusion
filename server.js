@@ -6,7 +6,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const dns = require('dns');
 require('dotenv').config();
+
+// Force IPv4 resolution first to avoid ENETUNREACH on IPv6-unfriendly networks
+dns.setDefaultResultOrder('ipv4first');
+
 
 // Models
 const Product = require('./models/Product');
@@ -772,11 +777,13 @@ app.post('/api/complete-look', async (req, res) => {
 });
 
 // --- NEWSLETTER SUBSCRIPTION (NODEMAILER ETHEREAL DEMO) ---
-let testTransporter = null;
+let cachedTransporter = null;
 async function getTransporter() {
-    // If you provided custom SMTP details in your .env, use them to send real emails!
+    if (cachedTransporter) return cachedTransporter;
+
+    // If custom SMTP details are provided in your .env, use them to send real emails with connection pooling!
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        return nodemailer.createTransport({
+        cachedTransporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST || 'smtp.gmail.com',
             port: parseInt(process.env.EMAIL_PORT || '587', 10),
             secure: process.env.EMAIL_SECURE === 'true',
@@ -784,12 +791,16 @@ async function getTransporter() {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
+            pool: true, // Use connection pooling
+            maxConnections: 3,
+            maxMessages: 50,
+            rateLimit: 5 // limit to 5 emails per second
         });
+        return cachedTransporter;
     }
 
-    if (testTransporter) return testTransporter;
     const testAccount = await nodemailer.createTestAccount();
-    testTransporter = nodemailer.createTransport({
+    cachedTransporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
         secure: false,
@@ -799,7 +810,7 @@ async function getTransporter() {
         },
     });
     console.log(`✉️ Created Ethereal Test Account: ${testAccount.user}`);
-    return testTransporter;
+    return cachedTransporter;
 }
 
 app.post('/api/subscribe', async (req, res) => {
@@ -811,7 +822,14 @@ app.post('/api/subscribe', async (req, res) => {
 
         const transporter = await getTransporter();
         const fromEmail = process.env.EMAIL_USER || 'newsletter@fusion.com';
-        const info = await transporter.sendMail({
+
+        // Send the HTTP response immediately to keep the client UI snappy!
+        res.json({ 
+            message: 'Welcome to the circle! Check your inbox soon.'
+        });
+
+        // Send the email asynchronously in the background
+        transporter.sendMail({
             from: `"Fusion Team" <${fromEmail}>`,
             to: email,
             subject: 'Welcome to the Fusion Circle! 🌟',
@@ -836,19 +854,19 @@ app.post('/api/subscribe', async (req, res) => {
                     <p style="font-size: 12px; line-height: 1.5; color: #888; margin-top: 30px; text-align: center;">If you have any questions, our AI Assistant is available 24/7 on our website.<br>© 2026 Fusion Collective. All rights reserved.</p>
                 </div>
             `
+        }).then(info => {
+            const previewUrl = nodemailer.getTestMessageUrl(info);
+            console.log(`✉️ Test email sent successfully to: ${email}`);
+            if (previewUrl) {
+                console.log(`🔗 Click here to preview sent message: ${previewUrl}`);
+            }
+        }).catch(err => {
+            console.error('Background subscription email dispatch error:', err);
         });
 
-        const previewUrl = nodemailer.getTestMessageUrl(info);
-        console.log(`✉️ Test email sent successfully to: ${email}`);
-        console.log(`🔗 Click here to preview sent message: ${previewUrl}`);
-
-        res.json({ 
-            message: 'Welcome to the circle! Check your inbox soon.',
-            previewUrl 
-        });
     } catch (error) {
         console.error('Subscription Error:', error);
-        res.status(500).json({ error: 'Failed to send subscription email.' });
+        res.status(500).json({ error: 'Failed to initiate newsletter subscription.' });
     }
 });
 
