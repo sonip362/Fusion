@@ -1,13 +1,61 @@
 // --- Modal Logic Utility ---
+const setupFocusTrap = (containerElement) => {
+    const focusableElements = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]';
+    
+    const handleKeydown = (e) => {
+        if (e.key !== 'Tab') return;
+        
+        const focusables = Array.from(containerElement.querySelectorAll(focusableElements));
+        if (focusables.length === 0) {
+            e.preventDefault();
+            return;
+        }
+        
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        
+        if (e.shiftKey) {
+            if (document.activeElement === first) {
+                last.focus();
+                e.preventDefault();
+            }
+        } else {
+            if (document.activeElement === last) {
+                first.focus();
+                e.preventDefault();
+            }
+        }
+    };
+    
+    containerElement.addEventListener('keydown', handleKeydown);
+    
+    // Focus first focusable element
+    setTimeout(() => {
+        const focusables = Array.from(containerElement.querySelectorAll(focusableElements));
+        if (focusables.length > 0) {
+            focusables[0].focus();
+        }
+    }, 100);
+
+    return () => {
+        containerElement.removeEventListener('keydown', handleKeydown);
+    };
+};
+
 const initializeModal = (options) => {
     const { modal, panel, openBtns, closeBtn, backdrop, onClose } = options;
     if (!modal || !panel || !closeBtn || !backdrop) return;
 
     const isDesktop = () => window.innerWidth >= 768;
     const isSlideRight = panel.dataset.transitionType === 'slide-right';
+    
+    let previouslyFocusedElement = null;
+    let removeFocusTrap = null;
 
     const open = (e) => {
         if (e) e.preventDefault();
+        
+        previouslyFocusedElement = document.activeElement;
 
         // Scroll Lock
         document.documentElement.classList.add('scroll-lock');
@@ -18,6 +66,9 @@ const initializeModal = (options) => {
         void modal.offsetWidth;
 
         modal.classList.add('modal-open');
+
+        // Setup focus trap
+        removeFocusTrap = setupFocusTrap(panel);
 
         setTimeout(() => {
             if (isSlideRight) {
@@ -42,6 +93,15 @@ const initializeModal = (options) => {
         document.body.classList.remove('scroll-lock');
 
         modal.classList.remove('modal-open');
+
+        if (removeFocusTrap) {
+            removeFocusTrap();
+            removeFocusTrap = null;
+        }
+
+        if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+            previouslyFocusedElement.focus();
+        }
 
         if (isSlideRight) {
             if (isDesktop()) {

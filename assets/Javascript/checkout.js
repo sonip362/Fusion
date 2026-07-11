@@ -446,12 +446,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 subtotal - discount - (redeemCoinsForOrder * COIN_VALUE_INR)
             );
 
-            if (loggedInUser && loggedInUser.email) {
+            if (loggedInUser) {
+                const token = localStorage.getItem('fusion_token');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                } else {
+                    throw new Error('Authentication token is missing. Please log in again.');
+                }
+
                 const rewardsResponse = await fetch('/api/user/checkout-rewards', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify({
-                        email: loggedInUser.email,
                         coinsToRedeem: redeemCoinsForOrder,
                         shoppingAmount: shoppingAmountForCoins
                     })
@@ -471,11 +478,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 loggedInUser.cart = [];
                 setLoggedInUser(loggedInUser);
 
+                const token = localStorage.getItem('fusion_token');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
                 fetch('/api/user/sync', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify({
-                        email: loggedInUser.email,
                         cart: [],
                         wishlist: loggedInUser.wishlist || []
                     })

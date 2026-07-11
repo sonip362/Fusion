@@ -7,10 +7,16 @@ document.addEventListener('keydown', (e) => {
         if (typeof cartModal !== 'undefined' && cartModal) cartModal.close();
         if (typeof quickViewModalCtl !== 'undefined' && quickViewModalCtl) quickViewModalCtl.close();
         if (typeof closeInfoModal === 'function') closeInfoModal();
+        if (typeof messageModalControls !== 'undefined' && messageModalControls) messageModalControls.close();
+        if (typeof avatarEditorModalControls !== 'undefined' && avatarEditorModalControls) avatarEditorModalControls.close();
+        if (typeof deleteConfirmModalControls !== 'undefined' && deleteConfirmModalControls) deleteConfirmModalControls.close();
+        if (typeof closeLogin === 'function') closeLogin();
 
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
             mobileMenu.classList.add('hidden');
+            document.documentElement.classList.remove('scroll-lock');
+            document.body.classList.remove('scroll-lock');
         }
 
         if (isInput) {

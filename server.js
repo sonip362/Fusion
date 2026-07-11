@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 // Models
@@ -13,6 +15,7 @@ const Guest = require('./models/Guest');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secure_key_fusion_2026';
 
 // Middleware
 app.use(cors());
@@ -24,7 +27,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('✅ Connected to MongoDB Atlas'))
     .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
-// --- AUTHENTICATION ROUTES ---
+// --- AUTHENTICATION MIDDLEWARE & LOCKS ---
 const MAX_FAILED_LOGINS_BEFORE_LOCK = 6; // Lock when failures are more than 6 (7th failure)
 const LOGIN_LOCK_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 const LOGIN_REWARD_COINS = 5;
@@ -65,6 +68,26 @@ const clearLoginLock = (emailKey) => {
 
 const getRemainingLockSeconds = (lockedUntil) => Math.max(1, Math.ceil((lockedUntil - Date.now()) / 1000));
 
+// Middleware to authenticate JWT tokens
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Access denied. No token provided.' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid or expired authentication token.' });
+        }
+        req.user = user; // user contains userId
+        next();
+    });
+};
+
+// --- AUTHENTICATION ROUTES ---
+
 // Registration Endpoint
 app.post('/api/register', async (req, res) => {
     try {
@@ -96,8 +119,13 @@ app.post('/api/register', async (req, res) => {
         });
 
         await newUser.save();
+
+        // Sign token
+        const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '24h' });
+
         res.status(201).json({
             message: 'User registered successfully!',
+            token,
             user: {
                 id: newUser._id,
                 fullName: newUser.fullName,
@@ -180,7 +208,6 @@ app.post('/api/login', async (req, res) => {
                         if (!exists) {
                             mergedCart.push(gItem);
                         } else {
-                            // If exists, maybe update quantity? 
                             exists.quantity = (Number(exists.quantity) || 1) + (Number(gItem.quantity) || 1);
                         }
                     });
@@ -256,9 +283,13 @@ app.post('/api/login', async (req, res) => {
             return res.status(404).json({ error: 'User not found.' });
         }
 
+        // Sign token
+        const token = jwt.sign({ userId: loggedInUser._id }, JWT_SECRET, { expiresIn: '24h' });
+
         // Login success
         res.json({
             message: 'Login successful!',
+            token,
             rewardCoinsAdded,
             user: {
                 id: loggedInUser._id,
@@ -278,13 +309,9 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Save/Update User Profile Picture (stored as data URL)
-app.post('/api/user/profile-picture', async (req, res) => {
+app.post('/api/user/profile-picture', authenticateToken, async (req, res) => {
     try {
-        const { email, profilePicture } = req.body || {};
-
-        if (!email) {
-            return res.status(400).json({ error: 'Email is required.' });
-        }
+        const { profilePicture } = req.body || {};
 
         if (typeof profilePicture !== 'string' || !profilePicture.trim()) {
             return res.status(400).json({ error: 'Profile picture is required.' });
@@ -301,8 +328,8 @@ app.post('/api/user/profile-picture', async (req, res) => {
             return res.status(413).json({ error: 'Image is too large. Please use a smaller image.' });
         }
 
-        const user = await User.findOneAndUpdate(
-            { email },
+        const user = await User.findByIdAndUpdate(
+            req.user.userId,
             { profilePicture: normalizedImage },
             { returnDocument: 'after' }
         );
@@ -322,11 +349,9 @@ app.post('/api/user/profile-picture', async (req, res) => {
 // Sync User or Guest Data (Cart, Wishlist, Recently Viewed)
 app.post('/api/user/sync', async (req, res) => {
     try {
-        let { email, guestId, cart, wishlist, recentlyViewed } = req.body || {};
-
-        if (!email && !guestId) {
-            return res.status(400).json({ error: 'Email or guestId is required for syncing' });
-        }
+        let { guestId, cart, wishlist, recentlyViewed } = req.body || {};
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
 
         const update = {};
         if (cart !== undefined) update.cart = Array.isArray(cart) ? cart : [];
@@ -334,17 +359,23 @@ app.post('/api/user/sync', async (req, res) => {
         if (recentlyViewed !== undefined) update.recentlyViewed = Array.isArray(recentlyViewed) ? recentlyViewed : [];
 
         let result;
-        if (email) {
-            // Priority: Registered User
-            // If body is empty (just fetch request), find the user
-            if (Object.keys(update).length === 0) {
-                result = await User.findOne({ email }).select('-password -profilePicture');
-            } else {
-                result = await User.findOneAndUpdate(
-                    { email },
-                    update,
-                    { returnDocument: 'after', upsert: false }
-                ).select('-password -profilePicture');
+        let isUser = false;
+
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, JWT_SECRET);
+                isUser = true;
+                if (Object.keys(update).length === 0) {
+                    result = await User.findById(decoded.userId).select('-password -profilePicture');
+                } else {
+                    result = await User.findByIdAndUpdate(
+                        decoded.userId,
+                        update,
+                        { returnDocument: 'after', upsert: false }
+                    ).select('-password -profilePicture');
+                }
+            } catch (err) {
+                return res.status(403).json({ error: 'Invalid or expired authentication token.' });
             }
         } else if (guestId) {
             // Fallback: Guest User
@@ -357,10 +388,12 @@ app.post('/api/user/sync', async (req, res) => {
                     { returnDocument: 'after', upsert: true }
                 );
             }
+        } else {
+            return res.status(400).json({ error: 'Authentication token or guestId is required for syncing' });
         }
 
         if (!result) {
-            if (email) return res.status(404).json({ error: 'User not found' });
+            if (isUser) return res.status(404).json({ error: 'User not found' });
             return res.status(500).json({ error: 'Sync failed' });
         }
 
@@ -371,7 +404,7 @@ app.post('/api/user/sync', async (req, res) => {
             recentlyViewed: result.recentlyViewed || [],
             rewardCoins: Number(result.rewardCoins) || 0,
             chatHistory: result.chatHistory || [],
-            type: email ? 'user' : 'guest'
+            type: isUser ? 'user' : 'guest'
         });
     } catch (error) {
         console.error('Sync Error:', error);
@@ -380,13 +413,9 @@ app.post('/api/user/sync', async (req, res) => {
 });
 
 // Redeem Reward Coins
-app.post('/api/user/redeem-coins', async (req, res) => {
+app.post('/api/user/redeem-coins', authenticateToken, async (req, res) => {
     try {
-        const { email, coinsToRedeem } = req.body || {};
-
-        if (!email) {
-            return res.status(400).json({ error: 'Email is required.' });
-        }
+        const { coinsToRedeem } = req.body || {};
 
         const redeemAmount = Number(coinsToRedeem);
         if (!Number.isInteger(redeemAmount) || redeemAmount < MIN_REDEEM_COINS) {
@@ -396,13 +425,13 @@ app.post('/api/user/redeem-coins', async (req, res) => {
         }
 
         const user = await User.findOneAndUpdate(
-            { email, rewardCoins: { $gte: redeemAmount } },
+            { _id: req.user.userId, rewardCoins: { $gte: redeemAmount } },
             { $inc: { rewardCoins: -redeemAmount } },
             { returnDocument: 'after' }
         );
 
         if (!user) {
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findById(req.user.userId);
             if (!existingUser) return res.status(404).json({ error: 'User not found.' });
             return res.status(400).json({ error: 'Not enough coins to redeem.' });
         }
@@ -418,16 +447,10 @@ app.post('/api/user/redeem-coins', async (req, res) => {
     }
 });
 
-// Complete checkout reward update:
-// - Redeem selected coins (optional, min 20)
-// - Earn new coins based on shopping amount (₹100 = 1 coin)
-app.post('/api/user/checkout-rewards', async (req, res) => {
+// Complete checkout reward update
+app.post('/api/user/checkout-rewards', authenticateToken, async (req, res) => {
     try {
-        const { email, coinsToRedeem = 0, shoppingAmount = 0 } = req.body || {};
-
-        if (!email) {
-            return res.status(400).json({ error: 'Email is required.' });
-        }
+        const { coinsToRedeem = 0, shoppingAmount = 0 } = req.body || {};
 
         const redeemAmount = Math.max(0, Math.floor(Number(coinsToRedeem) || 0));
         if (redeemAmount > 0 && redeemAmount < MIN_REDEEM_COINS) {
@@ -439,7 +462,7 @@ app.post('/api/user/checkout-rewards', async (req, res) => {
         const normalizedShoppingAmount = Math.max(0, Number(shoppingAmount) || 0);
         const earnedCoins = Math.floor(normalizedShoppingAmount / COIN_EARN_RATE_RUPEES);
 
-        const user = await User.findOne({ email });
+        const user = await User.findById(req.user.userId);
         if (!user) return res.status(404).json({ error: 'User not found.' });
 
         const currentCoins = Number(user.rewardCoins) || 0;
@@ -463,12 +486,9 @@ app.post('/api/user/checkout-rewards', async (req, res) => {
 });
 
 // Download User Data (GDPR compliance)
-app.post('/api/user/download-data', async (req, res) => {
+app.post('/api/user/download-data', authenticateToken, async (req, res) => {
     try {
-        const { email } = req.body || {};
-        if (!email) return res.status(400).json({ error: 'Email is required.' });
-
-        const user = await User.findOne({ email }).select('-password');
+        const user = await User.findById(req.user.userId).select('-password');
         if (!user) return res.status(404).json({ error: 'User not found.' });
 
         res.json({
@@ -482,12 +502,9 @@ app.post('/api/user/download-data', async (req, res) => {
 });
 
 // Delete User Account
-app.post('/api/user/delete', async (req, res) => {
+app.post('/api/user/delete', authenticateToken, async (req, res) => {
     try {
-        const { email } = req.body || {};
-        if (!email) return res.status(400).json({ error: 'Email is required.' });
-
-        const result = await User.deleteOne({ email });
+        const result = await User.deleteOne({ _id: req.user.userId });
         if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'User not found.' });
         }
@@ -518,7 +535,20 @@ async function getFUSION_CONTEXT() {
 // Chat endpoint with session persistence
 app.post('/api/chat', async (req, res) => {
     try {
-        const { message, history = [], email, guestId } = req.body;
+        const { message, history = [], guestId } = req.body;
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        
+        let userId = null;
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, JWT_SECRET);
+                userId = decoded.userId;
+            } catch (err) {
+                return res.status(403).json({ error: 'Invalid or expired authentication token.' });
+            }
+        }
+
         const groqApiKey = process.env.GROQ_API_KEY;
         const normalizedMessage = typeof message === 'string' ? message.trim() : '';
 
@@ -635,15 +665,15 @@ Keep answers under 75 words.
 
         // Persist to MongoDB if user/guest identified
         try {
-            if (email || guestId) {
+            if (userId || guestId) {
                 const newMessages = [
                     { role: 'user', content: normalizedMessage, timestamp: new Date() },
                     { role: 'assistant', content: aiMessage, timestamp: new Date() }
                 ];
 
-                if (email) {
-                    await User.findOneAndUpdate(
-                        { email },
+                if (userId) {
+                    await User.findByIdAndUpdate(
+                        userId,
                         { $push: { chatHistory: { $each: newMessages } } }
                     );
                 } else if (guestId) {
@@ -738,6 +768,87 @@ app.post('/api/complete-look', async (req, res) => {
             console.error('Complete-the-Look Fallback Error:', fallbackErr.message || fallbackErr);
             res.json({ recommendations: [] });
         }
+    }
+});
+
+// --- NEWSLETTER SUBSCRIPTION (NODEMAILER ETHEREAL DEMO) ---
+let testTransporter = null;
+async function getTransporter() {
+    // If you provided custom SMTP details in your .env, use them to send real emails!
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        return nodemailer.createTransport({
+            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.EMAIL_PORT || '587', 10),
+            secure: process.env.EMAIL_SECURE === 'true',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+    }
+
+    if (testTransporter) return testTransporter;
+    const testAccount = await nodemailer.createTestAccount();
+    testTransporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+            user: testAccount.user,
+            pass: testAccount.pass,
+        },
+    });
+    console.log(`✉️ Created Ethereal Test Account: ${testAccount.user}`);
+    return testTransporter;
+}
+
+app.post('/api/subscribe', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email || !email.includes('@')) {
+            return res.status(400).json({ error: 'Please enter a valid email address.' });
+        }
+
+        const transporter = await getTransporter();
+        const fromEmail = process.env.EMAIL_USER || 'newsletter@fusion.com';
+        const info = await transporter.sendMail({
+            from: `"Fusion Team" <${fromEmail}>`,
+            to: email,
+            subject: 'Welcome to the Fusion Circle! 🌟',
+            text: 'Welcome to the Fusion Circle! Here is your exclusive 10% off code: FUSION10*. *Only applicable on purchases above ₹1,500.',
+            html: `
+                <div style="font-family: sans-serif; padding: 20px; color: #1a1a1a; max-width: 600px; margin: 0 auto; border: 1px solid #eaeaea; border-radius: 8px; background-color: #ffffff;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="font-family: 'Georgia', serif; font-size: 28px; margin: 0; color: #111;">FUSION</h1>
+                        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #888; margin-top: 5px;">Redefining Modern Wear</p>
+                    </div>
+                    <hr style="border: 0; border-top: 1px solid #eaeaea; margin-bottom: 25px;">
+                    <h2 style="font-family: 'Georgia', serif; font-size: 20px; color: #111; margin-bottom: 15px;">Welcome to the Circle! 🌟</h2>
+                    <p style="font-size: 14px; line-height: 1.6; color: #444;">We're thrilled to have you with us. As a member of our inner circle, you'll be the first to receive updates on new arrivals, seasonal sales, and limited drops.</p>
+                    <p style="font-size: 14px; line-height: 1.6; color: #444;">Enjoy 10% off your first purchase using the coupon code below:</p>
+                    
+                    <div style="background-color: #F7F5F2; border: 2px dashed #1a1a1a; padding: 15px; margin: 25px 0 15px 0; text-align: center;">
+                        <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #666; display: block; margin-bottom: 5px;">Your Exclusive Code</span>
+                        <strong style="font-size: 24px; letter-spacing: 4px; color: #1a1a1a;">FUSION10*</strong>
+                    </div>
+                    <p style="font-size: 11px; color: #888; text-align: center; margin-top: 0; margin-bottom: 25px;">*Only applicable on purchases above ₹1,500</p>
+                    
+                    <p style="font-size: 12px; line-height: 1.5; color: #888; margin-top: 30px; text-align: center;">If you have any questions, our AI Assistant is available 24/7 on our website.<br>© 2026 Fusion Collective. All rights reserved.</p>
+                </div>
+            `
+        });
+
+        const previewUrl = nodemailer.getTestMessageUrl(info);
+        console.log(`✉️ Test email sent successfully to: ${email}`);
+        console.log(`🔗 Click here to preview sent message: ${previewUrl}`);
+
+        res.json({ 
+            message: 'Welcome to the circle! Check your inbox soon.',
+            previewUrl 
+        });
+    } catch (error) {
+        console.error('Subscription Error:', error);
+        res.status(500).json({ error: 'Failed to send subscription email.' });
     }
 });
 

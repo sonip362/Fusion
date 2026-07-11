@@ -15,6 +15,7 @@
     const chatToggleBtn = document.getElementById('faq-chat-toggle');
     const headerAiBtn = document.getElementById('header-ai-btn');
     const mobileHeaderAiBtn = document.getElementById('mobile-header-ai-btn');
+    const faqAskAiBtn = document.getElementById('faq-ask-ai-btn');
     const chatBackdrop = document.getElementById('faq-chat-backdrop');
     const chatContainer = document.getElementById('faq-chat-container');
     const chatMessages = document.getElementById('faq-chat-messages');
@@ -39,6 +40,10 @@
         mobileHeaderAiBtn?.addEventListener('click', (e) => {
             e.preventDefault();
             toggleChat();
+        });
+        faqAskAiBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            openChat();
         });
 
         chatCloseBtn?.addEventListener('click', closeChat);
@@ -78,6 +83,21 @@
                     console.error('Failed to load chat history:', e);
                 }
             }
+        }
+
+        // Pulse FAB when FAQ section is visible
+        const faqSection = document.getElementById('faq');
+        if (faqSection && chatToggleBtn && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        chatToggleBtn.classList.add('pulse-near-faq');
+                    } else {
+                        chatToggleBtn.classList.remove('pulse-near-faq');
+                    }
+                });
+            }, { threshold: 0.1 });
+            observer.observe(faqSection);
         }
 
         syncMobileChatState();
@@ -132,6 +152,16 @@
         syncMobileChatState();
     }
 
+    function openChat() {
+        if (!chatContainer.classList.contains('open')) {
+            toggleChat();
+            return;
+        }
+
+        chatInput?.focus();
+        syncMobileChatState();
+    }
+
     function isMobileView() {
         return window.matchMedia('(max-width: 768px)').matches;
     }
@@ -164,13 +194,18 @@
             const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
             const guestId = (typeof getGuestId === 'function') ? getGuestId() : null;
 
+            const token = localStorage.getItem('fusion_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({
                     message: message,
                     history: chatHistory,
-                    email: loggedInUser?.email || null,
                     guestId: loggedInUser ? null : guestId
                 })
             });
@@ -212,9 +247,9 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         if (animate) {
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 messageDiv.classList.add('visible');
-            });
+            }, 20);
         } else {
             messageDiv.classList.add('visible');
         }
@@ -261,9 +296,9 @@
         chatMessages.appendChild(typingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             typingDiv.classList.add('visible');
-        });
+        }, 20);
     }
 
     function hideTypingIndicator() {

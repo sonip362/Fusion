@@ -30,6 +30,7 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    suppressReservedKeysWarning: true,
     toJSON: {
       virtuals: true,
       transform: (_doc, ret) => {

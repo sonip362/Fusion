@@ -270,7 +270,23 @@ const openQuickView = (product) => {
 // Fetch products.json and render product cards into the grid
 const fetchAndRenderProducts = async () => {
     const productGrid = document.getElementById('collection-product-grid');
-    if (!productGrid) return;
+    if (productGrid) {
+
+        productGrid.innerHTML = Array(8).fill(0).map(() => `
+            <div class="product-card-skeleton-container flex flex-col gap-4 animate-pulse">
+                <div class="skeleton-loader product-card-skeleton aspect-[4/5] w-full"></div>
+                <div class="flex justify-between items-start mt-2">
+                    <div class="flex flex-col gap-2 w-2/3">
+                        <div class="skeleton-loader h-4 w-full rounded"></div>
+                        <div class="skeleton-loader h-3 w-1/2 rounded"></div>
+                    </div>
+                    <div class="skeleton-loader h-5 w-1/4 rounded"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+
 
     try {
         const res = await fetch('/api/products');

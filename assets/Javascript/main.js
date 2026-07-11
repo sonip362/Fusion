@@ -31,17 +31,29 @@ const loadState = async () => {
     const guestId = getGuestId();
 
     try {
-        // Fetch state from MongoDB - no fields in body means "Fetch Only" for the server
+        const token = localStorage.getItem('fusion_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const syncData = {
-            email: loggedInUser?.email || null,
-            guestId: loggedInUser?.email ? null : guestId
+            guestId: loggedInUser ? null : guestId
         };
 
         const response = await fetch('/api/user/sync', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(syncData)
         });
+
+        if (response.status === 401 || response.status === 403) {
+            console.warn("Session expired or invalid token on load. Logging out.");
+            localStorage.removeItem('fusion_user');
+            localStorage.removeItem('fusion_token');
+            updateAuthUI();
+            return;
+        }
 
         if (response.ok) {
             const data = await response.json();
@@ -84,24 +96,35 @@ const saveState = async () => {
     const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
     const guestId = getGuestId();
 
-    // Prepare sync payload - ONLY include fields that are actually being saved
-    const syncData = {
-        email: loggedInUser?.email || null,
-        guestId: loggedInUser?.email ? null : guestId,
-        cart: cart,
-        wishlist: wishlist,
-        recentlyViewed: recentlyViewed
-    };
-
-    // Only SYNC TO MONGODB if consent is accepted
     const consent = localStorage.getItem('cookie-consent');
     if (consent === 'accepted') {
         try {
+            const token = localStorage.getItem('fusion_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const syncData = {
+                guestId: loggedInUser ? null : guestId,
+                cart: cart,
+                wishlist: wishlist,
+                recentlyViewed: recentlyViewed
+            };
+
             const response = await fetch('/api/user/sync', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify(syncData)
             });
+
+            if (response.status === 401 || response.status === 403) {
+                console.warn("Session expired or invalid token on save. Logging out.");
+                localStorage.removeItem('fusion_user');
+                localStorage.removeItem('fusion_token');
+                updateAuthUI();
+                return;
+            }
 
             if (response.ok) {
                 const data = await response.json();
@@ -115,9 +138,6 @@ const saveState = async () => {
             console.warn("Failed to sync with server:", err);
         }
     } else {
-        // If rejected OR not yet decided, we do NOT save to MongoDB
-        // We still keep it in local memory 'cart' / 'wishlist' variables
-        // and only use localStorage as a fallback if Not Rejected
         if (consent !== 'rejected') {
             localStorage.setItem('fus_cart', JSON.stringify(cart));
             localStorage.setItem('fus_wishlist', JSON.stringify(wishlist));
@@ -228,6 +248,7 @@ const updateAuthUI = () => {
 
 const handleLogout = () => {
     localStorage.removeItem('fusion_user');
+    localStorage.removeItem('fusion_token');
     updateAuthUI(); // Update UI immediately
     window.location.reload();
 };
@@ -324,15 +345,18 @@ const setAvatarEditorImage = (dataUrl) => new Promise((resolve, reject) => {
 
 const saveProfilePictureToServer = async (profilePictureDataUrl) => {
     const loggedInUser = JSON.parse(localStorage.getItem('fusion_user') || 'null');
-    if (!loggedInUser || !loggedInUser.email) {
+    const token = localStorage.getItem('fusion_token');
+    if (!loggedInUser || !token) {
         throw new Error('Please log in first.');
     }
 
     const response = await fetch('/api/user/profile-picture', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
-            email: loggedInUser.email,
             profilePicture: profilePictureDataUrl
         })
     });
@@ -507,18 +531,58 @@ const updateBadges = () => {
     const cartCount = cart.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
     const wishlistCount = wishlist.length;
 
+    const prevCartCount = Number(window._prevCartCount) || 0;
+    const prevWishlistCount = Number(window._prevWishlistCount) || 0;
+
+    const triggerPopAnimation = (el) => {
+        if (!el) return;
+        el.classList.remove('badge-animate');
+        void el.offsetWidth; // trigger reflow
+        el.classList.add('badge-animate');
+    };
+
     [[cartBadgeDesktop, cartCount], [cartBadgeMobile, cartCount]].forEach(([el, count]) => {
         if (!el) return;
-        if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
-        else { el.classList.add('hidden'); el.textContent = '0'; }
+        if (count > 0) {
+            el.textContent = count;
+            el.classList.remove('hidden');
+            if (count > prevCartCount) {
+                triggerPopAnimation(el);
+            }
+        } else {
+            el.classList.add('hidden');
+            el.textContent = '0';
+        }
     });
 
     [[wishlistBadgeDesktop, wishlistCount], [wishlistBadgeMobile, wishlistCount]].forEach(([el, count]) => {
         if (!el) return;
-        if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
-        else { el.classList.add('hidden'); el.textContent = '0'; }
+        if (count > 0) {
+            el.textContent = count;
+            el.classList.remove('hidden');
+            if (count > prevWishlistCount) {
+                triggerPopAnimation(el);
+            }
+        } else {
+            el.classList.add('hidden');
+            el.textContent = '0';
+        }
     });
+
+    window._prevCartCount = cartCount;
+    window._prevWishlistCount = wishlistCount;
 };
+
+// Global button press micro-interaction handler
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.add-to-cart-btn, .add-to-wishlist-btn, .quick-view-btn, .cart-rec-add-btn, .add-to-cart-from-wishlist-btn, #music-toggle-btn');
+    if (btn) {
+        btn.classList.add('btn-press');
+        setTimeout(() => {
+            btn.classList.remove('btn-press');
+        }, 100);
+    }
+});
 
 // Global handles for modals (needed by multiple scripts)
 let wishlistModal, cartModal, quickViewModalCtl, currentQuickViewProduct;
@@ -573,24 +637,34 @@ document.addEventListener('DOMContentLoaded', async function () {
     const closeBtn = document.getElementById('mobile-menu-close-btn');
     const menu = document.getElementById('mobile-menu');
     const menuLinks = document.querySelectorAll('.mobile-menu-link');
+    let removeMenuFocusTrap = null;
+    let menuPreviouslyFocused = null;
 
     if (menuBtn && closeBtn && menu && menuLinks.length > 0) {
         menuBtn.addEventListener('click', () => {
+            menuPreviouslyFocused = document.activeElement;
             menu.classList.remove('hidden');
             document.documentElement.classList.add('scroll-lock');
             document.body.classList.add('scroll-lock');
+            if (typeof setupFocusTrap === 'function') {
+                removeMenuFocusTrap = setupFocusTrap(menu);
+            }
         });
-        closeBtn.addEventListener('click', () => {
+        const closeMenu = () => {
             menu.classList.add('hidden');
             document.documentElement.classList.remove('scroll-lock');
             document.body.classList.remove('scroll-lock');
-        });
+            if (removeMenuFocusTrap) {
+                removeMenuFocusTrap();
+                removeMenuFocusTrap = null;
+            }
+            if (menuPreviouslyFocused && typeof menuPreviouslyFocused.focus === 'function') {
+                menuPreviouslyFocused.focus();
+            }
+        };
+        closeBtn.addEventListener('click', closeMenu);
         menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-                document.documentElement.classList.remove('scroll-lock');
-                document.body.classList.remove('scroll-lock');
-            });
+            link.addEventListener('click', closeMenu);
         });
     }
 
@@ -599,9 +673,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     const heroTitle = document.getElementById('hero-title-text');
     const backTopBtn = document.getElementById('backTop');
     const heroImage = document.querySelector('#home picture img');
+    let lastScrollY = window.scrollY;
+    let scrollStopTimer = null;
 
-    const handleScroll = () => {
+    const setBackTopVisibility = (shouldShow) => {
+        if (!backTopBtn) return;
+        backTopBtn.classList.toggle('show', shouldShow);
+    };
+
+    const handleScroll = ({ scrollingStopped = false } = {}) => {
         const scrollY = window.scrollY;
+        const isScrollingUp = scrollY < lastScrollY;
+        const isPastBackTopThreshold = scrollY > 300;
 
 
         if (mainHeader) {
@@ -615,18 +698,20 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (backTopBtn) {
-            if (scrollY > 300) {
-                backTopBtn.classList.add('show');
-            } else {
-                backTopBtn.classList.remove('show');
-            }
+            const shouldShowBackTop = isPastBackTopThreshold && (isScrollingUp || scrollingStopped);
+            setBackTopVisibility(shouldShowBackTop);
         }
 
-
+        lastScrollY = scrollY;
     };
 
     let ticking = false;
     window.addEventListener('scroll', () => {
+        if (scrollStopTimer) clearTimeout(scrollStopTimer);
+        scrollStopTimer = window.setTimeout(() => {
+            handleScroll({ scrollingStopped: true });
+        }, 180);
+
         if (!ticking) {
             window.requestAnimationFrame(() => {
                 handleScroll();
@@ -635,6 +720,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             ticking = true;
         }
     });
+    handleScroll({ scrollingStopped: true });
 
     // --- Parallax Effect ---
     document.addEventListener('mousemove', (e) => {
@@ -944,13 +1030,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (downloadDataBtn) {
         downloadDataBtn.addEventListener('click', async () => {
             const user = JSON.parse(localStorage.getItem('fusion_user') || 'null');
-            if (!user) return;
+            const token = localStorage.getItem('fusion_token');
+            if (!user || !token) return;
 
             try {
                 const response = await fetch('/api/user/download-data', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
                 if (response.ok) {
@@ -985,18 +1074,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (deleteConfirmFinalBtn) {
         deleteConfirmFinalBtn.addEventListener('click', async () => {
             const user = JSON.parse(localStorage.getItem('fusion_user') || 'null');
-            if (!user) return;
+            const token = localStorage.getItem('fusion_token');
+            if (!user || !token) return;
 
             try {
                 const response = await fetch('/api/user/delete', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
                 if (response.ok) {
                     if (deleteConfirmModalControls) deleteConfirmModalControls.close();
                     localStorage.removeItem('fusion_user');
+                    localStorage.removeItem('fusion_token');
                     showMessage('Success', 'Your account has been deleted. Refreshing...', 'success');
                     setTimeout(() => window.location.reload(), 2000);
                 } else {
@@ -1139,40 +1232,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     })();
 
     // --- Background Music ---
-    const music = document.getElementById('background-music');
-    const musicToggleBtn = document.getElementById('music-toggle-btn');
-    const musicOnIcon = document.getElementById('music-on-icon');
-    const musicOffIcon = document.getElementById('music-off-icon');
-
-    if (music && musicToggleBtn && musicOnIcon && musicOffIcon) {
-        const playPromise = music.play();
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-                musicToggleBtn.classList.remove('hidden');
-            }).catch(error => {
-                const startMusicOnInteraction = () => {
-                    music.play();
-                    musicToggleBtn.classList.remove('hidden');
-                    document.body.removeEventListener('click', startMusicOnInteraction);
-                    document.body.removeEventListener('keydown', startMusicOnInteraction);
-                };
-                document.body.addEventListener('click', startMusicOnInteraction);
-                document.body.addEventListener('keydown', startMusicOnInteraction);
-            });
-        }
-
-        musicToggleBtn.addEventListener('click', () => {
-            if (music.muted) {
-                music.muted = false;
-                musicOnIcon.classList.remove('hidden');
-                musicOffIcon.classList.add('hidden');
-            } else {
-                music.muted = true;
-                musicOnIcon.classList.add('hidden');
-                musicOffIcon.classList.remove('hidden');
-            }
-        });
-    }
+    // Background music initialization and playback are managed by music-player.js to avoid duplicate logic and comply with autoplay guidelines.
 
     // --- Info Modal ---
     const openShippingBtn = document.getElementById('open-shipping-modal');
@@ -1537,29 +1597,70 @@ const initializeNewsletter = () => {
     const statusMsg = document.getElementById('newsletter-status');
 
     if (form && statusMsg) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('newsletter-email');
             const inputContainer = form.querySelector('div'); // The div wrapping input and button
 
             if (emailInput && emailInput.value.trim() !== '') {
+                const email = emailInput.value.trim();
+                
                 // Dim the input to indicate processing
                 if (inputContainer) {
                     inputContainer.classList.add('opacity-50', 'pointer-events-none');
                 }
 
-                // Simulate network request
-                setTimeout(() => {
-                    // Hide input container and show success message
-                    if (inputContainer) {
-                        inputContainer.classList.add('hidden');
-                    }
-                    statusMsg.classList.remove('hidden');
-                    statusMsg.classList.add('fade-in');
+                try {
+                    const response = await fetch('/api/subscribe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email })
+                    });
 
-                    emailInput.value = '';
-                }, 800);
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Success: hide input container and show success message
+                        if (inputContainer) {
+                            inputContainer.classList.add('hidden');
+                        }
+                        statusMsg.textContent = data.message || 'Welcome to the circle. Check your inbox soon.';
+                        statusMsg.classList.remove('hidden');
+                        statusMsg.classList.add('fade-in');
+
+                        // Log preview URL to console for development testing
+                        if (data.previewUrl) {
+                            console.log('%c✉️ Welcome Email Sent (Test Sandbox)!', 'color: #10B981; font-weight: bold;');
+                            console.log('%cClick the link below to preview the email:', 'color: #6B7280;');
+                            console.log(data.previewUrl);
+                            
+                            if (typeof showToast === 'function') {
+                                showToast('Welcome email sent! Check console for preview link.', 'success');
+                            }
+                        }
+                        emailInput.value = '';
+                    } else {
+                        // Restore form state
+                        if (inputContainer) {
+                            inputContainer.classList.remove('opacity-50', 'pointer-events-none');
+                        }
+                        if (typeof showMessage === 'function') {
+                            showMessage('Subscription Error', data.error || 'Failed to subscribe.', 'error');
+                        }
+                    }
+                } catch (err) {
+                    console.error('Newsletter error:', err);
+                    if (inputContainer) {
+                        inputContainer.classList.remove('opacity-50', 'pointer-events-none');
+                    }
+                    if (typeof showMessage === 'function') {
+                        showMessage('Subscription Error', 'Could not connect to the server.', 'error');
+                    }
+                }
             }
         });
     }
 };
+

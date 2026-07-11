@@ -106,6 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (data.user) {
                     localStorage.setItem('fusion_user', JSON.stringify(data.user));
+                    if (data.token) {
+                        localStorage.setItem('fusion_token', data.token);
+                    }
                     // Optional: Refresh the page or update the header UI
                     setTimeout(() => {
                         closeLogin();

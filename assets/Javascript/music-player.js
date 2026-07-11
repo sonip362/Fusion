@@ -54,18 +54,7 @@
                 safePlay();
             }
 
-            // If music wasn't already playing, start playback on first user interaction
-            // (works around browser autoplay policies which require a user gesture)
-            if (!wasPlaying) {
-                function startOnInteraction() {
-                    safePlay();
-                    try { localStorage.setItem(KEY_PLAYING, 'true'); } catch (e) { }
-                    document.removeEventListener('pointerdown', startOnInteraction);
-                    document.removeEventListener('keydown', startOnInteraction);
-                }
-                document.addEventListener('pointerdown', startOnInteraction, { once: true });
-                document.addEventListener('keydown', startOnInteraction, { once: true });
-            }
+            // Autoplay music on user gesture is disabled. Music must only play upon explicit toggle click.
 
             // Optional UI toggle if present
             var toggleBtn = document.getElementById('music-toggle-btn');
