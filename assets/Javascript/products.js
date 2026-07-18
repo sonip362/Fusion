@@ -111,7 +111,11 @@ const loadCompleteTheLook = async (product) => {
                     const recId = card.dataset.id;
                     const recProduct = recommendations.find(r => r.id === recId);
                     if (recProduct) {
-                        openQuickView(recProduct);
+                        if (typeof navigateToProductView === 'function') {
+                            navigateToProductView(recProduct);
+                        } else {
+                            openQuickView(recProduct);
+                        }
                     }
                 });
             });
@@ -177,7 +181,11 @@ const loadCompleteTheLook = async (product) => {
                 const recId = card.dataset.id;
                 const recProduct = recommendations.find(r => r.id === recId);
                 if (recProduct) {
-                    openQuickView(recProduct);
+                    if (typeof navigateToProductView === 'function') {
+                        navigateToProductView(recProduct);
+                    } else {
+                        openQuickView(recProduct);
+                    }
                 }
             });
         });
@@ -358,8 +366,8 @@ const fetchAndRenderProducts = async () => {
                          onerror="this.onerror=null;this.src='https://placehold.co/400x500/F7F5F2/1A1A1A?text=IMG';">
 
                     <!-- Action Buttons: Hidden on Mobile, Hover-only on Desktop -->
-                    <button type="button" class="quick-view-btn hidden md:flex items-center justify-center whitespace-nowrap absolute bottom-4 left-1/2 -translate-x-1/2 h-10 w-[85%] bg-white/90 backdrop-blur-md text-royal-black text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 z-20 hover:bg-white" aria-label="Quick view for ${product.name}">
-                        Quick View
+                    <button type="button" class="quick-view-btn hidden md:flex items-center justify-center whitespace-nowrap absolute bottom-4 left-1/2 -translate-x-1/2 h-10 w-[85%] bg-white/90 backdrop-blur-md text-royal-black text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 z-20 hover:bg-white" aria-label="View details for ${product.name}">
+                        View
                     </button>
                     
                     <button type="button" class="add-to-wishlist-btn hidden md:flex absolute top-3 right-3 p-2.5 rounded-full bg-white/80 text-royal-black shadow-lg backdrop-blur-md opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 z-20 hover:bg-white" aria-label="Add to wishlist">

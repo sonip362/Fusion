@@ -96,8 +96,8 @@ const renderRecentlyViewed = () => {
                      class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105 product-image loaded"
                      loading="lazy"
                      onerror="this.onerror=null;this.src='https://placehold.co/400x500/F7F5F2/1A1A1A?text=IMG';">
-                <button type="button" class="quick-view-btn absolute inset-0 m-auto h-12 w-32 bg-ivory/90 text-royal-black font-semibold rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" aria-label="Quick view for ${product.name}">
-                    Quick View
+                <button type="button" class="quick-view-btn absolute inset-0 m-auto h-12 w-32 bg-ivory/90 text-royal-black font-semibold rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" aria-label="View details for ${product.name}">
+                    View
                 </button>
             </div>
             <div class="mt-4 flex justify-between items-start">

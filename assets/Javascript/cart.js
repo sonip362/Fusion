@@ -12,7 +12,6 @@
     } catch (e) { console.warn('preloadCouponTiers error', e); }
 })();
 
-
 // --- Cart Recommendations (You May Also Like) ---
 const renderCartRecommendations = async () => {
     const recContainer = document.getElementById('cart-recommendations');
@@ -63,7 +62,7 @@ const renderCartRecommendations = async () => {
             return true; // both — show all
         });
 
-        // Pick up to 3
+        // Pick up to 6
         const picks = candidates.slice(0, 6);
 
         if (picks.length === 0) {
@@ -131,8 +130,6 @@ const renderCartRecommendations = async () => {
     }
 };
 
-
-
 const addItemToCart = (product) => {
     if (!product) return; // Guard
     const existingItem = cart.find(item => item.id === product.id);
@@ -142,14 +139,22 @@ const addItemToCart = (product) => {
         cart.push({ ...product, quantity: 1 });
     }
     saveState();
-    renderCart();
+    if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) {
+        window.renderCart();
+    } else {
+        renderCart();
+    }
     showToast(`${product.name} added to cart`, 'success');
 };
 
 const removeFromCart = (productId) => {
     cart = cart.filter(item => item.id !== productId);
     saveState();
-    renderCart();
+    if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) {
+        window.renderCart();
+    } else {
+        renderCart();
+    }
 };
 
 const increaseCartItemQuantity = (productId) => {
@@ -157,7 +162,11 @@ const increaseCartItemQuantity = (productId) => {
     if (item) {
         item.quantity++;
         saveState();
-        renderCart();
+        if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) {
+            window.renderCart();
+        } else {
+            renderCart();
+        }
     }
 };
 
@@ -169,7 +178,11 @@ const decreaseCartItemQuantity = (productId) => {
             removeFromCart(productId);
         } else {
             saveState();
-            renderCart();
+            if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) {
+                window.renderCart();
+            } else {
+                renderCart();
+            }
         }
     }
 };
@@ -190,6 +203,10 @@ const closeCartConfirm = () => {
 };
 
 const renderCart = () => {
+    if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) {
+        window.renderCart();
+        return;
+    }
     const cartEmptyState = document.getElementById('cart-empty-state');
     const cartItemsList = document.getElementById('cart-items-list');
     const cartFooter = document.getElementById('cart-footer');
@@ -228,7 +245,7 @@ const renderCart = () => {
                     .then(r => { if (!r.ok) throw new Error('Failed to load coupons.json'); return r.json(); })
                     .then(json => { if (Array.isArray(json)) window.__cachedCouponTiers = json; })
                     .catch(err => { console.warn('renderCart: could not load coupons.json', err); })
-                    .finally(() => { window.__couponFetchInProgress = false; renderCart(); });
+                    .finally(() => { window.__couponFetchInProgress = false; if (typeof window.renderCart === 'function' && window.renderCart !== renderCart) { window.renderCart(); } else { renderCart(); } });
             } catch (e) {
                 window.__couponFetchInProgress = false;
             }
@@ -354,3 +371,6 @@ const renderCart = () => {
     if (typeof renderCartRecommendations === 'function') renderCartRecommendations();
 };
 
+window.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderCartRecommendations === 'function') renderCartRecommendations();
+});

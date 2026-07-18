@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist — Fusion</title>
+    <meta name="description" content="View and manage your Fusion wishlist.">
+    <base href="/">
+    <link rel="icon" href="assets/images/main/logo-white.png" type="image/png">
+    <link href="dist/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Bodoni+Moda:opsz,wght@6..96,700&display=swap" rel="stylesheet">
+    <style>
+        *{box-sizing:border-box}
+        body{font-family:'Outfit',sans-serif;background:#F7F5F2;margin:0}
+
+        /* Top bar */
+        .topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;background:rgba(10,10,10,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07)}
+        .topbar-back{display:flex;align-items:center;gap:8px;color:#F7F5F2;font-size:.8125rem;font-weight:600;text-decoration:none;letter-spacing:.03em;transition:opacity .2s}
+        .topbar-back:hover{opacity:.7}
+        .topbar-logo{position:absolute;left:50%;transform:translateX(-50%)}
+        .topbar-logo img{height:28px;filter:brightness(100)}
+        .topbar-clear{color:#f87171;font-size:.6875rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color .2s}
+        .topbar-clear:hover{color:#fca5a5}
+        .topbar-clear.hidden{display:none}
+
+        /* Layout */
+        .page-wrap{padding-top:56px;min-height:100vh}
+        .inner{max-width:1400px;margin:0 auto;padding:2rem 1.25rem 5rem}
+        @media(min-width:1024px){.inner{padding:2.5rem 2.5rem 4rem}}
+
+        /* Heading row */
+        .page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap}
+        .page-heading h1{font-family:'Bodoni Moda',serif;font-size:2rem;font-weight:700;color:#1A1A1A;margin:0 0 .25rem}
+        .page-heading p{font-size:.8125rem;color:#9CA3AF;margin:0}
+        .cart-link{display:inline-flex;align-items:center;gap:.5rem;background:#fff;border:1px solid #E5E7EB;border-radius:999px;padding:.5rem 1rem;font-size:.75rem;font-weight:600;color:#1A1A1A;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:box-shadow .2s}
+        .cart-link:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+
+        /* Grid */
+        .wish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.875rem}
+        @media(min-width:600px){.wish-grid{grid-template-columns:repeat(3,1fr);gap:1.25rem}}
+        @media(min-width:900px){.wish-grid{grid-template-columns:repeat(4,1fr)}}
+        @media(min-width:1200px){.wish-grid{grid-template-columns:repeat(5,1fr)}}
+
+        /* Card */
+        .wcard{position:relative;border-radius:1rem;overflow:hidden;background:#fff;border:1px solid #E5E7EB;transition:box-shadow .2s,transform .2s}
+        .wcard:hover{box-shadow:0 8px 28px rgba(0,0,0,.09);transform:translateY(-3px)}
+        .wcard-img{aspect-ratio:3/4;overflow:hidden;background:#F3F4F6}
+        .wcard-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+        .wcard:hover .wcard-img img{transform:scale(1.05)}
+        .wcard-rem{position:absolute;top:.5rem;right:.5rem;z-index:10;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+        .wcard-rem:hover{background:#FEE2E2}
+        .wcard-rem svg{width:14px;height:14px;color:#6B7280}
+        .wcard-body{padding:.75rem}
+        .wcard-cat{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:#9CA3AF;font-weight:700;margin-bottom:.2rem}
+        .wcard-name{font-family:'Bodoni Moda',serif;font-size:.875rem;font-weight:700;color:#1A1A1A;line-height:1.3;margin-bottom:.25rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+        .wcard-price{font-size:.8rem;font-weight:700;color:#1A1A1A;margin-bottom:.75rem}
+        .wcard-add{width:100%;background:#1A1A1A;color:#F7F5F2;border:none;border-radius:999px;padding:.625rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+        .wcard-add:hover{background:#374151}
+
+        /* Empty */
+        .empty{text-align:center;padding:5rem 0}
+        .empty-icon{width:72px;height:72px;background:#F3F4F6;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+        .empty h2{font-family:'Bodoni Moda',serif;font-size:1.375rem;color:#1A1A1A;margin:0 0 .5rem}
+        .empty p{font-size:.8125rem;color:#9CA3AF;margin:0 0 1.5rem}
+
+        /* Confirm */
+        .confirm-bg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center}
+        .confirm-bg.hidden{display:none}
+        .confirm-sheet{width:100%;max-width:480px;background:#fff;border-radius:1.5rem 1.5rem 0 0;padding:2rem 1.5rem 2.5rem}
+        .btn-primary{display:block;width:100%;padding:1rem;border-radius:999px;background:#1A1A1A;color:#F7F5F2;font-weight:600;font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;text-align:center;text-decoration:none;transition:background .2s;margin-bottom:.75rem}
+        .btn-primary:hover{background:#374151}
+        .btn-secondary{display:block;width:100%;padding:1rem;border-radius:999px;background:#F3F4F6;color:#374151;font-weight:600;font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s}
+        .btn-secondary:hover{background:#E5E7EB}
+
+        /* Toast */
+        .toast {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            transition: opacity .3s, transform .3s;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <a class="topbar-back" href="#" onclick="history.length>1?history.back():location.href='/index.html';return false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+            Back
+        </a>
+        <div class="topbar-logo"><a href="/index.html"><img src="assets/images/main/log.png" alt="Fusion"></a></div>
+        <button id="clear-wishlist-btn" class="topbar-clear hidden">Clear All</button>
+    </div>
+
+    <div class="inner">
+        <div class="page-heading">
+            <div>
+                <h1>My Wishlist</h1>
+                <p>Items you've saved for later</p>
+            </div>
+            <a href="/cart.html" class="cart-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg>
+                View Cart
+            </a>
+        </div>
+
+        <!-- Empty state -->
+        <div id="wishlist-empty-state" class="empty hidden">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="32" height="32" style="color:#9CA3AF"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </div>
+            <h2>Your wishlist is empty</h2>
+            <p>Save items you love and come back to them later.</p>
+            <a href="/index.html#shop-by-collection" style="display:inline-block;background:#1A1A1A;color:#F7F5F2;padding:.75rem 2rem;border-radius:999px;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">Explore Collections</a>
+        </div>
+
+        <!-- Grid -->
+        <ul id="wishlist-items-list" class="wish-grid hidden"></ul>
+    </div>
+</div>
+
+<!-- Confirm sheet -->
+<div id="wishlist-confirm-overlay" class="confirm-bg hidden">
+    <div class="confirm-sheet">
+        <h3 style="font-family:'Bodoni Moda',serif;font-size:1.25rem;color:#1A1A1A;margin:0 0 .5rem">Clear your wishlist?</h3>
+        <p style="font-size:.8125rem;color:#6B7280;margin:0 0 1.5rem">All saved items will be removed permanently.</p>
+        <button id="wishlist-confirm-ok-btn" class="btn-primary">Yes, clear wishlist</button>
+        <button id="wishlist-confirm-cancel-btn" class="btn-secondary">Keep Items</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-notification" class="toast" style="position:fixed;top:68px;right:1rem;z-index:200;width:100%;max-width:320px;padding:1rem 1.25rem;background:#1A1A1A;color:#F7F5F2;border-radius:.875rem;box-shadow:0 8px 32px rgba(0,0,0,.18)" role="alert">
+    <div style="display:flex;align-items:center;gap:.75rem">
+        <svg id="toast-icon-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <svg id="toast-icon-wishlist" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18" style="flex-shrink:0;display:none"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+        <p id="toast-message" style="font-size:.8125rem;font-weight:500;margin:0">Done!</p>
+    </div>
+</div>
+
+<!-- Stub modals -->
+<div id="wishlist-modal" class="hidden"></div>
+<div id="cart-modal" class="hidden"></div>
+<div id="login-modal" class="hidden"><div id="login-backdrop" class="hidden"></div><div id="login-panel" class="hidden"><div id="auth-forms-container"></div></div></div>
+
+<script src="assets/Javascript/modal-logic.js"></script>
+<script src="assets/Javascript/main.js"></script>
+<script src="assets/Javascript/toast-message.js"></script>
+<script src="assets/Javascript/cart.js"></script>
+<script src="assets/Javascript/wishlist.js"></script>
+<script>
+const renderWishlistPage = () => {
+    const emptyEl  = document.getElementById('wishlist-empty-state');
+    const listEl   = document.getElementById('wishlist-items-list');
+    const clearBtn = document.getElementById('clear-wishlist-btn');
+    if (!emptyEl || !listEl) return;
+
+    if (wishlist.length === 0) {
+        emptyEl.classList.remove('hidden');
+        listEl.classList.add('hidden');
+        listEl.innerHTML = '';
+        clearBtn && clearBtn.classList.add('hidden');
+    } else {
+        emptyEl.classList.add('hidden');
+        listEl.classList.remove('hidden');
+        clearBtn && clearBtn.classList.remove('hidden');
+
+        listEl.innerHTML = wishlist.map(item => `
+        <li class="wcard">
+            <button class="wcard-rem remove-wishlist-item-btn" data-id="${item.id}" aria-label="Remove">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="wcard-img"><img src="${item.imageUrl}" alt="${item.name}" onerror="this.src='https://placehold.co/300x400/F3F4F6/9CA3AF?text=IMG'"></div>
+            <div class="wcard-body">
+                <p class="wcard-cat">${item.category||''}</p>
+                <h3 class="wcard-name">${item.name}</h3>
+                <p class="wcard-price">${item.price}</p>
+                <button class="wcard-add add-to-cart-from-wishlist-btn" data-id="${item.id}">Add to Cart</button>
+            </div>
+        </li>`).join('');
+    }
+    if(typeof updateBadges==='function') updateBadges();
+};
+
+// Confirm overlay
+const overlay = document.getElementById('wishlist-confirm-overlay');
+const open  = () => overlay.classList.remove('hidden');
+const close = () => overlay.classList.add('hidden');
+document.getElementById('clear-wishlist-btn')?.addEventListener('click', () => { if(wishlist.length>0) open(); });
+document.getElementById('wishlist-confirm-ok-btn')?.addEventListener('click', () => { wishlist=[];saveState();renderWishlistPage();close(); });
+document.getElementById('wishlist-confirm-cancel-btn')?.addEventListener('click', close);
+overlay?.addEventListener('click', e => { if(e.target===overlay) close(); });
+
+window.renderWishlist = renderWishlistPage;
+
+window.addEventListener('DOMContentLoaded', async () => {
+    await loadState();
+    renderWishlistPage();
+});
+</script>
+</body>
+</html>

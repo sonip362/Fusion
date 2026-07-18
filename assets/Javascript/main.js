@@ -781,31 +781,19 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // --- Modal Initializations ---
 
-    wishlistModal = initializeModal({
-        modal: document.getElementById('wishlist-modal'),
-        panel: document.getElementById('wishlist-panel'),
-        openBtns: [
-            document.getElementById('wishlist-btn-desktop'),
-            document.getElementById('wishlist-btn-mobile'),
-            document.getElementById('wishlist-btn-mobile-header')
-        ],
-        closeBtn: document.getElementById('close-wishlist-modal'),
-        backdrop: document.getElementById('wishlist-backdrop'),
-        onClose: closeWishlistConfirm
-    });
-
-    cartModal = initializeModal({
-        modal: document.getElementById('cart-modal'),
-        panel: document.getElementById('cart-panel'),
-        openBtns: [
-            document.getElementById('cart-btn-desktop'),
-            document.getElementById('cart-btn-mobile'),
-            document.getElementById('cart-btn-mobile-header')
-        ],
-        closeBtn: document.getElementById('close-cart-modal'),
-        backdrop: document.getElementById('cart-backdrop'),
-        onClose: closeCartConfirm
-    });
+    // Cart and Wishlist now use dedicated full-screen pages — wire navigation buttons
+    const _wireNavPage = (ids, url) => {
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                // Remove any href="#" so navigation goes through
+                if (el.getAttribute('href') === '#') el.setAttribute('href', url);
+                el.addEventListener('click', (e) => { e.preventDefault(); window.location.href = url; });
+            }
+        });
+    };
+    _wireNavPage(['wishlist-btn-desktop', 'wishlist-btn-mobile', 'wishlist-btn-mobile-header'], '/wishlist.html');
+    _wireNavPage(['cart-btn-desktop', 'cart-btn-mobile', 'cart-btn-mobile-header'], '/cart.html');
 
     quickViewModalCtl = initializeModal({
         modal: document.getElementById('quick-view-modal'),
@@ -818,19 +806,15 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    // Cart "Continue Shopping"
-    const cartContinueShopping = document.getElementById('cart-continue-shopping');
-    const cartContinueShoppingFooter = document.getElementById('cart-continue-shopping-footer');
-
-    if (cartContinueShopping && cartModal) {
-        cartContinueShopping.addEventListener('click', () => cartModal.close());
-    }
-    if (cartContinueShoppingFooter && cartModal) {
-        cartContinueShoppingFooter.addEventListener('click', (e) => {
-            e.preventDefault();
-            cartModal.close();
-        });
-    }
+    const navigateToProductView = (product) => {
+        if (!product) return;
+        if (typeof addToRecentlyViewed === 'function') {
+            addToRecentlyViewed(product);
+        }
+        const namePart = encodeURIComponent(product.name);
+        window.location.href = `/${namePart}.html/`;
+    };
+    window.navigateToProductView = navigateToProductView;
 
     // --- Product Grid Event Delegation ---
     const productGrid = document.getElementById('collection-product-grid');
@@ -848,7 +832,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             if (quickViewBtn) {
                 e.preventDefault(); e.stopPropagation();
-                openQuickView(product);
+                navigateToProductView(product);
             } else if (addToCartBtn) {
                 e.preventDefault(); e.stopPropagation();
                 addItemToCart(product);
@@ -856,9 +840,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 e.preventDefault(); e.stopPropagation();
                 addItemToWishlist(product);
             } else if (window.innerWidth < 768) {
-                // Mobile: Single tap opens Quick View
+                // Mobile: Single tap opens product view page
                 e.preventDefault();
-                openQuickView(product);
+                navigateToProductView(product);
             }
         });
     }
@@ -1269,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             if (e.target.closest('.quick-view-btn')) {
                 e.preventDefault(); e.stopPropagation();
-                openQuickView(product);
+                navigateToProductView(product);
             } else if (e.target.closest('.add-to-cart-btn')) {
                 e.preventDefault(); e.stopPropagation();
                 addItemToCart(product);

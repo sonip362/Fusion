@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,13 +15,37 @@
         rel="stylesheet">
     <style>
         /* Responsive back button: hide desktop top button on small screens and show bottom mobile button */
-        #checkout-back-home-mobile { display: none; }
-        @media (max-width: 767px) {
-            #checkout-back-home { display: none !important; }
-            #checkout-back-home-mobile { display: inline-flex !important; }
+        #checkout-back-home-mobile {
+            display: none;
         }
+
+        @media (max-width: 767px) {
+            #checkout-back-home {
+                display: none !important;
+            }
+
+            #checkout-back-home-mobile {
+                display: inline-flex !important;
+            }
+        }
+
         @media (min-width: 768px) {
-            #checkout-back-home-mobile { display: none !important; }
+            #checkout-back-home-mobile {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .checkout-sidebar {
+                position: relative;
+                min-height: 400px;
+            }
+
+            .checkout-sidebar-inner {
+                position: fixed;
+                top: 108px;
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -46,7 +70,7 @@
         <div class="flex flex-col">
             <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Total
                 Amount</span>
-            <span id="mobile-floating-total" class="text-lg font-bold text-royal-black leading-none">₹0.00</span>
+            <span id="mobile-floating-total" class="text-lg font-bold text-royal-black leading-none">0.00</span>
         </div>
         <button onclick="document.getElementById('confirm-order-btn').scrollIntoView({behavior: 'smooth'})"
             class="bg-royal-black text-ivory text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg">
@@ -143,7 +167,7 @@
                     <!-- Step 2: Payment -->
                     <div id="payment-section"
                         class="bg-white rounded-xl shadow-sm border border-gray-200 opacity-60 pointer-events-none grayscale transition-all duration-700"
-                        style="padding: clamp(24px, 6vw, 80px) !important;">
+                        style="padding: 1.75rem !important;">
                         <div class="flex justify-between items-center mb-12">
                             <div>
                                 <h2 class="text-2xl font-serif font-bold flex items-center gap-6">
@@ -203,7 +227,8 @@
                                     class="w-7 h-7 text-royal-black focus:ring-royal-black border-gray-300">
                                 <div class="ml-8 flex-1">
                                     <p class="text-lg font-bold text-royal-black">Cash on Delivery</p>
-                                    <p class="text-[13px] text-gray-400 mt-2 font-medium">Pay at doorstep (+₹49 fee)</p>
+                                    <p class="text-[13px] text-gray-400 mt-2 font-medium">Pay at doorstep (+₹49 fee)
+                                    </p>
                                 </div>
                             </label>
                         </div>
@@ -265,79 +290,85 @@
                 </div>
 
                 <!-- Right Column: Order Summary -->
-                <div class="lg:col-span-5">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 lg:sticky lg:top-24"
-                        style="padding: clamp(24px, 6vw, 80px) !important;">
-                        <div class="flex items-center gap-5 mb-10">
-                            <span
-                                class="flex items-center justify-center w-10 h-10 rounded-full bg-royal-black text-ivory text-base font-bold">3</span>
-                            <h2 class="text-2xl font-serif font-bold">Order Summary</h2>
+                <div class="lg:col-span-5 checkout-sidebar">
+                    <div class="checkout-sidebar-inner">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200"
+                            style="padding: 1.75rem !important;">
+                            <div class="flex items-center gap-5 mb-6">
+                                <span
+                                    class="flex items-center justify-center w-10 h-10 rounded-full bg-royal-black text-ivory text-base font-bold">3</span>
+                                <h2 class="text-2xl font-serif font-bold">Order Summary</h2>
+                            </div>
+
+                            <ul id="checkout-items" class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2">
+                                <!-- Items will be injected here via JS -->
+                                <div class="flex justify-center py-8">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-royal-black"></div>
+                                </div>
+                            </ul>
+
+                            <div class="space-y-3 pt-6 border-t border-gray-200">
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>Subtotal</span>
+                                    <span id="checkout-subtotal">â‚¹0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>Shipping</span>
+                                    <span id="checkout-shipping">Calculating...</span>
+                                </div>
+                                <div
+                                    class="flex justify-between text-base font-bold text-royal-black pt-2 border-t border-gray-200 mt-2">
+                                    <span>Total</span>
+                                    <span id="checkout-total">â‚¹0.00</span>
+                                </div>
+                            </div>
+
+                            <div id="coupon-section" class="mt-6">
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <input type="text" id="coupon-input"
+                                        class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none uppercase placeholder:text-gray-300 transition-all font-medium"
+                                        placeholder="Discount Code">
+                                    <button id="apply-coupon"
+                                        class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">Apply</button>
+                                </div>
+                                <p id="coupon-message" class="text-[11px] mt-2 font-medium hidden"></p>
+                            </div>
+
+                            <div id="coin-section" class="mt-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Reward
+                                        Coins
+                                    </p>
+                                    <p class="text-sm font-bold text-royal-black"><span id="coin-balance">0</span>
+                                        available
+                                    </p>
+                                </div>
+                                <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                    <input type="number" id="coin-redeem-input" min="0" step="1"
+                                        class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none transition-all font-medium"
+                                        placeholder="Coins to redeem">
+                                    <button id="apply-coins"
+                                        class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">
+                                        Apply Coins
+                                    </button>
+                                </div>
+                                <p id="coin-message" class="text-[11px] mt-2 font-medium text-gray-500"></p>
+                            </div>
+
+                            <button id="confirm-order-btn"
+                                class="w-full mt-8 bg-royal-black text-ivory py-3.5 rounded-full font-bold uppercase tracking-wider hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                Place Order
+
+                            </button>
+
+                            <p class="text-xs text-center text-gray-500 mt-4 leading-relaxed">
+                                By placing this order, you agree to our <a href="../assets/shipping.html"
+                                    class="underline hover:text-royal-black">Terms of Service</a> and <a
+                                    href="../assets/shipping.html" class="underline hover:text-royal-black">Privacy
+                                    Policy</a>.
+                            </p>
                         </div>
-
-                        <ul id="checkout-items" class="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2">
-                            <!-- Items will be injected here via JS -->
-                            <div class="flex justify-center py-8">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-royal-black"></div>
-                            </div>
-                        </ul>
-
-                        <div class="space-y-3 pt-6 border-t border-gray-200">
-                            <div class="flex justify-between text-sm text-gray-600">
-                                <span>Subtotal</span>
-                                <span id="checkout-subtotal">₹0.00</span>
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-600">
-                                <span>Shipping</span>
-                                <span id="checkout-shipping">Calculating...</span>
-                            </div>
-                            <div
-                                class="flex justify-between text-base font-bold text-royal-black pt-2 border-t border-gray-200 mt-2">
-                                <span>Total</span>
-                                <span id="checkout-total">₹0.00</span>
-                            </div>
-                        </div>
-
-                        <div id="coupon-section" class="mt-6">
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" id="coupon-input"
-                                    class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none uppercase placeholder:text-gray-300 transition-all font-medium"
-                                    placeholder="Discount Code">
-                                <button id="apply-coupon"
-                                    class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">Apply</button>
-                            </div>
-                            <p id="coupon-message" class="text-[11px] mt-2 font-medium hidden"></p>
-                        </div>
-
-                        <div id="coin-section" class="mt-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
-                            <div class="flex items-center justify-between gap-2">
-                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Reward Coins</p>
-                                <p class="text-sm font-bold text-royal-black"><span id="coin-balance">0</span> available</p>
-                            </div>
-                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
-                                <input type="number" id="coin-redeem-input" min="0" step="1"
-                                    class="w-full sm:flex-1 px-4 py-3 rounded-xl border border-gray-100 text-sm focus:border-royal-black focus:ring-4 focus:ring-royal-black/5 outline-none transition-all font-medium"
-                                    placeholder="Coins to redeem">
-                                <button id="apply-coins"
-                                    class="w-full sm:w-auto px-6 py-3 bg-royal-black text-ivory text-xs font-black uppercase tracking-widest rounded-xl hover:bg-gray-800 transition-all shadow-sm active:scale-95">
-                                    Apply Coins
-                                </button>
-                            </div>
-                            <p id="coin-message" class="text-[11px] mt-2 font-medium text-gray-500"></p>
-                        </div>
-
-                        <button id="confirm-order-btn"
-                            class="w-full mt-8 bg-royal-black text-ivory py-3.5 rounded-full font-bold uppercase tracking-wider hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                            Place Order
-
-                        </button>
-
-                        <p class="text-xs text-center text-gray-500 mt-4 leading-relaxed">
-                            By placing this order, you agree to our <a href="../assets/shipping.html"
-                                class="underline hover:text-royal-black">Terms of Service</a> and <a
-                                href="../assets/shipping.html" class="underline hover:text-royal-black">Privacy
-                                Policy</a>.
-                        </p>
-                    </div>
+                    </div><!-- /.checkout-sidebar-inner -->
                 </div>
             </div>
         </div>
@@ -345,6 +376,53 @@
 
     <script src="../assets/Javascript/music-player.js"></script>
     <script src="../assets/Javascript/checkout.js"></script>
+
+    <script>
+        // -- Desktop follow-scroll for Order Summary --
+        (function () {
+            const DESKTOP = 1024;
+            let rafId = null;
+            function positionSidebar() {
+                if (window.innerWidth < DESKTOP) return;
+                const sidebar = document.querySelector('.checkout-sidebar');
+                if (!sidebar) return;
+                const inner = sidebar.querySelector('.checkout-sidebar-inner');
+                if (!inner) return;
+                const sideRect = sidebar.getBoundingClientRect();
+                const innerH = inner.offsetHeight;
+                const vpH = window.innerHeight;
+                const TOP_GAP = 108;
+                const BOT_GAP = 24;
+                let targetTop = TOP_GAP;
+                if (innerH > vpH - TOP_GAP - BOT_GAP) {
+                    targetTop = Math.max(vpH - innerH - BOT_GAP, 8);
+                }
+                inner.style.left = sideRect.left + 'px';
+                inner.style.width = sideRect.width + 'px';
+                inner.style.top = targetTop + 'px';
+            }
+            function onScroll() {
+                if (window.innerWidth < DESKTOP) return;
+                cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(positionSidebar);
+            }
+            function applyMode() {
+                const sidebar = document.querySelector('.checkout-sidebar');
+                if (!sidebar) return;
+                const inner = sidebar.querySelector('.checkout-sidebar-inner');
+                if (!inner) return;
+                if (window.innerWidth >= DESKTOP) {
+                    inner.style.position = 'fixed';
+                    positionSidebar();
+                } else {
+                    inner.style.position = inner.style.left = inner.style.width = inner.style.top = '';
+                }
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', applyMode);
+            setTimeout(applyMode, 400);
+        })();
+    </script>
 </body>
 
 </html>

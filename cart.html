@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart — Fusion</title>
+    <meta name="description" content="Review items in your Fusion shopping cart.">
+    <base href="/">
+    <link rel="icon" href="assets/images/main/logo-white.png" type="image/png">
+    <link href="dist/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Bodoni+Moda:opsz,wght@6..96,700&display=swap" rel="stylesheet">
+    <style>
+        *{box-sizing:border-box}
+        body{font-family:'Outfit',sans-serif;background:#F7F5F2;margin:0}
+
+        /* Top bar */
+        .topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;background:rgba(10,10,10,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07)}
+        .topbar-back{display:flex;align-items:center;gap:8px;color:#F7F5F2;font-size:.8125rem;font-weight:600;text-decoration:none;letter-spacing:.03em;transition:opacity .2s}
+        .topbar-back:hover{opacity:.7}
+        .topbar-logo{position:absolute;left:50%;transform:translateX(-50%)}
+        .topbar-logo img{height:28px;filter:brightness(100)}
+        .topbar-clear{color:#f87171;font-size:.6875rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color .2s}
+        .topbar-clear:hover{color:#fca5a5}
+        .topbar-clear.hidden{display:none}
+
+        /* Layout */
+        .page-wrap{padding-top:56px;min-height:100vh}
+        .inner{max-width:1200px;margin:0 auto;padding:2rem 1.25rem 6rem}
+
+        /* Desktop grid */
+        @media(min-width:1024px){
+            .inner{padding:2.5rem 2rem 3rem}
+            .cart-grid{display:grid;grid-template-columns:1fr 360px;gap:2.5rem;align-items:start}
+            .summary-card{background:#fff;border-radius:1.25rem;border:1px solid #E5E7EB;padding:1.75rem;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+            .mobile-checkout{display:none!important}
+            /* sidebar holder keeps space in the grid; inner card is JS-positioned */
+            .cart-sidebar{min-height:200px;position:relative}
+            .cart-sidebar-inner{position:fixed;width:360px;top:88px;transition:none}
+        }
+
+        /* Heading */
+        .page-heading{margin-bottom:1.75rem}
+        .page-heading h1{font-family:'Bodoni Moda',serif;font-size:2rem;font-weight:700;color:#1A1A1A;margin:0 0 .25rem}
+        .page-heading p{font-size:.8125rem;color:#9CA3AF;margin:0}
+
+        /* Reward tracker */
+        .reward-bar{background:#1A1A1A;border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.25rem}
+        .reward-bar-track{background:rgba(255,255,255,.15);border-radius:999px;height:5px;margin:.5rem 0}
+        #reward-tracker-bar{height:5px;border-radius:999px;background:#F7F5F2;transition:width .6s ease;width:0%}
+        .coupon-chip{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;padding:.5rem .875rem;background:rgba(255,255,255,.08);border:1px dashed rgba(255,255,255,.3);border-radius:.75rem;cursor:pointer}
+        .coupon-chip:hover{background:rgba(255,255,255,.14)}
+
+        /* Item list */
+        #cart-items-list{list-style:none;padding:0;margin:0}
+        .ci{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid #F3F4F6}
+        .ci:last-child{border-bottom:none}
+        .ci-img{width:88px;height:110px;flex-shrink:0;border-radius:.875rem;overflow:hidden;background:#F3F4F6}
+        .ci-img img{width:100%;height:100%;object-fit:cover}
+        .ci-body{flex:1;min-width:0;display:flex;flex-direction:column}
+        .ci-cat{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#9CA3AF;font-weight:700;margin-bottom:.2rem}
+        .ci-name{font-family:'Bodoni Moda',serif;font-size:.95rem;font-weight:700;color:#1A1A1A;line-height:1.3;margin-bottom:.2rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+        .ci-price-each{font-size:.75rem;color:#9CA3AF}
+        .ci-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.5rem}
+        .ci-total{font-size:.9375rem;font-weight:700;color:#1A1A1A}
+        .qty{display:inline-flex;align-items:center;border:1px solid #E5E7EB;border-radius:999px;overflow:hidden}
+        .qty button{width:30px;height:30px;background:none;border:none;font-size:1rem;color:#374151;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+        .qty button:hover{background:#F3F4F6}
+        .qty span{min-width:28px;text-align:center;font-size:.8125rem;font-weight:600}
+        .ci-remove{font-size:.7rem;font-weight:600;color:#EF4444;background:none;border:none;cursor:pointer;letter-spacing:.05em;transition:color .2s}
+        .ci-remove:hover{color:#B91C1C}
+
+        /* Empty state */
+        .empty{text-align:center;padding:5rem 0}
+        .empty-icon{width:72px;height:72px;background:#F3F4F6;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+        .empty h2{font-family:'Bodoni Moda',serif;font-size:1.375rem;color:#1A1A1A;margin:0 0 .5rem}
+        .empty p{font-size:.8125rem;color:#9CA3AF;margin:0 0 1.5rem}
+
+        /* Recs */
+        .recs{margin-top:2rem}
+        .recs-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+        .recs-head h3{font-family:'Bodoni Moda',serif;font-size:1.125rem;font-weight:700;color:#1A1A1A;margin:0}
+        .recs-head span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#9CA3AF;font-weight:700;background:#F3F4F6;padding:.25rem .625rem;border-radius:999px}
+        #cart-rec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+        @media(min-width:480px){#cart-rec-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(min-width:1024px){#cart-rec-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(min-width:1280px){#cart-rec-grid{grid-template-columns:repeat(3,1fr)}}
+
+        /* Summary card */
+        .sum-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+        .sum-label{font-size:.8125rem;color:#6B7280}
+        .sum-val{font-size:.9375rem;font-weight:700;color:#1A1A1A}
+        .sum-note{font-size:.7rem;color:#9CA3AF;margin:.25rem 0 1.25rem}
+        .btn-checkout{display:block;width:100%;text-align:center;background:#1A1A1A;color:#F7F5F2;padding:1rem;border-radius:999px;font-weight:600;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:background .2s}
+        .btn-checkout:hover{background:#374151}
+        .btn-shop{display:block;text-align:center;color:#1A1A1A;font-size:.8rem;font-weight:500;margin-top:.875rem;text-decoration:none;opacity:.6;transition:opacity .2s}
+        .btn-shop:hover{opacity:1}
+
+        /* Mobile sticky footer */
+        .mobile-checkout{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E5E7EB;padding:1rem 1.25rem 1.5rem;box-shadow:0 -8px 32px rgba(0,0,0,.08);z-index:40}
+        .mobile-checkout.hidden{display:none}
+
+        /* Confirm sheet */
+        .confirm-bg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center}
+        .confirm-bg.hidden{display:none}
+        .confirm-sheet{width:100%;max-width:480px;background:#fff;border-radius:1.5rem 1.5rem 0 0;padding:2rem 1.5rem 2.5rem;transition:transform .3s}
+
+        /* Toast */
+        .toast {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            transition: opacity .3s, transform .3s;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <a class="topbar-back" href="#" onclick="history.length>1?history.back():location.href='/index.html';return false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+            Back
+        </a>
+        <div class="topbar-logo"><a href="/index.html"><img src="assets/images/main/log.png" alt="Fusion"></a></div>
+        <button id="clear-cart-btn" class="topbar-clear hidden">Clear All</button>
+    </div>
+
+    <div class="inner">
+        <div class="page-heading">
+            <h1>Shopping Cart</h1>
+            <p>Review your selected items before checkout</p>
+        </div>
+
+        <div class="cart-grid">
+            <!-- LEFT: items + recs -->
+            <div>
+                <!-- Reward tracker -->
+                <div id="reward-tracker-container" class="reward-bar hidden">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <p id="reward-status-text" style="font-size:.75rem;color:rgba(247,245,242,.8);margin:0;line-height:1.4"></p>
+                        <span id="reward-tracker-icon" style="font-size:1.25rem;margin-left:.5rem"></span>
+                    </div>
+                    <div class="reward-bar-track"><div id="reward-tracker-bar"></div></div>
+                    <div id="unlocked-coupon-container" class="coupon-chip hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="14" height="14" style="color:rgba(247,245,242,.6);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"/></svg>
+                        <p style="font-size:.7rem;color:rgba(247,245,242,.8);margin:0">Coupon unlocked: <strong id="unlocked-coupon-code" style="color:#F7F5F2;letter-spacing:.1em"></strong></p>
+                        <span style="margin-left:auto;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(247,245,242,.45)">Tap to copy</span>
+                    </div>
+                </div>
+
+                <!-- Empty state -->
+                <div id="cart-empty-state" class="empty hidden">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="32" height="32" style="color:#9CA3AF"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg>
+                    </div>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added anything yet.</p>
+                    <a href="/index.html#shop-by-collection" style="display:inline-block;background:#1A1A1A;color:#F7F5F2;padding:.75rem 2rem;border-radius:999px;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">Shop Collections</a>
+                </div>
+
+                <ul id="cart-items-list" class="hidden"></ul>
+
+                <!-- Recommendations -->
+                <div id="cart-recommendations" class="recs hidden">
+                    <div class="recs-head">
+                        <h3>You May Also Like</h3>
+                        <span id="cart-rec-label"></span>
+                    </div>
+                    <div id="cart-rec-grid"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT: summary (desktop sticky, hidden on mobile — see mobile footer below) -->
+            <div class="cart-sidebar">
+                <div class="cart-sidebar-inner">
+                    <div id="cart-footer" class="summary-card hidden">
+                        <p style="font-size:.65rem;text-transform:uppercase;letter-spacing:.14em;color:#9CA3AF;font-weight:700;margin:0 0 1rem">Order Summary</p>
+                        <div class="sum-row">
+                            <span class="sum-label">Subtotal</span>
+                            <span id="cart-subtotal" class="sum-val">₹0</span>
+                        </div>
+                        <p class="sum-note">Taxes &amp; shipping calculated at checkout</p>
+                        <a href="/pages/checkout.html" class="btn-checkout">Proceed to Checkout</a>
+                        <a href="/index.html#shop-by-collection" class="btn-shop">← Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sticky checkout bar -->
+    <div id="mobile-checkout-bar" class="mobile-checkout hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.625rem">
+            <span style="font-size:.8125rem;color:#6B7280">Subtotal</span>
+            <span id="cart-subtotal-mobile" style="font-size:1rem;font-weight:700;color:#1A1A1A">₹0</span>
+        </div>
+        <a href="/pages/checkout.html" class="btn-checkout">Checkout</a>
+    </div>
+</div>
+
+<!-- Confirm sheet -->
+<div id="cart-confirm-overlay" class="confirm-bg hidden">
+    <div class="confirm-sheet">
+        <h3 style="font-family:'Bodoni Moda',serif;font-size:1.25rem;color:#1A1A1A;margin:0 0 .5rem">Clear your cart?</h3>
+        <p style="font-size:.8125rem;color:#6B7280;margin:0 0 1.5rem">All items will be removed. This cannot be undone.</p>
+        <button id="cart-confirm-ok-btn" class="btn-checkout" style="border:none;cursor:pointer;margin-bottom:.75rem">Yes, clear cart</button>
+        <button id="cart-confirm-cancel-btn" style="display:block;width:100%;padding:1rem;border-radius:999px;background:#F3F4F6;color:#374151;font-weight:600;font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer">Keep Items</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-notification" class="toast" style="position:fixed;top:68px;right:1rem;z-index:200;width:100%;max-width:320px;padding:1rem 1.25rem;background:#1A1A1A;color:#F7F5F2;border-radius:.875rem;box-shadow:0 8px 32px rgba(0,0,0,.18)" role="alert">
+    <div style="display:flex;align-items:center;gap:.75rem">
+        <svg id="toast-icon-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        <svg id="toast-icon-wishlist" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18" style="flex-shrink:0;display:none"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+        <p id="toast-message" style="font-size:.8125rem;font-weight:500;margin:0">Done!</p>
+    </div>
+</div>
+
+<!-- Stub modals required by main.js -->
+<div id="wishlist-modal" class="hidden"></div>
+<div id="cart-modal" class="hidden"></div>
+<div id="login-modal" class="hidden"><div id="login-backdrop" class="hidden"></div><div id="login-panel" class="hidden"><div id="auth-forms-container"></div></div></div>
+
+<script src="assets/Javascript/modal-logic.js"></script>
+<script src="assets/Javascript/main.js"></script>
+<script src="assets/Javascript/toast-message.js"></script>
+<script src="assets/Javascript/cart.js"></script>
+<script src="assets/Javascript/wishlist.js"></script>
+<script>
+const renderCartPage = () => {
+    const emptyEl   = document.getElementById('cart-empty-state');
+    const listEl    = document.getElementById('cart-items-list');
+    const footerEl  = document.getElementById('cart-footer');
+    const subtotalEl= document.getElementById('cart-subtotal');
+    const subMobEl  = document.getElementById('cart-subtotal-mobile');
+    const mobileBar = document.getElementById('mobile-checkout-bar');
+    const clearBtn  = document.getElementById('clear-cart-btn');
+    const rtContainer = document.getElementById('reward-tracker-container');
+
+    if (!emptyEl || !listEl) return;
+
+    if (cart.length === 0) {
+        emptyEl.classList.remove('hidden');
+        listEl.classList.add('hidden');
+        listEl.innerHTML = '';
+        footerEl && footerEl.classList.add('hidden');
+        mobileBar && mobileBar.classList.add('hidden');
+        clearBtn && clearBtn.classList.add('hidden');
+        rtContainer && rtContainer.classList.add('hidden');
+    } else {
+        emptyEl.classList.add('hidden');
+        listEl.classList.remove('hidden');
+        footerEl && footerEl.classList.remove('hidden');
+        mobileBar && mobileBar.classList.remove('hidden');
+        clearBtn && clearBtn.classList.remove('hidden');
+
+        const subtotal = cart.reduce((s, i) => s + (parsePrice(i.price) * (Number(i.quantity) || 1)), 0);
+
+        listEl.innerHTML = cart.map(item => {
+            const qty = Number(item.quantity) || 1;
+            const total = formatPrice(parsePrice(item.price) * qty);
+            return `<li class="ci">
+                <div class="ci-img"><img src="${item.imageUrl}" alt="${item.name}" onerror="this.src='https://placehold.co/88x110/F3F4F6/9CA3AF?text=IMG'"></div>
+                <div class="ci-body">
+                    <p class="ci-cat">${item.category||''}</p>
+                    <h3 class="ci-name">${item.name}</h3>
+                    <p class="ci-price-each">${item.price} each</p>
+                    <div class="ci-foot">
+                        <div class="qty">
+                            <button class="decrease-cart-item-qty-btn" data-id="${item.id}">−</button>
+                            <span>${qty}</span>
+                            <button class="increase-cart-item-qty-btn" data-id="${item.id}">+</button>
+                        </div>
+                        <span class="ci-total">${total}</span>
+                        <button class="ci-remove remove-cart-item-btn" data-id="${item.id}">Remove</button>
+                    </div>
+                </div>
+            </li>`;
+        }).join('');
+
+        const fmt = formatPrice(subtotal);
+        subtotalEl && (subtotalEl.textContent = fmt);
+        subMobEl && (subMobEl.textContent = fmt);
+
+        // Reward tracker
+        const defaultTiers=[{threshold:1500,code:'FUSION10',discount:.1},{threshold:3000,code:'FUSION20',discount:.2},{threshold:5000,code:'KINGFUSION',discount:.3}];
+        const rawTiers=(window.__cachedCouponTiers&&window.__cachedCouponTiers.length)?window.__cachedCouponTiers:defaultTiers;
+        const tiers=rawTiers.slice().sort((a,b)=>a.threshold-b.threshold).map(t=>{const pct=Math.round((Number(t.discount)||0)*100);return{threshold:Number(t.threshold),label:pct>0?`${pct}% OFF`:'Discount',code:String(t.code||'').toUpperCase(),icon:pct>=30?'👑':pct>=20?'🔥':'✨'};});
+        const rtBar=document.getElementById('reward-tracker-bar');
+        const rtText=document.getElementById('reward-status-text');
+        const rtIcon=document.getElementById('reward-tracker-icon');
+        const couponEl=document.getElementById('unlocked-coupon-container');
+        const couponCode=document.getElementById('unlocked-coupon-code');
+        if(rtContainer&&rtBar&&rtText){
+            rtContainer.classList.remove('hidden');
+            const ci=[...tiers].reverse().findIndex(t=>subtotal>=t.threshold);
+            const ai=ci===-1?-1:tiers.length-1-ci;
+            const next=tiers[ai+1];
+            if(next){rtText.innerHTML=`Add <strong style="color:#F7F5F2">₹${next.threshold-subtotal}</strong> more to unlock <span style="text-decoration:underline">${next.label}</span>`;rtBar.style.width=`${(subtotal/next.threshold)*100}%`;rtIcon.textContent=next.icon;}
+            else{rtText.innerHTML=`🎉 <strong style="letter-spacing:.1em">VIP Status Unlocked!</strong>`;rtBar.style.width='100%';rtIcon.textContent='👑';}
+            if(ai!==-1&&couponEl&&couponCode){couponEl.classList.remove('hidden');couponCode.textContent=tiers[ai].code;if(!couponEl.dataset.init){couponEl.addEventListener('click',()=>navigator.clipboard.writeText(couponCode.textContent).then(()=>showToast(`Coupon ${couponCode.textContent} copied!`,'success')));couponEl.dataset.init='1';}}
+            else if(couponEl){couponEl.classList.add('hidden');}
+        }
+    }
+    if(typeof updateBadges==='function') updateBadges();
+    if(typeof renderCartRecommendations==='function') renderCartRecommendations();
+};
+
+// Confirm overlay
+const overlay = document.getElementById('cart-confirm-overlay');
+const sheet   = overlay?.querySelector('.confirm-sheet');
+const openConfirm = () => { overlay.classList.remove('hidden'); };
+const closeConfirm = () => { overlay.classList.add('hidden'); };
+document.getElementById('clear-cart-btn')?.addEventListener('click', () => { if(cart.length>0) openConfirm(); });
+document.getElementById('cart-confirm-ok-btn')?.addEventListener('click', () => { cart=[];saveState();renderCartPage();closeConfirm(); });
+document.getElementById('cart-confirm-cancel-btn')?.addEventListener('click', closeConfirm);
+overlay?.addEventListener('click', e => { if(e.target===overlay) closeConfirm(); });
+
+// Override global renderCart
+window.renderCart = renderCartPage;
+
+window.addEventListener('DOMContentLoaded', async () => {
+    await loadState();
+    renderCartPage();
+});
+
+// ── Desktop sticky-follow sidebar ──────────────────────────────────────
+(function() {
+    const DESKTOP = 1024;
+    let rafId = null;
+
+    function positionSidebar() {
+        if (window.innerWidth < DESKTOP) return;
+        const sidebar  = document.querySelector('.cart-sidebar');
+        const inner    = document.querySelector('.cart-sidebar-inner');
+        if (!sidebar || !inner) return;
+
+        const gridRect  = sidebar.closest('.cart-grid')?.getBoundingClientRect();
+        const sideRect  = sidebar.getBoundingClientRect();
+        const innerH    = inner.offsetHeight;
+        const vpH       = window.innerHeight;
+        const TOP_GAP   = 88;   // px below viewport top
+        const BOT_GAP   = 24;   // px above viewport bottom
+
+        const left = sideRect.left;
+        const width = sideRect.width;
+
+        // viewport-relative sticky top
+        let stickTop = TOP_GAP;
+        if (innerH > vpH - TOP_GAP - BOT_GAP) {
+            stickTop = Math.max(vpH - innerH - BOT_GAP, 12);
+        }
+
+        // start scrolling down when grid top leaves screen
+        let targetTop = Math.max(stickTop, sideRect.top);
+
+        // clamp at grid bottom
+        if (gridRect) {
+            const maxTop = gridRect.bottom - innerH - BOT_GAP;
+            targetTop = Math.min(targetTop, maxTop);
+        }
+
+        inner.style.left  = left + 'px';
+        inner.style.width = width + 'px';
+        inner.style.top   = targetTop + 'px';
+    }
+
+    function onScroll() {
+        if (window.innerWidth < DESKTOP) return;
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(positionSidebar);
+    }
+
+    function applyMode() {
+        const sidebar = document.querySelector('.cart-sidebar');
+        const inner   = document.querySelector('.cart-sidebar-inner');
+        if (!sidebar || !inner) return;
+
+        if (window.innerWidth >= DESKTOP) {
+            inner.style.position = 'fixed';
+            positionSidebar();
+        } else {
+            inner.style.position = '';
+            inner.style.left  = '';
+            inner.style.width = '';
+            inner.style.top   = '';
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', applyMode);
+    // Run after first render (need layout)
+    setTimeout(applyMode, 300);
+})();
+</script>
+</body>
+</html>

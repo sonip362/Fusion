@@ -25,6 +25,17 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secure_key_fusion_2026';
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '6mb' }));
+
+// Virtual product page routing
+app.get(['/:productName.html', '/:productName.html/'], (req, res, next) => {
+    const pName = req.params.productName;
+    const filePath = path.join(__dirname, pName + '.html');
+    if (fs.existsSync(filePath)) {
+        return res.sendFile(filePath);
+    }
+    res.sendFile(path.join(__dirname, 'view.html'));
+});
+
 app.use(express.static(path.join(__dirname)));
 
 // MongoDB Connection

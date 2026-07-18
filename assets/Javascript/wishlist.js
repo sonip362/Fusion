@@ -6,7 +6,7 @@ const addItemToWishlist = (product) => {
     if (!existingItem) {
         wishlist.push(product);
         saveState();
-        renderWishlist();
+        ((typeof window.renderWishlist === "function") ? window.renderWishlist() : renderWishlist());
         showToast(`${product.name} added to wishlist`, 'wishlist');
     } else {
         showToast(`${product.name} is already in your wishlist`, 'wishlist');
@@ -16,7 +16,7 @@ const addItemToWishlist = (product) => {
 const removeFromWishlist = (productId) => {
     wishlist = wishlist.filter(item => item.id !== productId);
     saveState();
-    renderWishlist();
+    ((typeof window.renderWishlist === "function") ? window.renderWishlist() : renderWishlist());
 };
 
 const clearWishlist = () => {
@@ -35,6 +35,10 @@ const closeWishlistConfirm = () => {
 };
 
 const renderWishlist = () => {
+    if (typeof window.renderWishlist === 'function' && window.renderWishlist !== renderWishlist) {
+        window.renderWishlist();
+        return;
+    }
     const wishlistEmptyState = document.getElementById('wishlist-empty-state');
     const wishlistItemsList = document.getElementById('wishlist-items-list');
     const clearWishlistBtn = document.getElementById('clear-wishlist-btn');
@@ -79,3 +83,4 @@ const renderWishlist = () => {
     // update badges after DOM changes
     if (typeof updateBadges === 'function') updateBadges();
 };
+
